@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<XMLDB PATH="blocks/coursefeedback/db" VERSION="20110221" COMMENT="XMLDB file for Moodle blocks/coursefeedback"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
+>
+  <TABLES>
+	<TABLE NAME="block_coursefeedback" COMMENT="feedbacks for the block module" NEXT="block_coursefeedback_questns">
+	  <FIELDS>
+		<FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="name"/>
+		<FIELD NAME="name" TYPE="text" LENGTH="small" NOTNULL="true" SEQUENCE="false" PREVIOUS="id" NEXT="timemodified"/>
+		<FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" DEFAULT="0" PREVIOUS="name"/>
+	  </FIELDS>
+	  <KEYS>
+		<KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+	  </KEYS>
+	</TABLE>
+	<TABLE NAME="block_coursefeedback_questns" COMMENT="questions defined by admins" PREVIOUS="block_coursefeedback" NEXT="block_coursefeedback_answers">
+	  <FIELDS>
+		<FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="questionid"/>
+		<FIELD NAME="questionid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="id" NEXT="coursefeedbackid"/>
+		<FIELD NAME="coursefeedbackid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="questionid" NEXT="language"/>
+		<FIELD NAME="language" TYPE="char" LENGTH="8" NOTNULL="true" SEQUENCE="false" PREVIOUS="coursefeedbackid" NEXT="question"/>
+		<FIELD NAME="question" TYPE="text" LENGTH="small" NOTNULL="true" SEQUENCE="false" PREVIOUS="language" NEXT="timemodified"/>
+		<FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" DEFAULT="0" PREVIOUS="question"/>
+	  </FIELDS>
+	  <KEYS>
+		<KEY NAME="primary" TYPE="primary" FIELDS="id" NEXT="coursefeedbackid"/>
+		<KEY NAME="coursefeedbackid" TYPE="foreign" REFTABLE="block_coursefeedback" REFFIELDS="id" FIELDS="coursefeedbackid" PREVIOUS="primary"/>
+	  </KEYS>
+	  <INDEXES>
+		<INDEX NAME="block_cfb_qidfidlng_idx" UNIQUE="true" FIELDS="questionid, coursefeedbackid, language"/>
+	  </INDEXES>
+	</TABLE>
+	<TABLE NAME="block_coursefeedback_answers" COMMENT="answers given by participants" PREVIOUS="block_coursefeedback_questns">
+	  <FIELDS>
+		<FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="userid"/>
+		<FIELD NAME="userid" TYPE="int" LENGTH="20" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="id" NEXT="course"/>
+		<FIELD NAME="course" TYPE="int" LENGTH="20" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="userid" NEXT="coursefeedbackid"/>
+		<FIELD NAME="coursefeedbackid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="course" NEXT="questionid"/>
+		<FIELD NAME="questionid" TYPE="int" LENGTH="3" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="coursefeedbackid" NEXT="answer"/>
+		<FIELD NAME="answer" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="questionid" NEXT="timemodified"/>
+		<FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" DEFAULT="0" PREVIOUS="answer"/>
+	  </FIELDS>
+	  <KEYS>
+		<KEY NAME="primary" TYPE="primary" FIELDS="id" NEXT="coursefeedbackid"/>
+		<KEY NAME="coursefeedbackid" TYPE="foreign" REFTABLE="block_coursefeedback" REFFIELDS="id" FIELDS="coursefeedbackid" PREVIOUS="primary" NEXT="questionid"/>
+		<KEY NAME="questionid" TYPE="foreign" REFTABLE="block_coursefeedback_questns" REFFIELDS="id" FIELDS="questionid" PREVIOUS="coursefeedbackid"/>
+	  </KEYS>
+	  <INDEXES>
+		<INDEX NAME="block_cfb_uidcoufid_idx" UNIQUE="false" FIELDS="userid, course, coursefeedbackid" NEXT="block_cfb_couqidans_idx"/>
+		<INDEX NAME="block_cfb_couqidans_idx" UNIQUE="false" FIELDS="course, questionid, answer" PREVIOUS="block_cfb_uidcoufid_idx"/>
+	  </INDEXES>
+	</TABLE>
+	
+  </TABLES>
+</XMLDB>
