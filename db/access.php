@@ -26,64 +26,66 @@ defined('MOODLE_INTERNAL') || die();
 
 $capabilities = array(
 
-    'block/coursefeedback:managefeedbacks' => array(
+	'block/coursefeedback:managefeedbacks' => array(
 
-    	'riskbitmask' => RISK_XSS,
-    		
-        'captype' => 'write',
-        'contextlevel' => CONTEXT_BLOCK,
-        'archetypes' => array(
-            	'manager'        => CAP_ALLOW,
-        		'coursecreator'  => CAP_PREVENT,
-        		'teacher'        => CAP_PROHIBIT,
-        		'editingteacher' => CAP_PROHIBIT,
-        		'student'        => CAP_PROHIBIT,
-        		'guest'          => CAP_PROHIBIT
-        )
-    ),
+    		'riskbitmask' => RISK_XSS,
 
-    'block/coursefeedback:viewanswers' => array(
-
-        'captype' => 'read',
-        'contextlevel' => CONTEXT_BLOCK,
-        'archetypes' => array(
-            	'manager'        => CAP_ALLOW,
-        		'coursecreator'  => CAP_ALLOW,
-        		'teacher'        => CAP_ALLOW,
-        		'editingteacher' => CAP_ALLOW,
-        		'student'        => CAP_PROHIBIT,
-        		'guest'          => CAP_PROHIBIT
-        )
-    ),
-		
-	'block/coursefeedback:download' => array(
-	
-			'captype' => 'read',
-			'contextlevel' => CONTEXT_BLOCK,
-			'archetypes' => array(
-					'manager'        => CAP_ALLOW,
-					'coursecreator'  => CAP_ALLOW,
-					'editingteacher' => CAP_ALLOW,
-					'teacher'        => CAP_PREVENT,
-					'student'        => CAP_PREVENT,
-					'guest'          => CAP_PREVENT
-			)
+	        'captype' => 'write',
+        	'contextlevel' => CONTEXT_SYSTEM,
+        	'archetypes' => array(
+            		'manager'        => CAP_ALLOW
+        	)
 	),
-		
-	'block/coursefeedback:evaluate' => array(
-	
-			'captype' => 'write',
-			'contextlevel' => CONTEXT_BLOCK,
-			'archetypes' => array(
-            	'manager'        => CAP_ALLOW,
-        		'coursecreator'  => CAP_PREVENT,
-        		'teacher'        => CAP_PREVENT,
-        		'editingteacher' => CAP_PREVENT,
-        		'student'        => CAP_ALLOW,
-        		'guest'          => CAP_PREVENT
-			)
-	)
 
+	'block/coursefeedback:viewanswers' => array(
+
+	        'captype' => 'read',
+	        'contextlevel' => CONTEXT_COURSE,
+		'archetypes' => array(
+            		'manager'        => CAP_ALLOW,
+       			'coursecreator'  => CAP_ALLOW,
+       			'teacher'        => CAP_ALLOW,
+       			'editingteacher' => CAP_ALLOW
+        	)
+    	),
+
+	'block/coursefeedback:download' => array(
+
+		'captype' => 'read',
+		'contextlevel' => CONTEXT_COURSE,
+		'archetypes' => array(
+			'manager'        => CAP_ALLOW,
+			'coursecreator'  => CAP_ALLOW,
+                        'teacher'        => CAP_ALLOW,
+			'editingteacher' => CAP_ALLOW
+		)
+	),
+
+	'block/coursefeedback:evaluate' => array(
+
+		'captype' => 'write',
+		'contextlevel' => CONTEXT_COURSE,
+		'archetypes' => array(
+	            	'manager'        => CAP_ALLOW,
+                        'coursecreator'  => CAP_PREVENT,
+                        'teacher'        => CAP_PREVENT,
+        		'editingteacher' => CAP_PREVENT,
+        		'student'        => CAP_ALLOW
+		)
+	),
+
+	'block/coursefeedback:addinstance' => array(
+
+		'captype' => 'write',
+		'contextlevel' => CONTEXT_BLOCK,
+		'archtypes' => array(
+			'manager'        => CAP_ALLOW,
+                        'coursecreator'  => CAP_ALLOW,
+                        'teacher'        => CAP_ALLOW,
+                        'editingteacher' => CAP_ALLOW
+		)
+	)
 );
+
 
 

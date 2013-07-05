@@ -47,6 +47,7 @@ class coursefeedback_evaluate_form extends moodleform
 				$form->addElement('header','header_question'.$question->questionid,get_string('form_header_question','block_coursefeedback',$question->questionid));
 				$form->addElement('html',html_writer::tag('p', format($question->question),array('class' => 'coursefeedback_evalform_question')));
 				$form->addElement('hidden','answers['.$question->questionid.']'); // dirty hack
+				$form->setType('answers['.$question->questionid.']', PARAM_INT);
 				$table = new html_table();
 				$scale = $this->abstain ? 7 : 6;
 				$table->size = array_fill(0, $scale, floor(100/$scale).'%'); // equidistant arrangement

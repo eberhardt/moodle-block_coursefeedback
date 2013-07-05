@@ -6,7 +6,7 @@ require_once(dirname(__FILE__).'/lib/lib.php');
 class block_coursefeedback extends block_base {
 	
 	/**
-		
+	
 	TEST Teilnehmer_in kann nicht bewerten, wenn er gloabl Verwalter ist...
 	TEST die Anzahl der Stimmen summiert sich komischer weise
 	
@@ -14,8 +14,8 @@ class block_coursefeedback extends block_base {
 	
 	TODO fehlerhaftes Feedback im Admin-Bereich wählbar
 	
-	*/	
-	function init () 
+	*/
+	function init ()
 	{
 		$this->title        = get_string('pluginname','block_coursefeedback');
 		$this->content_type = BLOCK_TYPE_TEXT;

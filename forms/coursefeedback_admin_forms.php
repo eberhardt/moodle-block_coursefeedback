@@ -21,22 +21,25 @@
 		function definition()
 		{
 			global $CFG,$DB;
-			
+
 			$form = &$this->_form;
-			
+
 			$form -> addElement('hidden','template',$this->fid);
-			
+
 			$form -> addElement('header','formheader_feedback_new',get_string('form_header_newfeedback','block_coursefeedback'));
 			$form -> addElement('text','name',get_string('name'),'size="50"');
-			
-			
+
+
 			if($name = $DB->get_field('block_coursefeedback','name',array('id' => $this->fid))) $form -> getElement('name') -> setValue(get_string('copyof','block_coursefeedback',stripslashes($name)));
+
 			$form -> addRule('name',get_string('requiredelement','form'),'required');
-			
 			$submits	= array();
 			$submits[]	= &$form->createElement('submit', 'add', get_string('add'));
 			$submits[]	= &$form->createElement('cancel');
 			$form -> addGroup($submits, 'submits', '', '&nbsp;');
+
+			// types
+	                $form->setType('name', PARAM_TEXT);
 		}
 	}
 	
@@ -64,6 +67,10 @@
 			$submits[]	= &$form->createElement('submit', 'edit', get_string('savechanges'));
 			$submits[]	= &$form->createElement('cancel');
 			$form -> addGroup($submits, 'submits', '', '&nbsp;');
+
+			// types
+			$form->setType('template', PARAM_INT);
+			$form->setType('name', PARAM_TEXT);
 		}
 	}
 	 
@@ -90,6 +97,10 @@
 			$submits[]	= &$form->createElement('cancel');
 			$form -> addGroup($submits, 'submits', '', '&nbsp;');
 			
+			// types
+			$form->setType('template', PARAM_INT);
+			$form->setType('confirm', PARAM_INT);
+
 			$form -> closeHeaderBefore('submits');
 		}
 	}
@@ -115,8 +126,12 @@
 			$submits[]	= &$form->createElement('submit', 'danswers', get_string('confirm'));
 			$submits[]	= &$form->createElement('cancel');
 			$form -> addGroup($submits, 'submits', '', '&nbsp;');
-			
+
 			$form -> closeHeaderBefore('submits');
+
+			// types
+			$form->setType('template', PARAM_INT);
+			$form->setType('confirm', PARAM_INT);
 		}
 	}
 	
@@ -147,6 +162,11 @@
 			
 			$form -> addRule('questiontext',get_string('requiredelement','form'),'required');
 			$form -> getElement('newlang') -> setSelected($CFG->lang);
+
+			// types
+                        $form->setType('template', PARAM_INT);
+                        $form->setType('questionid', PARAM_INT);
+                        $form->setType('questiontext', PARAM_TEXT);
 		}
 	}
 	
@@ -178,6 +198,10 @@
 			$submits[]	= &$form->createElement('cancel');
 			$form -> addGroup($submits, 'submits', '', '&nbsp;');
 			
+                        $form->setType('template', PARAM_INT);
+                        $form->setType('questionid', PARAM_INT);
+			$form->setType('position', PARAM_INT);
+
 			$form -> closeHeaderBefore('submits');
 		}
 	}
@@ -207,6 +231,11 @@
 			$submits[]	= &$form->createElement('cancel');
 			$form -> addGroup($submits, 'submits', '', '&nbsp;');
 			
+                        $form->setType('template', PARAM_INT);
+                        $form->setType('questionid', PARAM_INT);
+			$form->setType('language', PARAM_ALPHAEXT);
+			$form->setType('confirm', PARAM_INT);
+
 			$form -> closeHeaderBefore('submits');
 		}
 	}
@@ -236,6 +265,10 @@
 			$form -> addGroup($submits, 'submits', '', '&nbsp;');
 			
 			$form -> closeHeaderBefore('submits');
+
+                        $form->setType('template', PARAM_INT);
+                        $form->setType('questionid', PARAM_INT);
+                        $form->setType('language', PARAM_ALPHAEXT);
 		}
 	}
 	
@@ -271,6 +304,11 @@
 			$form -> closeHeaderBefore('submits');
 
 			$form -> addRule('questiontext',get_string('requiredelement','form'),'required');
+
+                        $form->setType('template', PARAM_INT);
+                        $form->setType('questionid', PARAM_INT);
+                        $form->setType('language', PARAM_ALPHAEXT);
+			$form->setType('questiontext', PARAM_TEXT);
 		}
 	}
 	
@@ -311,6 +349,10 @@
 			$form -> addGroup($submits, 'submits', '', '&nbsp;');
 			
 			$form -> closeHeaderBefore('submits');
+
+                        $form->setType('template', PARAM_INT);
+                        $form->setType('questionid', PARAM_INT);
+                        $form->setType('questiontext', PARAM_TEXT);
 		}
 	}
 	
@@ -338,6 +380,7 @@
 				$form -> addElement('select','unwantedlang',get_string('form_select_unwantedlang','block_coursefeedback'),array());
 				$form -> getElement('unwantedlang') -> loadArray($implemented);
 				$form -> getElement('unwantedlang') -> setMultiple(true);
+				$form -> setType('unwantedlang', PARAM_ALPHAEXT);
 			}
 			else
 			{
@@ -347,6 +390,9 @@
 			$form -> addGroup($submits, 'submits', '', '&nbsp;');
 			
 			$form -> closeHeaderBefore('submits');
+
+                        $form->setType('template', PARAM_INT);
+
 		}
 	}
 

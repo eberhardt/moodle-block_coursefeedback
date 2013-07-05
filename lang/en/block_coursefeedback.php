@@ -16,6 +16,7 @@ $string['page_headline_listoffeedbacks']	= 'List of all surveys';
 $string['page_headline_listofquestions']	= 'Questionnaire of "{$a}"';
 $string['page_link_evaluate']				= 'Evaluate course';
 $string['page_link_view'] 					= 'Analysis';
+$string['page_link_settings']                   = 'Adminstration';
 $string['page_link_newtemplate']			= 'Create new survey';
 $string['page_link_backtoconfig']			= 'Back to website administration';
 $string['page_link_showlistofquestions']	= 'Edit questions';

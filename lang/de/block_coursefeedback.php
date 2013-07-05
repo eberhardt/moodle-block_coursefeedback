@@ -13,9 +13,10 @@ $string['adminpage_html_submitters2b'] 		= 'W&auml;hlen Sie eine Sprache die ang
 // Page
 $string['page_headline_admin']				= 'Kursfeedback Administration';
 $string['page_headline_listoffeedbacks']	= 'Liste aller Feedbacks';
-$string['page_headline_listofquestions']	= 'Fragenkatalog zu "{$a}"';
-$string['page_link_evaluate']				= 'Kurs Bewerten';
-$string['page_link_view'] 					= 'Auswertung';
+$string['page_headline_listofquestions']        = 'Fragenkatalog zu "{$a}"';
+$string['page_link_evaluate']                   = 'Kurs Bewerten';
+$string['page_link_view']                       = 'Auswertung';
+$string['page_link_settings']                   = 'Administration';
 $string['page_link_newtemplate']			= 'Neue Umfrage erstellen';
 $string['page_link_backtoconfig']			= 'Zur&uuml;ck zur Webseiten-Administration';
 $string['page_link_showlistofquestions']	= 'Fragen bearbeiten';

@@ -15,6 +15,7 @@ $string['page_headline_listoffeedbacks']	= 'Liste avec tous les feedbacks';
 $string['page_headline_listofquestions']	= 'List de questions sur "{$a}"';
 $string['page_link_evaluate']				= 'Evaluer un cours';
 $string['page_link_view'] 					= 'Exploitation';
+$string['page_link_settings']                   = 'Administration';
 $string['page_link_newtemplate']			= 'Cr&eacute;er un sondage';
 $string['page_link_backtoconfig']			= 'Retour &agrave; l\'administration de la page';
 $string['page_link_showlistofquestions']	= 'Modifier les questions';
