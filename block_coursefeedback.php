@@ -1,20 +1,9 @@
-<?PHP //$Id: block_coursefeedback.php,v 1.7 2007/03/15 00:10:58 tjhunt Exp $
-
+<?php
 require_once($CFG->libdir.'/authlib.php'); // capabilities. show evaluate only for students and admin.
 require_once(dirname(__FILE__).'/lib/lib.php');
 
 class block_coursefeedback extends block_base {
 	
-	/**
-	
-	TEST Teilnehmer_in kann nicht bewerten, wenn er gloabl Verwalter ist...
-	TEST die Anzahl der Stimmen summiert sich komischer weise
-	
-	---
-	
-	TODO fehlerhaftes Feedback im Admin-Bereich wählbar
-	
-	*/
 	function init ()
 	{
 		$this->title        = get_string('pluginname','block_coursefeedback');
@@ -35,24 +24,29 @@ class block_coursefeedback extends block_base {
 			$this->content->text = get_string('page_html_nofeedbackactive','block_coursefeedback');
 		elseif(questions_exist())
 		{
-			$this->content->text = '<ul style="list-style:none;">';
+			$link = '';
+			$this->content->text = html_writer::start_tag('ul', array('style' => 'list-style:none;'));
 		  	if(has_capability('block/coursefeedback:managefeedbacks', $context))
 			{
-				$this->content->text .= '<li><a href ="'. $CFG->wwwroot . '/admin/settings.php?section=blocksettingcoursefeedback">'
-				  			.get_string('page_link_settings',"block_coursefeedback").'</a></li>';
+				$link = html_writer::link(new moodle_url('/admin/settings.php?section=blocksettingcoursefeedback'), get_string('page_link_settings', 'block_coursefeedback'));
+				$this->content->text .= html_writer::tag('li', $link);
 			}
-			if(has_capability('block/coursefeedback:evaluate',$context)) {
-				$this->content->text .= '<li><a href ="'. $CFG->wwwroot . '/blocks/coursefeedback/evaluate.php?id=' . $COURSE->id . '">'
-						.get_string('page_link_evaluate',"block_coursefeedback").'</a></li>';
+			if(has_capability('block/coursefeedback:evaluate',$context)) 
+			{
+				$link = html_writer::link(new moodle_url('/blocks/coursefeedback/evaluate.php', array('id' => $COURSE->id)), get_string('page_link_evaluate', 'block_coursefeedback'));
+				$this->content->text .= html_writer::tag('li', $link);
 			}
 			if(has_capability('block/coursefeedback:viewanswers', $context))
 			{
-				$this->content->text .= '<li><a href ="'. $CFG->wwwroot . '/blocks/coursefeedback/view.php?id=' . $COURSE->id . '">'
-							.get_string('page_link_view',"block_coursefeedback").'</a></li>';
+				$link = html_writer::link(new moodle_url('/blocks/coursefeedback/view.php', array('id' => $COURSE->id)), get_string('page_link_view', 'block_coursefeedback'));
+				$this->content->text .= html_writer::tag('li', $link);
 			}
-			$this->content->text .= '</ul>';
+			if(empty($link))
+				$this->content->text = get_string('page_html_nolinks', 'block_coursefeedback'); // no links shown (i.e. if user is a guest), so replace ul
+			else
+				$this->content->text .= html_writer::end_tag('ul');
 		}
-		else $this->content->text = get_string('page_html_noquestions','block_coursefeedback');
+		else $this->content->text = get_string('page_html_noquestions', 'block_coursefeedback');
 		$this->content->footer = '';
 
 		return $this->content;
@@ -61,6 +55,11 @@ class block_coursefeedback extends block_base {
 	function has_config()
 	{
 		return true;
+	}
+	
+	function instance_can_be_hidden()
+	{
+		return get_config('block_coursefeedback', 'allow_hiding');
 	}
 }
 ?>

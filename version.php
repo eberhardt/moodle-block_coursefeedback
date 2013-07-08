@@ -21,14 +21,14 @@
  *
  * @package    block
  * @subpackage coursefeedback
- * @copyright  2011 onwards Jan Eberhardt (@ innoCampus, TU Berlin)
+ * @copyright  2011-2013 onwards Jan Eberhardt (@ innoCampus, TU Berlin)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2013070503;
+$plugin->version   = 2013070504;
 $plugin->requires  = 2012120304;
 $plugin->maturity  = MATURITY_STABLE;
-$plugin->release   = '1.0.1 (Build: 2013020702)';
+$plugin->release   = '1.0.2 (Build: 2013070504)';
 $plugin->component = 'block_coursefeedback';

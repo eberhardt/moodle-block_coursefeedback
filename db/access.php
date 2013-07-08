@@ -18,7 +18,7 @@
  * Coursefeedback block caps.
  *
  * @package    block_coursefeedback
- * @copyright  2012 onwards Jan Eberhardt  {@link https://www.innocampus.tu-berlin.de/}
+ * @copyright  2012-2013 onwards Jan Eberhardt  {@link https://www.innocampus.tu-berlin.de/}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -28,26 +28,25 @@ $capabilities = array(
 
 	'block/coursefeedback:managefeedbacks' => array(
 
-    		'riskbitmask' => RISK_XSS,
+    	'riskbitmask' => RISK_XSS,
 
-	        'captype' => 'write',
-        	'contextlevel' => CONTEXT_SYSTEM,
-        	'archetypes' => array(
-            		'manager'        => CAP_ALLOW
-        	)
+		'captype' => 'write',
+		'contextlevel' => CONTEXT_SYSTEM,
+		'archetypes' => array(
+			'manager'        => CAP_ALLOW
+		)
 	),
 
 	'block/coursefeedback:viewanswers' => array(
 
-	        'captype' => 'read',
-	        'contextlevel' => CONTEXT_COURSE,
+		'captype' => 'read',
+		'contextlevel' => CONTEXT_COURSE,
 		'archetypes' => array(
-            		'manager'        => CAP_ALLOW,
-       			'coursecreator'  => CAP_ALLOW,
-       			'teacher'        => CAP_ALLOW,
-       			'editingteacher' => CAP_ALLOW
-        	)
-    	),
+			'manager'        => CAP_ALLOW,
+       		'editingteacher' => CAP_ALLOW,
+			'teacher'        => CAP_ALLOW
+        )
+    ),
 
 	'block/coursefeedback:download' => array(
 
@@ -55,8 +54,6 @@ $capabilities = array(
 		'contextlevel' => CONTEXT_COURSE,
 		'archetypes' => array(
 			'manager'        => CAP_ALLOW,
-			'coursecreator'  => CAP_ALLOW,
-                        'teacher'        => CAP_ALLOW,
 			'editingteacher' => CAP_ALLOW
 		)
 	),
@@ -66,11 +63,9 @@ $capabilities = array(
 		'captype' => 'write',
 		'contextlevel' => CONTEXT_COURSE,
 		'archetypes' => array(
-	            	'manager'        => CAP_ALLOW,
-                        'coursecreator'  => CAP_PREVENT,
-                        'teacher'        => CAP_PREVENT,
-        		'editingteacher' => CAP_PREVENT,
-        		'student'        => CAP_ALLOW
+			'manager'        => CAP_ALLOW,
+			'teacher'        => CAP_PREVENT,
+			'student'        => CAP_ALLOW
 		)
 	),
 
@@ -80,11 +75,19 @@ $capabilities = array(
 		'contextlevel' => CONTEXT_BLOCK,
 		'archtypes' => array(
 			'manager'        => CAP_ALLOW,
-                        'coursecreator'  => CAP_ALLOW,
-                        'teacher'        => CAP_ALLOW,
-                        'editingteacher' => CAP_ALLOW
+			'editingteacher' => CAP_ALLOW
 		)
-	)
+	),
+		
+	'block/coursefeedback:myaddinstance' => array(
+			
+		'captype' => 'write',
+		'contextlevel' => CONTEXT_SYSTEM,
+		'archtypes' => array(
+			'manager' => CAP_PROHIBIT,
+			'user' => CAP_PROHIBIT
+		) // this plugin has no sense at all on "my page"
+	)	
 );
 
 

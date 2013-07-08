@@ -1,14 +1,16 @@
 <?php #FRENCH
 // Defaults
-$string['pluginname']						= 'Feedback sur le cours';
-$string['caution']							= 'Avertissement';
-$string['copyof']							= 'Copie de "{$a}"';
+$string['pluginname']                      = 'Feedback sur le cours';
+$string['caution']                         = 'Avertissement';
+$string['copyof']                          = 'Copie de "{$a}"';
 // Adminpage
-$string['adminpage_link_feedbackedit'] 		= 'Cr&eacute;er/modifier sondages';
-$string['adminpage_html_submitters1a'] 		= 'Sondage actuel:';
-$string['adminpage_html_submitters1b'] 		= 'Choisissez un bloc de questions. Il est publi&eacute; sur "'.$string['pluginname'].'" pour l\'&eacute;valuation.<br /> Vous pouvez modifier les blocs de questions disponibles par "'.$string['adminpage_link_feedbackedit'].'".';
-$string['adminpage_html_submitters2a'] 		= 'Langue par d&eacute;faut';
-$string['adminpage_html_submitters2b'] 		= 'Choisissez une langue alternative qui sera utilis&eacute;e s\'il n\'y a pas de questions disponibles pour la langue qui est d&eacute;finie par l\'utilisateur o&ugrave; le cours.';
+$string['adminpage_link_feedbackedit']     = 'Cr&eacute;er/modifier sondages';
+$string['adminpage_html_activefeedbacka']  = 'Sondage actuel:';
+$string['adminpage_html_activefeedbackb']  = 'Choisissez un bloc de questions. Il est publi&eacute; sur "'.$string['pluginname'].'" pour l\'&eacute;valuation.<br /> Vous pouvez modifier les blocs de questions disponibles par "'.$string['adminpage_link_feedbackedit'].'".';
+$string['adminpage_html_defaultlanguagea'] = 'Langue par d&eacute;faut';
+$string['adminpage_html_defaultlanguagb']  = 'Choisissez une langue alternative qui sera utilis&eacute;e s\'il n\'y a pas de questions disponibles pour la langue qui est d&eacute;finie par l\'utilisateur o&ugrave; le cours.';
+$string['adminpage_html_allowhidinga']     = 'Autoriser invisibilité';
+//$string['adminpage_html_allowhidingb']     = '';
 // Page
 $string['page_headline_admin']				= 'Administration des feedbacks sur le cours';
 $string['page_headline_listoffeedbacks']	= 'Liste avec tous les feedbacks';
