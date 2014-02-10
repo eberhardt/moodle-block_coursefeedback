@@ -3,7 +3,7 @@ require_once($CFG->libdir.'/authlib.php'); // capabilities. show evaluate only f
 require_once(dirname(__FILE__).'/lib/lib.php');
 
 class block_coursefeedback extends block_base {
-	
+
 	function init ()
 	{
 		$this->title        = get_string('pluginname','block_coursefeedback');
@@ -19,7 +19,7 @@ class block_coursefeedback extends block_base {
 		}
 
 		$this->content = New stdClass;
-		$context = context_block::instance($this->instance->id);
+		$context = context_course::instance($COURSE->id);
 		if(get_config('block_coursefeedback','active_feedback') == 0)
 			$this->content->text = get_string('page_html_nofeedbackactive','block_coursefeedback');
 		elseif(questions_exist())
@@ -31,7 +31,7 @@ class block_coursefeedback extends block_base {
 				$link = html_writer::link(new moodle_url('/admin/settings.php?section=blocksettingcoursefeedback'), get_string('page_link_settings', 'block_coursefeedback'));
 				$this->content->text .= html_writer::tag('li', $link);
 			}
-			if(has_capability('block/coursefeedback:evaluate',$context)) 
+			if(has_capability('block/coursefeedback:evaluate',$context))
 			{
 				$link = html_writer::link(new moodle_url('/blocks/coursefeedback/evaluate.php', array('id' => $COURSE->id)), get_string('page_link_evaluate', 'block_coursefeedback'));
 				$this->content->text .= html_writer::tag('li', $link);
@@ -51,12 +51,12 @@ class block_coursefeedback extends block_base {
 
 		return $this->content;
 	}
-	
+
 	function has_config()
 	{
 		return true;
 	}
-	
+
 	function instance_can_be_hidden()
 	{
 		return get_config('block_coursefeedback', 'allow_hiding');
