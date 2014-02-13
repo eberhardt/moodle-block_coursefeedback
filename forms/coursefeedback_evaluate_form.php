@@ -16,36 +16,36 @@ require_once($CFG->dirroot.'/blocks/coursefeedback/lib/lib.php');
 
 class coursefeedback_evaluate_form extends moodleform
 {
-	var $lang;
-	var $scale;
-	var $course;
-	var $abstain;
-	
-	function __construct($action,$course,$lang,$abstain=true)
+	public $lang;
+	//private $scale;
+	public $course;
+	public $abstain;
+
+	public function __construct($action,$course,$lang,$abstain=true)
 	{
 		$this->lang    = $lang;
 		$this->course  = $course;
 		$this->abstain = $abstain;
-		
+
 		parent::__construct($action);
 	}
-	
-	function definition()
+
+	public function definition()
 	{
 		global $DB;
-		
+
 		$form = &$this->_form;
-		
-		$form->addElement('header','evalintro');
-		$form->addElement('html',get_string('page_html_evalintro','block_coursefeedback'));
-		
+
+		//$form->addElement('header','evalintro');
+		$form->addElement('html', html_writer::div(get_string('page_html_evalintro','block_coursefeedback'), "box generalbox"));
+
 		$lang = find_language($this->lang);
 		if($lang !== null && $questions = $DB->get_records('block_coursefeedback_questns',array('coursefeedbackid'=>get_config('block_coursefeedback','active_feedback'),'language'=>$lang)))
 		{
 			foreach($questions as $question)
 			{
-				$form->addElement('header','header_question'.$question->questionid,get_string('form_header_question','block_coursefeedback',$question->questionid));
-				$form->addElement('html',html_writer::tag('p', format($question->question),array('class' => 'coursefeedback_evalform_question')));
+				$form->addElement("header", "header_question" . $question->questionid, format($question->question));
+				//$form->addElement('html',html_writer::tag('p', format($question->question),array('class' => 'coursefeedback_evalform_question')));
 				$form->addElement('hidden','answers['.$question->questionid.']'); // dirty hack
 				$form->setType('answers['.$question->questionid.']', PARAM_INT);
 				$table = new html_table();
@@ -66,10 +66,23 @@ class coursefeedback_evaluate_form extends moodleform
 				}
 				$form->addElement('html',html_writer::table($table));
 			}
-			
+
 			$this->add_action_buttons(true,get_string('form_submit_feedbacksubmit','block_coursefeedback'));
 		}
 		else redirect(new moodle_url('/course/view.php',array('id'=>$this->course)),get_string('page_html_noquestions','block_coursefeedback'));
+	}
+
+	public function validation($data, $files)
+	{
+		$errors = array();
+		foreach ($data["answers"] as $answer)
+			if (!$this->abstain && $answer == 0)
+			{
+				//TODO Fix: Wird nicht angezeigt, für uns erst einmal unwichtig, da wir Enthaltung immer erlauben
+				$errors["submitbutton"] = get_string("required");
+				return $errors;
+			}
+		return true;
 	}
 }
 

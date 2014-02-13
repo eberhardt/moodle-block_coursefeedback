@@ -16,17 +16,17 @@
 
 	$PAGE->set_context($context);
 	$PAGE->set_pagelayout('standard');
-	
+
 	$action	= required_param('action', PARAM_ALPHA);
 	$mode	= required_param('mode', PARAM_ALPHA);
-	
+
 	$fid		= intval(optional_param('fid', 0, PARAM_INT));
 	$qid		= intval(optional_param('qid', null, PARAM_INT));
 	$language	= optional_param('lng', null, PARAM_ALPHA);
-	
+
 	$errormsg 	= '';
 	$statusmsg	= '';
-	
+
 	// initialize forms ------------------------------------------------//
 	if(!isset($forms))
 	{
@@ -45,9 +45,9 @@
 			}
 		}
 	}
-	
+
 	$form = &$forms[$mode][$action];
-	
+
 	// process subbmitted data -----------------------------------------//
 	// Actions defined by GET
 	switch($mode.$action)
@@ -102,7 +102,7 @@
 									$errormsg = get_string('therewereerrors','admin');
 									break;
 								default:
-									$statusmsg = get_string('changessaved');		
+									$statusmsg = get_string('changessaved');
 							}
 						}
 					}
@@ -293,12 +293,12 @@
 			}
 		}
 	}
-	
+
 	/**
 	* $MODE
 	* Has to be 'feedback' or 'question' and depends on which data is to be edited.
 	*/
-	
+
 	//=========================================================================//
 	$checkresult 	= get_editerrors($fid);
 	$editable	 	= empty($checkresult);
@@ -308,7 +308,7 @@
 							'feedbackview',
 							'feedbackedit'
 							); // actions allowed, even if the feedback is activ or is answered by users
-	
+
 	if(!$editable and !in_array($mode.$action,$allowedactions))
 	{
 		//break current event!
@@ -322,12 +322,12 @@
 	$PAGE->navbar->add(get_string('blocks'),new moodle_url('/admin/blocks.php'));
 	$PAGE->navbar->add(get_string('pluginname', 'block_coursefeedback'), new moodle_url('/admin/settings.php?section=blocksettingcoursefeedback'));
 	$PAGE->navbar->add(get_string('page_headline_admin', 'block_coursefeedback'), new moodle_url('/blocks/coursefeedback/admin.php', array('mode' => 'feedback', 'action' => 'view')));
-	
+
 	//===================================================
 	// Start printing output
-	
+
 	echo $OUTPUT->header();
-	
+
 	/**
 	 * NOTIFICATION HANDLING
 	 */
@@ -337,23 +337,23 @@
 	elseif(!empty($statusmsg)) {
 		echo $OUTPUT->notification($statusmsg, 'notifysuccess');
 	}
-	
+
 	if($action === 'view')
 	{
 		// FB-view and Q-view are the only modes for hard coded output
 		$displayform = false; // display form anyway?
 		$html = '';
 		echo '<h2 class="main">'.get_string('page_headline_admin','block_coursefeedback').'</h3>';
-			
+
 		echo '<fieldset>';
-			
+
 		if($mode === 'feedback')
 		{
 			echo $OUTPUT->box('<div style="margin-left:3em;">'.
 				'<a href="admin.php?mode=feedback&action=new">'.get_string('page_link_newtemplate','block_coursefeedback').'</a><br />'.
 				'<a href="'.$CFG->wwwroot.'/'.$CFG->admin.'/settings.php?section=blocksettingcoursefeedback">'.get_string('page_link_backtoconfig','block_coursefeedback').'</a>'.
 				'</div>');
-				
+
 			$active = get_config('block_coursefeedback','active_feedback');
 			$table 			= new html_table();
 
@@ -363,7 +363,7 @@
 			$table -> attributes = array('style'=>'margin-left:10%;margin-right:10%;');
 			$table -> width = '80%';
 			$table -> data	= array();
-			
+
 			$table->data[]	= array(
 									'',
 									get_string('table_html_nofeedback','block_coursefeedback'),
@@ -372,7 +372,7 @@
 									'',
 									($active == 0) ? 'X' : create_activate_button(0)
 			);
-			
+
 			if($feedbacks = $DB->get_records('block_coursefeedback',null,'id'))
 			{
 				foreach($feedbacks as $feedback)
@@ -381,7 +381,7 @@
 					if(!empty($languages))
 					{
 						$langtext	= join(', ',$languages);
-						$select     = "coursefeedbackid = {$feedback->id} AND language IN ('".join('\',\'',array_keys($languages))."') GROUP BY language";
+						$select     = "coursefeedbackid = {$feedback->id} AND language = '" . current(array_keys($languages)) . "' GROUP BY language";
 						$q			= $DB->count_records_select('block_coursefeedback_questns',$select);
 					}
 					else
@@ -402,15 +402,15 @@
 										($active == $feedback->id)?'X':create_activate_button($feedback->id).'<br/>'
 					);
 				}
-			}			
-			
+			}
+
 			$html  = html_writer::tag('h4', get_string('page_headline_listoffeedbacks','block_coursefeedback'),array('class'=>'main'))
 					.html_writer::table($table);
 		}
 		elseif($mode === 'questions')
 		{
 			print_coursefeedback_header($editable,$fid);
-			
+
 			if($editable && $questions = get_question_ids($fid))
 			{
 				$requiredlangs 	= get_implemented_languages($fid);
@@ -423,13 +423,13 @@
 				$table -> attributes = array('style'=>'margin-left:10%;margin-right:10%;');
 				$table -> width = '80%';
 				$table -> data	= array();
-				
+
 				foreach($questions as $questionid)
 				{
 					$listing	= "";
 					$languages	= "";
 					$links		= "";
-					
+
 					if($requiredlangs)
 					foreach($requiredlangs as $language)
 					{
@@ -437,7 +437,7 @@
 						{
 							$question=format($question);
 							$listing 	.= "<div>";
-							if(strlen($question) > 50 && $p=strpos($question,' ',50)) 
+							if(strlen($question) > 50 && $p=strpos($question,' ',50))
 							{
 								$listing .= str_replace(' ','&nbsp;',substr($question,0,$p).'&nbsp;[...]');
 							}
@@ -459,14 +459,14 @@
 							$links		.= "<span style=\"padding:0px;\"><a href=\"admin.php?mode=question&amp;action=new&amp;fid={$fid}&amp;qid={$questionid}&amp;lng={$language}\" />".get_string('add')."</a></span><br />";
 						}
 					}
-					
+
 					$listing .= "<br/>".get_string('page_html_editallquestions','block_coursefeedback').": ".
 								"<a href=\"admin.php?mode=questions&amp;action=edit&amp;fid={$fid}&amp;qid={$questionid}\" />".get_string('move')."</a>".
 								" &#124; ".
 								"<a href=\"admin.php?mode=questions&amp;action=delete&amp;fid={$fid}&amp;qid={$questionid}\" />".get_string('delete')."</a>".
 								" &#124; ".
 								"<a href=\"admin.php?mode=question&amp;action=new&amp;fid={$fid}&amp;qid={$questionid}\" />".get_string('page_link_newlanguage','block_coursefeedback')."</a>";
-					
+
 					$table->data[] = array(
 										$questionid,
 										$languages,
@@ -474,7 +474,7 @@
 										$links
 										);
 					}
-					
+
 					$html 		.= html_writer::table($table);
 			}
 			elseif(!$editable)	{
@@ -485,7 +485,7 @@
 			}
 		}
 		else error('Wrong parameters');
-		
+
 		if($html > '') echo $OUTPUT->box($html);
 
 		echo '</fieldset>';
@@ -494,7 +494,7 @@
 	else
 	{
 		$form = &$forms[$mode][$action]; // reset form
-		
+
 		if($action === 'edit')
 		{
 			if($mode === 'feedback')
@@ -512,7 +512,7 @@
 				$form -> _form -> getElement('questiontext') -> setValue(format($question));
 			}
 		}
-		
+
 		if($editable or in_array($mode.$action,$allowedactions)) {
 			$form -> display();
 		} else {
