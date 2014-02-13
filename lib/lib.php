@@ -439,7 +439,7 @@
 		$languages[] = get_config('block_coursefeedback','active_feedback'); // ensures, that intersection isn't empty
 		$fblanguages = get_combined_languages($feedbackid);
 
-		if($fblanguages && $language = array_shift(array_intersect($languages,$fblanguages)))
+		if($fblanguages && $language = current(array_intersect($languages,$fblanguages)))
 			$questions = $DB->get_records('block_coursefeedback_questns',array('coursefeedbackid' => $feedbackid,'language' => $language),$sort,$fields);
 		else
 			$questions = false;
