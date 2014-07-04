@@ -28,7 +28,6 @@
 
 			$form -> addElement('header','formheader_feedback_new',get_string('form_header_newfeedback','block_coursefeedback'));
 			$form -> addElement('text','name',get_string('name'),'size="50"');
-			$form -> addElement("hidden", "template", 0); // tur Fehlerunterdrückung
 
 			if($name = $DB->get_field('block_coursefeedback','name',array('id' => $this->fid))) $form -> getElement('name') -> setValue(get_string('copyof','block_coursefeedback',stripslashes($name)));
 
