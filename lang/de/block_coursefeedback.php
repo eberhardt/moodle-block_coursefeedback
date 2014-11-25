@@ -9,7 +9,7 @@ $string['adminpage_link_feedbackedit']     = 'Umfragen erstellen/bearbeiten';
 $string['adminpage_html_activefeedbacka']  = 'Aktuelle Umfrage:';
 $string['adminpage_html_activefeedbackb']  = 'W&auml;hlen Sie einen Fragesatz. Dieser wird im Block "'.$string['pluginname'].'" zur Evaluation bereit gestellt.<br /> Die verf&uuml;gbaren Frages&auml;tze k&ouml;nnen Sie unter "'.$string['adminpage_link_feedbackedit'].'" &auml;ndern.';
 $string['adminpage_html_defaultlanguagea'] = 'Standard Sprache';
-$string['adminpage_html_defaultlanguageb'] = 'W&auml;hlen Sie eine Sprache die angezeigt wird, sollten keine Fragen vorhanden sein, die in der Sprache verfasst wurden, welche im Kurs oder im Nutzerprofil eingestellt ist.';
+$string['adminpage_html_defaultlanguageb'] = 'Fragen werden immer in der Standard-Sprache angezeigt, sollten keine Fragen in einer vom Nutzer pr&auml;ferierten Sprache vorhanden sein. Daher m&uuml;ssen alle Fragen mindestens in der Standard-Sprache angelegt sein!';
 $string['adminpage_html_allowhidinga']     = 'Verstecken erlauben';
 $string['adminpage_html_allowhidingb']     = 'Aktivieren Sie diese Einstellung um den kursverwaltenden Personen das Verstecken des Blockes zu erlauben.';
 
@@ -41,7 +41,7 @@ $string['page_html_activated']             = 'Kursfeedback ({$a}) wurde als aktu
 $string['page_html_answersdeleted']        = 'Die Benutzerantworten wurden gel&ouml;scht.';
 $string['page_html_nofeedbackactive']      = 'Die Umfragen wurden deaktiviert.';
 $string['page_html_noquestions']           = 'Es wurden bisher keine Fragen definiert.';
-$string['page_html_intronotifications']    = 'Ohne die folgende(n) Definition(en) ist dieses Feedback nicht verwendbar:';
+$string['page_html_intronotifications']    = 'Dieses Feedback muss folgende Kondition(en) erf&uuml;llen:';
 $string['page_html_servedefaultlang']      = 'Alle Fragen sollten in der eingestellte Standardsprache ({$a}) vorhanden sein.';
 $string['page_html_norelations']           = 'Alle Fragen müssen in mindestens einer gemeinsamen Sprache vorhanden sein.';
 $string['page_html_nolinks']               = 'Die Teilnahme an diesem Feedback ist Ihnen nicht erlaubt.';

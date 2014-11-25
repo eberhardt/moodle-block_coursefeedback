@@ -18,8 +18,7 @@ If you want to display the block at all course pages (former known as "sticky"-b
 3. Choose following options:
   - In section "Where this block appears"
     * Choose "Display throughout the entire site"
-    * Default region: "Content"
-    * Default weight as you like
+    * Default region and weight as you like (note: user should see the block easily)
   - In section "On this page" 
     * Hide the block on the startpage by choosing "Visible: No"
 4. Enter a course and open block configuration for "Coursefeedback" (it doesn't matter which course you enter, just pick the first you find).

@@ -360,7 +360,6 @@
 			$table -> head 	= array('ID',get_string('name'),get_string('action'),get_string('table_header_languages','block_coursefeedback'),get_string('table_header_questions','block_coursefeedback'),get_string('active'));
 			$table -> align	= array('left','left','left','left','left','center');
 			$table -> size  = array('5%','30%','15%','15%','5%','10%');
-			$table -> attributes = array('style'=>'margin-left:10%;margin-right:10%;');
 			$table -> width = '80%';
 			$table -> data	= array();
 
@@ -420,7 +419,6 @@
 				$table -> head 	= array('ID',get_string('language'),get_string('question'),get_string('action'));
 				$table -> align	= array('left','left','left','left');
 				$table -> size  = array('5%','10%','*','*');
-				$table -> attributes = array('style'=>'margin-left:10%;margin-right:10%;');
 				$table -> width = '80%';
 				$table -> data	= array();
 

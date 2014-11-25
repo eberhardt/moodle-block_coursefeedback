@@ -532,7 +532,7 @@
 
 		$editable   = clean_param($editable, PARAM_BOOL);
 
-		echo $OUTPUT->box('<div style="margin-left:3em;">'.
+		echo $OUTPUT->box('<div style="margin-left:3em;margin-bottom:1em;">'.
 				($editable ? 	'<a href="admin.php?fid='.$feedbackid.'&amp;mode=questions&amp;action=new">'.get_string('page_link_newquestion','block_coursefeedback').'</a><br />'."\n".
 								'<a href="admin.php?fid='.$feedbackid.'&amp;mode=questions&amp;action=dlang">'.get_string('page_link_deletelanguage','block_coursefeedback').'</a><br />'."\n" : '').
 				'<a href="admin.php?mode=feedback&amp;action=view">'.get_string('page_link_backtofeedbackview','block_coursefeedback').'</a><br />'."\n".
@@ -543,7 +543,7 @@
 		{
 			$notes = validate_coursefeedback($feedbackid, true);
 			if(!empty($notes))
-				echo $OUTPUT->box('<p>'.get_string('page_html_intronotifications','block_coursefeedback').'</p><ul><li>'.join('</li><li>',$notes).'</li></ul>');
+				echo $OUTPUT->notification(html_writer::tag("p", get_string('page_html_intronotifications','block_coursefeedback')) . html_writer::alist($notes));
 		}
 	}
 

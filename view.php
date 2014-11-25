@@ -104,7 +104,6 @@
 			$c37->text = get_string('table_html_abstain','block_coursefeedback');
 			$c38->text = get_string('table_html_average','block_coursefeedback');
 			$c39->text = get_string('table_html_votes','block_coursefeedback');
-			$c38->style .= 'padding-left:1em;';
 			$table->data[$j++]->cells = array($c31,$c32,$c33,$c34,$c35,$c36,$c37,$c38,$c39);
 		
 			$question->answers = $answers[$question->id];
@@ -115,7 +114,6 @@
 			{
 				$cn = 'c4'.$i;
 				${$cn} = new html_table_cell();
-				${$cn}->style = 'text-align:center;';
 				${$cn}->text  = $question->answers[$i];
 				$vsum += $i*$question->answers[$i];
 			}
@@ -125,7 +123,6 @@
 			$c47 = new html_table_cell();
 			$c48 = new html_table_cell();
 			$c49 = new html_table_cell();
-			$c47->style = $c48->style = $c49->style = 'text-align:center;';
 			$c47->text = $question->answers[0];
 			$c48->text = number_format($average,2);
 			$c49->text = $choices;

@@ -8,14 +8,14 @@ $string['untitled']                        = 'Untitled';
 $string['adminpage_link_feedbackedit']     = 'edit/create survey';
 $string['adminpage_html_activefeedbacka']  = 'Current survey:';
 $string['adminpage_html_activefeedbackb']  = 'Choose a questionnaire. This will be provided for evaluation in block "'.$string['pluginname'].'".<br />You can change the questions available under "'.$string['adminpage_link_feedbackedit'].'".';
-$string['adminpage_html_defaultlanguagea'] = 'Standard default language';
-$string['adminpage_html_defaultlanguageb'] = 'Choose a language as default, if other languages failed to load.';
+$string['adminpage_html_defaultlanguagea'] = 'Default language';
+$string['adminpage_html_defaultlanguageb'] = 'Questions in the default language will be shown, if other languages fail to load (i.e. if questions in a user-prefered language aren\'t defined). That means you must at least define all questions in the default language!';
 $string['adminpage_html_allowhidinga']     = 'Allow hiding';
 $string['adminpage_html_allowhidingb']     = 'Activate this setting to allow teachers to change the visibility of the block instance.';
 
 // Page
 $string['page_headline_admin']             = 'Course feedback Administration';
-$string['page_headline_listoffeedbacks']   = 'List of all surveys';
+$string['page_headline_listoffeedbacks']   = 'List of surveys';
 $string['page_headline_listofquestions']   = 'Questionnaire of "{$a}"';
 $string['page_link_evaluate']              = 'Evaluate course';
 $string['page_link_view']                  = 'Analysis';
@@ -41,7 +41,7 @@ $string['page_html_activated']             = 'Course feedback ({$a}) has been re
 $string['page_html_answersdeleted']        = 'The user answers have been deleted.';
 $string['page_html_nofeedbackactive']      = 'Surveys have been deactivated.';
 $string['page_html_noquestions']           = 'No questions available.';
-$string['page_html_intronotifications']    = 'This feedback shouldn\'t be used without the following definition(s):';
+$string['page_html_intronotifications']    = 'This feedback has to fullfill the following condition(s):';
 $string['page_html_servedefaultlang']      = 'All questions should be defined in default language.';
 $string['page_html_norelations']           = 'All questions have to be defined in at least one common language.';
 $string['page_html_nolinks']               = 'You are not allowed to participate in this feedback.';
