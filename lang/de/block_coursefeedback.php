@@ -7,7 +7,7 @@ $string['untitled']                        = 'Unbenannt';
 // Adminpage
 $string['adminpage_link_feedbackedit']     = 'Umfragen erstellen/bearbeiten';
 $string['adminpage_html_activefeedbacka']  = 'Aktuelle Umfrage:';
-$string['adminpage_html_activefeedbackb']  = 'W&auml;hlen Sie einen Fragesatz. Dieser wird im Block "'.$string['pluginname'].'" zur Evaluation bereit gestellt.<br /> Die verf&uuml;gbaren Frages&auml;tze k&ouml;nnen Sie unter "'.$string['adminpage_link_feedbackedit'].'" &auml;ndern.';
+$string['adminpage_html_activefeedbackb']  = 'W&auml;hlen Sie einen Fragesatz. Dieser wird im Block "Kursfeedback" zur Evaluation bereit gestellt.<br /> Die verf&uuml;gbaren Frages&auml;tze k&ouml;nnen Sie unter "Umfragen erstellen/bearbeiten" &auml;ndern.';
 $string['adminpage_html_defaultlanguagea'] = 'Standard Sprache';
 $string['adminpage_html_defaultlanguageb'] = 'Fragen werden immer in der Standard-Sprache angezeigt, sollten keine Fragen in einer vom Nutzer pr&auml;ferierten Sprache vorhanden sein. Daher m&uuml;ssen alle Fragen mindestens in der Standard-Sprache angelegt sein!';
 $string['adminpage_html_allowhidinga']     = 'Verstecken erlauben';

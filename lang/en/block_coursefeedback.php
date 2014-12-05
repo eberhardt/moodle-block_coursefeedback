@@ -7,7 +7,7 @@ $string['untitled']                        = 'Untitled';
 // Adminpage
 $string['adminpage_link_feedbackedit']     = 'edit/create survey';
 $string['adminpage_html_activefeedbacka']  = 'Current survey:';
-$string['adminpage_html_activefeedbackb']  = 'Choose a questionnaire. This will be provided for evaluation in block "'.$string['pluginname'].'".<br />You can change the questions available under "'.$string['adminpage_link_feedbackedit'].'".';
+$string['adminpage_html_activefeedbackb']  = 'Choose a questionnaire. This will be provided for evaluation in block "Course feedback".<br />You can change the available questions under "edit/create survey".';
 $string['adminpage_html_defaultlanguagea'] = 'Default language';
 $string['adminpage_html_defaultlanguageb'] = 'Questions in the default language will be shown, if other languages fail to load (i.e. if questions in a user-prefered language aren\'t defined). That means you must at least define all questions in the default language!';
 $string['adminpage_html_allowhidinga']     = 'Allow hiding';

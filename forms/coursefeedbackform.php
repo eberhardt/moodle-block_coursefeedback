@@ -21,12 +21,10 @@ abstract class coursefeedbackform extends moodleform
 
 	function __construct($action, $feedbackid=0, $questionid=null, $language=null)
 	{
-		$this->fid  = clean_param($feedbackid,PARAM_INT);
-		$this->qid  = clean_param($questionid,PARAM_INT);
-		$this->lang = clean_param($language,PARAM_TEXT);
-		
+		$this->fid  = clean_param($feedbackid, PARAM_INT);
+		$this->qid  = clean_param($questionid, PARAM_INT);
+		$this->lang = clean_param($language, PARAM_TEXT);
+
 		parent::__construct($action);
 	}
 }
-
-?>
