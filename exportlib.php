@@ -1,70 +1,96 @@
 <?php
-	defined("MOODLE_INTERNAL") || die();
-	require_once $CFG->dirroot . "/blocks/coursefeedback/lib.php";
+// This file is part of ISIS - https://www.isis.tu-berlin.de/
+//
+// ISIS is based on Moodle 2.3
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-	class feedbackexport
+/**
+ * Export functions
+ *
+ * @package    block
+ * @subpackage coursefeedback
+ * @copyright  2011-2014 onwards Jan Eberhardt (@ innoCampus, TU Berlin)
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+defined("MOODLE_INTERNAL") || die();
+require_once $CFG->dirroot . "/blocks/coursefeedback/lib.php";
+
+class feedbackexport
+{
+	protected $course    = 0;
+	protected $filetypes = array("csv");
+	private $content     = "";
+	private $format;
+
+	public function __construct($course = 0, $seperator = "\t")
 	{
-		protected $course    = 0;
-		protected $filetypes = array("csv");
-		private $content     = "";
-		private $format;
+		global $DB;
 
-		public function __construct($course = 0, $seperator = "\t")
+		if($DB->record_exists("course", array("id" => $course)))
+			$this->course = $course;
+		else
 		{
-			global $DB;
-
-			if($DB->record_exists("course", array("id" => $course)))
-				$this->course = $course;
-			else
-			{
-				print_error("courseidnotfound", "error");
-				exit(0);
-			}
-		}
-
-		public function get_filetypes()
-		{
-			return $this->filetypes;
-		}
-
-		public function init_format($format)
-		{
-			if(in_array($format, $this->get_filetypes()))
-			{
-				$exportformat_class = "exportformat_".$format;
-				$this->format = new $exportformat_class();
-				return true;
-			}
-			else
-				return false;
-		}
-
-		public function create_file($lang)
-		{
-			global $CFG,$DB;
-
-			if(!isset($this->format))
-			{
-				print_error("format not initialized", "block_coursefeedback");
-			}
-			else
-			{
-				$answers = block_coursefeedback_get_answers($this->course);
-				$this->reset();
-				$this->content = $this->format->build($answers, $lang);
-			}
-		}
-
-		public function get_content()
-		{
- 			return $this->content;
-		}
-
-		public function reset()
-		{
-			$this->content = "";
+			print_error("courseidnotfound", "error");
+			exit(0);
 		}
 	}
+
+	public function get_filetypes()
+	{
+		return $this->filetypes;
+	}
+
+	public function init_format($format)
+	{
+		if(in_array($format, $this->get_filetypes()))
+		{
+			$exportformat_class = "exportformat_".$format;
+			$this->format = new $exportformat_class();
+			return true;
+		}
+		else
+			return false;
+	}
+
+	public function create_file($lang)
+	{
+		global $CFG,$DB;
+
+		if(!isset($this->format))
+		{
+			print_error("format not initialized", "block_coursefeedback");
+		}
+		else
+		{
+			$answers = block_coursefeedback_get_answers($this->course);
+			$this->reset();
+			$this->content = $this->format->build($answers, $lang);
+		}
+	}
+
+	public function get_content()
+	{
+		return $this->content;
+	}
+
+	public function reset()
+	{
+		$this->content = "";
+	}
+}
 
 /**
  * @author Jan Eberhardt
@@ -72,7 +98,7 @@
  */
 abstract class exportformat
 {
-	private $type;
+	private $type = "unknown";
 
 	public final function get_type()
 	{

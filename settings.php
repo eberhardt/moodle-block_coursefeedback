@@ -21,7 +21,7 @@
  *
  * @package    block
  * @subpackage coursefeedback
- * @copyright  2011-2013 onwards Jan Eberhardt (@ innoCampus, TU Berlin)
+ * @copyright  2011-2014 onwards Jan Eberhardt (@ innoCampus, TU Berlin)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 

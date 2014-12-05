@@ -1,19 +1,41 @@
 <?php
+// This file is part of ISIS - https://www.isis.tu-berlin.de/
+//
+// ISIS is based on Moodle 2.3
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * COURSEFEEDBACK_COURSE_FORMS
+ * Collection of forms, which are use inside the course.
  *
- * Collection of all necessary forms for the course pages.
- *
- * @uses	$CFG,$DB
- * @author	Jan Eberhardt, innoCampus 2012
- * @version	2012111901
+ * @package    block
+ * @subpackage coursefeedback
+ * @copyright  2011-2014 onwards Jan Eberhardt (@ innoCampus, TU Berlin)
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined("MOODLE_INTERNAL") || die();
 require_once __DIR__ . "/coursefeedbackform.php";
 require_once $CFG->dirroot . "/blocks/coursefeedback/lib.php";
 
+/**
+ * CLASS COURSEFEEDBACK_EVALUATE_FORM
+ *
+ * Formular to evaluate a course.
+ *
+ * @author Jan Eberhardt <eberhardt@math.tu-berlin.de>
+ */
 class coursefeedback_evaluate_form extends moodleform
 {
 	public $lang;
