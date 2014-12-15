@@ -10,14 +10,17 @@ $string['adminpage_html_activefeedbackb']  = 'Choisissez un bloc de questions. I
 $string['adminpage_html_defaultlanguagea'] = 'Langue par d&eacute;faut';
 $string['adminpage_html_defaultlanguagb']  = 'Choisissez une langue alternative qui sera utilis&eacute;e s\'il n\'y a pas de questions disponibles pour la langue qui est d&eacute;finie par l\'utilisateur o&ugrave; le cours.';
 $string['adminpage_html_allowhidinga']     = 'Autoriser invisibilité';
-//$string['adminpage_html_allowhidingb']     = '';
+$string['adminpage_html_allowhidingb']     = 'Si elle est activ&eacute;e, les enseignants peuvent modifier la visibilité du bloc.';
+$string['adminpage_html_setstickya']       = 'Fixer le bloc';
+$string['adminpage_html_setstickyb']       = 'Si elle est activ&eacute;e, une instance de ce bloc, qui ne peut être supprimé par les enseignants, appara&icirc;t dans chaque page principale du cours.';
+
 // Page
 $string['page_headline_admin']				= 'Administration des feedbacks sur le cours';
 $string['page_headline_listoffeedbacks']	= 'Liste avec tous les feedbacks';
-$string['page_headline_listofquestions']	= 'List de questions sur "{$a}"';
+$string['page_headline_listofquestions']	= 'List de questions sur &laquo;{$a}&raquo;';
 $string['page_link_evaluate']				= 'Evaluer un cours';
 $string['page_link_view'] 					= 'Exploitation';
-$string['page_link_settings']                   = 'Administration';
+$string['page_link_settings']               = 'Administration';
 $string['page_link_newtemplate']			= 'Cr&eacute;er un sondage';
 $string['page_link_backtoconfig']			= 'Retour &agrave; l\'administration de la page';
 $string['page_link_showlistofquestions']	= 'Modifier les questions';

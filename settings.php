@@ -25,7 +25,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-global $CFG,$DB;
+defined("MOODLE_INTERNAL") || die();
+
+require_once __DIR__ . "/lib.php";
 
 $options = array(0 => get_string("table_html_nofeedback","block_coursefeedback"));
 
@@ -61,8 +63,20 @@ $settings->add(new admin_setting_configcheckbox("block_coursefeedback/allow_hidi
                                                 get_string("adminpage_html_allowhidingb", "block_coursefeedback"),
                                                 false));
 
+// Sticky handling:
+$sticky = optional_param("s_block_coursefeedback_setsticky", -1, PARAM_INT);
+if ($sticky >= 0 && $sticky != block_coursefeedback_is_sticky())
+	block_coursefeedback_set_sticky($sticky);
+else if (get_config("block_coursefeedback", "setsticky") > 0 && !block_coursefeedback_is_sticky())
+	// Setting differ from reality.
+	set_config("setsticky", 0, "block_coursefeedback");
+$settings->add(new admin_setting_configcheckbox("block_coursefeedback/setsticky",
+                                                get_string("adminpage_html_setstickya", "block_coursefeedback"),
+                                                get_string("adminpage_html_setstickyb", "block_coursefeedback"),
+                                                false));
+
 // Create/Edit survey link:
 $url = new moodle_url("/blocks/coursefeedback/admin.php", array("mode" => "feedback", "action" => "view"));
-$settings->add(new admin_setting_heading("feedbackedit",
-                                         "", // No need for a header text.
+$settings->add(new admin_setting_heading("othersettings",
+                                         get_string("othersettings", "form"),
                                          html_writer::link($url, get_string("adminpage_link_feedbackedit", "block_coursefeedback"))));

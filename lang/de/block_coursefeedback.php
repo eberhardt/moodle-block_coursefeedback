@@ -11,12 +11,14 @@ $string['adminpage_html_activefeedbackb']  = 'W&auml;hlen Sie einen Fragesatz. D
 $string['adminpage_html_defaultlanguagea'] = 'Standard Sprache';
 $string['adminpage_html_defaultlanguageb'] = 'Fragen werden immer in der Standard-Sprache angezeigt, sollten keine Fragen in einer vom Nutzer pr&auml;ferierten Sprache vorhanden sein. Daher m&uuml;ssen alle Fragen mindestens in der Standard-Sprache angelegt sein!';
 $string['adminpage_html_allowhidinga']     = 'Verstecken erlauben';
-$string['adminpage_html_allowhidingb']     = 'Aktivieren Sie diese Einstellung um den kursverwaltenden Personen das Verstecken des Blockes zu erlauben.';
+$string['adminpage_html_allowhidingb']     = 'Wenn aktiviert, k&ouml;nnen Trainer/innen die Sichtbarkeit des Blockes bearbeiten.';
+$string['adminpage_html_setstickya']       = 'Anheften';
+$string['adminpage_html_setstickyb']       = 'Wenn aktiviert, erscheint in jeder Kurshauptseite eine Instanz dieses Blockes, die von den Kursverantwortlichen nicht gel&ouml;scht werden kann.';
 
 // Page
 $string['page_headline_admin']             = 'Kursfeedback Administration';
 $string['page_headline_listoffeedbacks']   = 'Liste aller Feedbacks';
-$string['page_headline_listofquestions']   = 'Fragenkatalog zu "{$a}"';
+$string['page_headline_listofquestions']   = 'Fragenkatalog zu &raquo;{$a}&laquo;';
 $string['page_link_evaluate']              = 'Kurs Bewerten';
 $string['page_link_view']                  = 'Auswertung';
 $string['page_link_settings']              = 'Administration';

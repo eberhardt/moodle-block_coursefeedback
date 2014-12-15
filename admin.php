@@ -113,9 +113,7 @@ if(isset($form) && get_parent_class($form) === "coursefeedbackform" && $form->is
 		{
 			if($form->is_validated())
 			{
-				if(
-					$data->name
-					&& isset($data->template)
+				if($data->name && isset($data->template)
 				){
 					if($DB->record_exists("block_coursefeedback", array("id" => intval($data->template))))
 					{
@@ -415,7 +413,7 @@ if($action === "view")
 
 	if($mode === "feedback")
 	{
-		$alink = new moodle_url("/blocks/coursefeedback/admin.php", array("mode" => "feedback", "action" => "new"));
+		$alink = block_coursefeedback_adminurl("feedback", "new");
 		$slink = new moodle_url("/" . $CFG->admin . "/settings.php", array("section" => "blocksettingcoursefeedback"));
 		echo $OUTPUT->box("<div style=\"margin-left:3em;\">" .
 		                  html_writer::link($alink, get_string("page_link_newtemplate", "block_coursefeedback")) . "<br />" .
@@ -424,7 +422,12 @@ if($action === "view")
 		$active = get_config("block_coursefeedback", "active_feedback");
 		$table 			= new html_table();
 
-		$table -> head 	= array("ID",get_string("name"),get_string("action"),get_string("table_header_languages","block_coursefeedback"),get_string("table_header_questions","block_coursefeedback"),get_string("active"));
+		$table -> head 	= array("ID",
+		                        get_string("name"),
+		                        get_string("action"),
+		                        get_string("table_header_languages","block_coursefeedback"),
+		                        get_string("table_header_questions","block_coursefeedback"),
+		                        get_string("active"));
 		$table -> align	= array("left","left","left","left","left","center");
 		$table -> size  = array("5%","30%","15%","15%","5%","10%");
 		$table -> width = "80%";
@@ -457,12 +460,12 @@ if($action === "view")
 					$q		  	= 0;
 				}
 				$feedback->name=format($feedback->name);
-				$url1 = new moodle_url("/blocks/coursefeedback/admin.php", array("mode" => "feedback", "action" => "new"));
-				$url2 = new moodle_url("/blocks/coursefeedback/admin.php", array("mode" => "feedback", "action" => "edit"));
-				$url3 = new moodle_url("/blocks/coursefeedback/admin.php", array("mode" => "questions", "action" => "view"));
-				$url4 = new moodle_url("/blocks/coursefeedback/admin.php", array("mode" => "feedback", "action" => "delete"));
+				$url1 = block_coursefeedback_adminurl("feedback", "new", $feedback->id);
+				$url2 = block_coursefeedback_adminurl("feedback", "edit", $feedback->id);
+				$url3 = block_coursefeedback_adminurl("questions", "view", $feedback->id);
+				$url4 = block_coursefeedback_adminurl("feedback", "delete", $feedback->id);
 				$text1 = html_writer::link($url1, get_string("duplicate")) . "<br/>"
-				       . html_writer::link($url1, get_string("rename")) . "<br/>"
+				       . html_writer::link($url2, get_string("rename")) . "<br/>"
 				       . html_writer::link($url3, get_string("page_link_showlistofquestions", "block_coursefeedback")) . "<br/>"
 				       . html_writer::link($url4, get_string("delete"));
 				$text2 = ($active == $feedback->id) ? "X" : block_coursefeedback_create_activate_button($feedback->id) . "<br/>";
@@ -508,7 +511,7 @@ if($action === "view")
 					                              "question",
 					                              array("coursefeedbackid" => $fid,
 					                                    "questionid" => $questionid,
-					                                    "language" =>$language)))
+					                                    "language" => $language)))
 					{
 						$question=format($question);
 						$listing 	.= "<div>";
@@ -522,18 +525,14 @@ if($action === "view")
 						}
 						$listing	.= "</div>\n";
 						$languages	.= html_writer::tag("span", $language, array("style" => "padding:0px;")) ."<br/>\n";
-						$url1 = new moodle_url("/blocks/coursefeedback/admin.php",
-						                       array("mode" => "question",
-						                             "action" => "edit",
-						                             "fid" => $fid,
-						                             "qid" => $questionid,
-						                             "lng" => $language));
-						$url2 = new moodle_url("/blocks/coursefeedback/admin.php",
-						                       array("mode" => "question",
-						                             "action" => "delete",
-						                             "fid" => $fid,
-						                             "qid" => $questionid,
-						                             "lng" => $language));
+						$url1 = block_coursefeedback_adminurl("question",
+						                                      "edit",
+						                                      $fid,
+						                                      array("qid" => $questionid, "lng" => $language));
+						$url2 = block_coursefeedback_adminurl("question",
+						                                      "delete",
+						                                      $fid,
+						                                      array("qid" => $questionid, "lng" => $language));
 						$links .= html_writer::tag("span",
 						                           html_writer::link($url1, get_string("edit")),
 						                           array("style" => "padding:0px;"))
@@ -547,11 +546,9 @@ if($action === "view")
 					{
 						$listing .= html_writer::span(get_string("table_html_undefinedlang",
 						                                         "block_coursefeedback",
-						                                         $language),
+						                                         $language) . "<br/>",
 						                              "notifyproblem",
-						                              array("style" => "padding:0px;")
-						          . "<br/>"
-						);
+						                              array("style" => "padding:0px;"));
 						$languages .= html_writer::tag("span",
 						                               $language,
 						                               array("style" => "padding:0px;text-decoration:line-through;"))
@@ -566,9 +563,10 @@ if($action === "view")
 					}
 				}
 
-				$url1 = new moodle_url("/blocks/coursefeedback/admin.php", array("mode" => "questions", "action" => "edit", "fid" => $fid, "qid" => $questionid));
-				$url2 = new moodle_url("/blocks/coursefeedback/admin.php", array("mode" => "questions", "action" => "delete", "fid" => $fid, "qid" => $questionid));
-				$url3 = new moodle_url("/blocks/coursefeedback/admin.php", array("mode" => "questions", "action" => "new", "fid" => $fid, "qid" => $questionid));
+				$other = array("qid" => $questionid);
+				$url1 = block_coursefeedback_adminurl("questions", "edit", $fid, $other);
+				$url2 = block_coursefeedback_adminurl("delete", "edit", $fid, $other);
+				$url3 = block_coursefeedback_adminurl("delete", "new", $fid, $other);
 				$listing .= "<br/>" . get_string("page_html_editallquestions", "block_coursefeedback") . ": "
 				          . html_writer::link($url1, get_string("move"))
 				          . " &#124; "
@@ -583,7 +581,7 @@ if($action === "view")
 			block_coursefeedback_print_noperm_page($checkresult,$fid);
 		}
 		else {
-			$url1 = new moodle_url("/blocks/coursefeedback/admin.php", array("fid" => $fid, "mode" => "questions", "action" => "new"));
+			$url = block_coursefeedback_adminurl("questions", "new", $fid);
 			$html = html_writer::tag("h4",
 			                         html_writer::link($url1, get_string("page_link_noquestion", "block_coursefeedback")),
 			                         array("style" => "text-align:center;"));
@@ -621,8 +619,8 @@ else
 		}
 	}
 
-	if($editable or in_array($mode.$action,$allowedactions)) {
-		$form -> display();
+	if($editable or in_array($mode.$action, $allowedactions)) {
+		$form->display();
 	} else {
 		block_coursefeedback_print_header();
 		echo "<fieldset>";

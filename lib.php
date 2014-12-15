@@ -29,6 +29,7 @@ defined("MOODLE_INTERNAL") || die();
 
 define("COURSEFEEDBACK_DEFAULT", "DEFAULT");
 define("COURSEFEEDBACK_ALL", "ALL");
+define("COURSEFEEDBACK_EMPTY_ACTIVE", 0);
 
 /**
  * Fixes holes in question id order.
@@ -131,7 +132,7 @@ function block_coursefeedback_copy_feedback($feedbackid, $name)
 {
 	global $DB;
 
-	$feedbackid = intval($feedbackid);
+	$feedbackid = clean_param($feedbackid, PARAM_INT);
 	$newid = block_coursefeedback_insert_feedback($name);
 
 	if($newid === -1)
@@ -484,12 +485,14 @@ function block_coursefeedback_get_questionid($feedbackid)
 function block_coursefeedback_get_feedbackname($feedbackid = null)
 {
 	global $DB;
-	if(is_int($feedbackid))
-		$name = $DB->get_field("block_coursefeedback", "name", array("id" => $feedbackid));
-	else
-		$name = false;
 
-	return ($name) ? $name : get_string("untitled", "block_coursefeedback");
+	if(is_number($feedbackid))
+		$name = $DB->get_field("block_coursefeedback", "name", array("id" => $feedbackid));
+
+	if (empty($name))
+		$name = get_string("untitled", "block_coursefeedback");
+
+	return htmlentities($name);
 }
 
 /**
@@ -668,22 +671,22 @@ function block_coursefeedback_set_active($feedbackid)
  */
 function block_coursefeedback_print_header($editable = false, $feedbackid = null)
 {
-	global $CFG,$OUTPUT;
+	global $CFG, $OUTPUT;
 
 	$editable = clean_param($editable, PARAM_BOOL);
 
 	$div = html_writer::start_tag("div", array("style" => "margin-left:3em;margin-bottom:1em;"));
 	if ($editable)
 	{
-		$url1 = block_coursefeedback_adminurl("questions", "new", array("fid" => $feedbackid));
-		$url2 = block_coursefeedback_adminurl("questions", "dlang", array("fid" => $feedbackid));
-		$div .= html_writer::link($url1, get_string("page_link_newquestion", "block_coursefeedback"))
-		      . html_writer::link($url2, get_string("page_link_deletelanguage", "block_coursefeedback"));
+		$url1 = block_coursefeedback_adminurl("questions", "new", $feedbackid);
+		$url2 = block_coursefeedback_adminurl("questions", "dlang", $feedbackid);
+		$div .= html_writer::link($url1, get_string("page_link_newquestion", "block_coursefeedback")) . "<br/>"
+		      . html_writer::link($url2, get_string("page_link_deletelanguage", "block_coursefeedback")) . "<br/>";
 	}
 	$url1 = block_coursefeedback_adminurl("feedback", "view");
 	$url2 = new moodle_url("/" . $CFG->admin . "/settings.php", array("section" => "blocksettingcoursefeedback"));
-	$div .= html_writer::link($url1, get_string("page_link_backtofeedbackview", "block_coursefeedback"))
-	      . html_writer::link($url2, get_string("page_link_backtoconfig", "block_coursefeedback"))
+	$div .= html_writer::link($url1, get_string("page_link_backtofeedbackview", "block_coursefeedback")) . "<br/>"
+	      . html_writer::link($url2, get_string("page_link_backtoconfig", "block_coursefeedback")) . "<br/>"
 	      . html_writer::end_div();
 	echo $OUTPUT->box($div);
 
@@ -736,7 +739,7 @@ function block_coursefeedback_create_activate_button($feedbackid, $value = "")
 {
 	if(!is_string($value) or $value === "")
 		$value = get_string("page_link_use", "block_coursefeedback");
-	$url = block_coursefeedback_adminurl("feedback", "activate", array("fid" => $feedbackid));
+	$url = block_coursefeedback_adminurl("feedback", "activate", $feedbackid);
 	return html_writer::link($url, $value);
 }
 
@@ -937,7 +940,7 @@ function block_coursefeedback_validate($feedbackid, $returnerrors = false)
 function block_coursefeedback_clean_sql($text)
 {
 	$text = clean_param($text, PARAM_NOTAGS);
-	$text = addslashes($text);
+
 	return $text;
 }
 
@@ -952,11 +955,91 @@ function format($string)
  * @param array $other params of the url.
  * @return moodle_url to admin.php with given params.
  */
-function block_coursefeedback_adminurl($mode, $action, array $other = array())
+function block_coursefeedback_adminurl($mode, $action, $fid = null, array $other = array())
 {
 	$url = new moodle_url("/blocks/coursefeedback/admin.php");
 	$params = array_merge($other, array("mode" => $mode, "action" => $action));
+	if (is_number($fid))
+		$params["fid"] = $fid;
 	$url->params($params);
 
 	return $url;
+}
+
+/**
+ * Enables/disables a sticky (on all course main pages) instance of this block.
+ *
+ * @param boolean $b
+ * @throws moodle_exception
+ */
+function block_coursefeedback_set_sticky($b = true)
+{
+	global $DB;
+
+	$active = get_config("block_coursefeedback", "activeinstance");
+
+	if ($b)
+	{
+		if (!block_coursefeedback_is_sticky())
+		{
+			$blockinstance = new stdClass();
+			$blockinstance->blockname = "coursefeedback";
+			$blockinstance->parentcontextid = 1;
+			$blockinstance->showinsubcontexts = 1;
+			$blockinstance->pagetypepattern = "course-view-*";
+			$blockinstance->subpagepattern = null;
+			$blockinstance->defaultregion = "side-post";
+			$blockinstance->defaultweight = -1;
+			$blockinstance->configdata = "";
+			$blockinstance->id = $DB->insert_record("block_instances", $blockinstance);
+
+			// Ensure the block context is created.
+			context_block::instance($blockinstance->id);
+			set_config("activeinstance", $blockinstance->id, "block_coursefeedback");
+		}
+		else
+		{
+			$blockinstance = $DB->get_record("block_instances", array("id" => $active));
+			// Repair corrupted settings.
+			$blockinstance->parentcontextid = 1;
+			$blockinstance->showinsubcontexts = 1;
+			$blockinstance->pagetypepattern = "course-view-*";
+			$blockinstance->subpagepattern = null;
+			$blockinstance->defaultregion = "side-post";
+			$blockinstance->defaultweight = -1;
+			$blockinstance->configdata = "";
+
+			if(!$DB->update_record("block_instances", $blockinstance))
+			{
+				$DB->delete_records("block_instances", array("id" => $active));
+				set_config("activeinstance", null, "block_coursefeedback");
+				throw new moodle_exception("dbupdatefailed");
+			}
+		}
+	}
+	elseif ($active !== false)
+	{
+		$DB->delete_records("block_instances", array("id" => $active));
+		set_config("activeinstance", null, "block_coursefeedback");
+	}
+}
+
+/**
+ * Returns if there's a sticky instance (only the instance created by this plugin will be counted).
+ *
+ * @return boolean
+ */
+function block_coursefeedback_is_sticky()
+{
+	global $DB;
+
+	$active = get_config("block_coursefeedback", "activeinstance");
+	if ($active && !$DB->record_exists("block_instances", array("id" => $active)))
+	{
+		// Repair damaged settings.
+		$active = false;
+		set_config("activeinstance", null, "block_coursefeedback");
+	}
+
+	return $active;
 }
