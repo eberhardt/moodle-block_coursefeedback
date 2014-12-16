@@ -11,15 +11,5 @@ It differs the approach of pre-defined "Feedback" in that way, that a block can 
 Make it sticky
 ==============
 
-If you want to display the block at all course pages (former known as "sticky"-block) follow these steps. Note, that you have to be administrator.
-
-1. Add block "Coursefeedback" to the startpage (**not** "My home" page!)
-2. Open block configuration
-3. Choose following options:
-  - In section "Where this block appears"
-    * Choose "Display throughout the entire site"
-    * Default region and weight as you like (note: user should see the block easily)
-  - In section "On this page" 
-    * Hide the block on the startpage by choosing "Visible: No"
-4. Enter a course and open block configuration for "Coursefeedback" (it doesn't matter which course you enter, just pick the first you find).
-5. Choose to display the block on "Any course page" and you're done
+Since version 1.0.6. there is an option in the plugin settings, to create a global sticky instance.
+It will be shown in all course main pages.
