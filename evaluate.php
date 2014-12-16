@@ -1,7 +1,5 @@
 <?php
-// This file is part of ISIS - https://www.isis.tu-berlin.de/
-//
-// ISIS is based on Moodle 2.3
+// This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -25,10 +23,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once __DIR__ . "/../../config.php";
-require_once __DIR__ . "/lib.php";
-require_once __DIR__ . "/forms/coursefeedback_evaluate_form.php";
-require_once $CFG->libdir . "/completionlib.php";
+require_once(__DIR__ . "/../../config.php");
+require_once(__DIR__ . "/lib.php");
+require_once(__DIR__ . "/forms/coursefeedback_evaluate_form.php");
+require_once($CFG->libdir . "/completionlib.php");
 
 $id   = required_param("id", PARAM_INT);
 $lang = optional_param("lang", $USER->lang, PARAM_ALPHA);
@@ -59,41 +57,41 @@ $fid = get_config("block_coursefeedback", "active_feedback");
 if($fid == 0)
 {
 	redirect(new moodle_url("/course/view.php", array("id" => $id)),
-	         get_string("page_html_nofeedbackactive","block_coursefeedback"));
+	         get_string("page_html_nofeedbackactive", "block_coursefeedback"));
 }
 
-if(!isset($form))
+if (!isset($form))
 	$form = new coursefeedback_evaluate_form($url, $id, $lang);
 
 if ($DB->record_exists("block_coursefeedback_answers",
-                       array("userid" => $USER->id,"course" => $id,"coursefeedbackid" => $fid)))
+                       array("userid" => $USER->id, "course" => $id, "coursefeedbackid" => $fid)))
 {
-	redirect(new moodle_url("/course/view.php", array("id"=>$id)),
-	         get_string("page_html_evaluated","block_coursefeedback"));
+	redirect(new moodle_url("/course/view.php", array("id" => $id)),
+	         get_string("page_html_evaluated", "block_coursefeedback"));
 	die(0);
 }
-elseif($form->is_submitted() && $form->is_validated())
+else if ($form->is_submitted() && $form->is_validated())
 {
 	$data = $form->get_data();
 	$url  = new moodle_url("/course/view.php", array("id" => $id));
 
 	if(!empty($data))
 	{
-		$record = new stdClass(); // doesn"t change in foreach
+		$record = new stdClass(); // Doesn"t change in foreach.
 		$record->userid           = $USER->id;
 		$record->course           = $id;
 		$record->coursefeedbackid = $fid;
 		$record->timemodified     = time();
 
 		$dbtrans = $DB->start_delegated_transaction();
-		foreach($data->answers as $question => $answer)
+		foreach ($data->answers as $question => $answer)
 		{
 			$question = clean_param($question, PARAM_INT);
-			if($DB->record_exists("block_coursefeedback_questns", array("coursefeedbackid" => $fid, "questionid" => $question)))
+			if( $DB->record_exists("block_coursefeedback_questns", array("coursefeedbackid" => $fid, "questionid" => $question)))
 			{
 				$record->questionid = $question;
 				$record->answer	= clean_param($answer, PARAM_INT);
-				if(!$DB->insert_record("block_coursefeedback_answers",
+				if (!$DB->insert_record("block_coursefeedback_answers",
 				                       $record,
 				                       false,
 				                       true))
@@ -112,10 +110,10 @@ elseif($form->is_submitted() && $form->is_validated())
 	}
 	else redirect($url);
 }
-// without redirect start form output
+// Without redirect start form output!
 echo $OUTPUT->header();
 
-if($errormsg !== "")
+if ($errormsg !== "")
 	echo $OUTPUT->notification($errormsg);
 
 $form->display();

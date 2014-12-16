@@ -1,7 +1,5 @@
 <?php
-// This file is part of ISIS - https://www.isis.tu-berlin.de/
-//
-// ISIS is based on Moodle 2.3
+// This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -27,6 +25,6 @@
 
 function xmldb_block_coursefeedback_install()
 {
-	// disable feedbacks
+	// Disable feedbacks.
 	set_config("active_feedback", 0, "block_coursefeedback");
 }

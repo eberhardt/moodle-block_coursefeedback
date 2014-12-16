@@ -1,10 +1,10 @@
 <?php #GERMAN
-// Defaults
+/* Defaults */
 $string['pluginname']                      = 'Kursfeedback';
 $string['caution']                         = 'Warnhinweis';
 $string['copyof']                          = 'Kopie von "{$a}"';
 $string['untitled']                        = 'Unbenannt';
-// Adminpage
+/* Adminpage */
 $string['adminpage_link_feedbackedit']     = 'Umfragen erstellen/bearbeiten';
 $string['adminpage_html_activefeedbacka']  = 'Aktuelle Umfrage:';
 $string['adminpage_html_activefeedbackb']  = 'W&auml;hlen Sie einen Fragesatz. Dieser wird im Block "Kursfeedback" zur Evaluation bereit gestellt.<br /> Die verf&uuml;gbaren Frages&auml;tze k&ouml;nnen Sie unter "Umfragen erstellen/bearbeiten" &auml;ndern.';
@@ -14,8 +14,7 @@ $string['adminpage_html_allowhidinga']     = 'Verstecken erlauben';
 $string['adminpage_html_allowhidingb']     = 'Wenn aktiviert, k&ouml;nnen Trainer/innen die Sichtbarkeit des Blockes bearbeiten.';
 $string['adminpage_html_setstickya']       = 'Anheften';
 $string['adminpage_html_setstickyb']       = 'Wenn aktiviert, erscheint in jeder Kurshauptseite eine Instanz dieses Blockes, die von den Kursverantwortlichen nicht gel&ouml;scht werden kann.';
-
-// Page
+/* Page */
 $string['page_headline_admin']             = 'Kursfeedback Administration';
 $string['page_headline_listoffeedbacks']   = 'Liste aller Feedbacks';
 $string['page_headline_listofquestions']   = 'Fragenkatalog zu &raquo;{$a}&laquo;';
@@ -25,10 +24,10 @@ $string['page_link_settings']              = 'Administration';
 $string['page_link_newtemplate']           = 'Neue Umfrage erstellen';
 $string['page_link_backtoconfig']          = 'Zur&uuml;ck zur Webseiten-Administration';
 $string['page_link_showlistofquestions']   = 'Fragen bearbeiten';
-$string['page_link_noquestion']	           = 'Keine Fragen vorhanden - Erstellen Sie eine Neue.';
+$string['page_link_noquestion']            = 'Keine Fragen vorhanden - Erstellen Sie eine Neue.';
 $string['page_link_newquestion']           = 'Neue Frage erstellen';
 $string['page_link_deletelanguage']        = 'Sprache(n) verwerfen';
-$string['page_link_backtofeedbackview']	   = 'Zur&uuml;ck zur &Uuml;bersicht';
+$string['page_link_backtofeedbackview']    = 'Zur&uuml;ck zur &Uuml;bersicht';
 $string['page_link_newlanguage']           = 'Weitere Sprache hinzuf&uuml;gen';
 $string['page_link_download']              = 'Ergebnisse als {$a}-Datei speichern';
 $string['page_link_use']                   = 'Verwenden';
@@ -47,7 +46,7 @@ $string['page_html_intronotifications']    = 'Dieses Feedback muss folgende Kond
 $string['page_html_servedefaultlang']      = 'Alle Fragen sollten in der eingestellte Standardsprache ({$a}) vorhanden sein.';
 $string['page_html_norelations']           = 'Alle Fragen müssen in mindestens einer gemeinsamen Sprache vorhanden sein.';
 $string['page_html_nolinks']               = 'Die Teilnahme an diesem Feedback ist Ihnen nicht erlaubt.';
-// Tables
+/* Tables */
 $string['table_header_languages']          = 'Verf&uuml;gbare Sprachen';
 $string['table_header_questions']          = 'Fragen';
 $string['table_header_bad']                = 'Schlecht';
@@ -58,7 +57,7 @@ $string['table_html_abstain']              = 'Enthalten';
 $string['table_html_average']              = 'Durchschnitt';
 $string['table_html_nofeedback']           = 'Keine Umfrage';
 $string['table_html_undefinedlang']        = '&Uuml;bersetzung fehlt. Sprache \'{$a}\' nicht verf&uuml;gbar.'; // maximal 50 Zeichen
-// Forms
+/* Forms */
 $string['form_header_newfeedback']         = 'Neue Umfrage';
 $string['form_header_editfeedback']        = 'Umfrage bearbeiten';
 $string['form_header_confirm']             = 'Best&auml;tigung erforderlich';
@@ -79,10 +78,10 @@ $string['form_html_deleteanswerstext']     = 'Das Bearbeiten des Fragesatzes ist
 $string['form_html_currentlang']           = 'Sie bearbeiten gerade {$a}';
 $string['form_html_nolangimplemented']     = 'Es sind bisher keine Sprachen definiert worden.';
 $string['form_html_notextendable']         = 'Diese Frage ist nicht mehr erweiterbar, da keine zus&auml;tzlichen Sprachen verf&uuml;gbar sind.';
-// Download
+/* Download */
 $string['download_html_filename']          = 'Umfrageergebnis';
 $string['download_thead_questions']        = 'Frage';
-// Permission
+/* Permission */
 $string['coursefeedback:managefeedbacks']  = 'Globale Einstellungen des Kursefeebacks bearbeiten';
 $string['coursefeedback:viewanswers']      = 'Auswertung des aktuellen Kursfeedbacks sehen';
 $string['coursefeedback:download']         = 'Auswertung des aktuellen Kursfeedback speichern';
@@ -94,16 +93,3 @@ $string['perm_html_erroractive']           = 'Eine aktive Umfrage darf nicht bea
 $string['perm_html_duplicatelink']         = 'Um eine neue Umfrage mit den gleichen Fragen zu starten, k&ouml;nnen Sie die <a href="admin.php?fid={$a}&mode=feedback&action=new">Umfrage kopieren</a> oder eine andere Umfrage aktivieren.';
 $string['perm_html_answersexists']         = 'Die Umfrage wurde bereits von einigen Teilnehmern beantwortet.';
 $string['perm_html_danswerslink']          = 'Um eine neue Umfrage mit den gleichen Fragen zu starten, k&ouml;nnen Sie die <a href="admin.php?fid={$a}&mode=feedback&action=new">Umfrage kopieren</a> oder die <a href="admin.php?fid={$a}&mode=feedback&action=danswers">Benutzerantworten l&ouml;schen</a>.';
-/*
-OBSOLETE OR NOT USED
-$string['page_html_defaultlangnotserved']  = 'Dieses Feedback kann nicht genutzt werden, da keine Fragen in der Standardsprache ({$a}) gefunden wurden.';
-$string['adminpage_area_defaulttext']      = 'Beschreibung';
-$string['page_html_noediting']             = 'Das Bearbeiten des Fragesatzes ist z.Z. nicht m&ouml;glich.';
-$string['page_html_trainerdenied']         = 'Trainer d&uuml;rfen den eigenen Kurs nicht bewerten.';
-$string['page_html_nomember']              = 'Sie sind nicht in dem Kurs eingeschrieben!';
-$string['page_html_feedbackcopied']        = 'Umfrage wurde kopiert.';
-$string['download_html_saved']             = 'Die Datei wurde im Dateisystem gespeichert und kann im Administrations-Men&uuml; im Ordner "{$a}" gefunden werden.';
-$string['form_html_deletefeedbackwarning'] = 'Das L&ouml;schen eines Feedbacks f&uuml;hrt automatisch zum L&ouml;schen aller Benutzerantworten. <br/>Sie sollten sich sicher sein, diese Daten nicht mehr zu ben&ouml;tigen.';
-$string['form_html_deletelanguagewarning'] = 'Werden alle Sprachen einer Frage gel&ouml;scht werden gleichzeitig die dazugeh&ouml;rigen Benutzerantworten gel&ouml;scht. <br/>Sie sollten sich sicher sein, diese Daten nicht mehr zu ben&ouml;tigen.';
-$string['form_html_deletequestionwarning'] = 'Das L&ouml;schen einer Frage f&uuml;hrt automatisch zum L&ouml;schen aller Benutzerantworten. <br/>Sie sollten sich sicher sein, diese Daten nicht mehr zu ben&ouml;tigen.';
-*/

@@ -1,7 +1,5 @@
 <?php
-// This file is part of ISIS - https://www.isis.tu-berlin.de/
-//
-// ISIS is based on Moodle 2.3
+// This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -25,8 +23,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once __DIR__ . "/coursefeedbackform.php";
-require_once __DIR__ . "/../lib.php";
+require_once(__DIR__ . "/coursefeedbackform.php");
+require_once(__DIR__ . "/../lib.php");
 
 /**
  *  CLASS COURSEFEEDBACK_FEEDBACK_NEW_FORM
@@ -35,18 +33,18 @@ require_once __DIR__ . "/../lib.php";
  */
 class coursefeedback_feedback_new_form extends coursefeedbackform
 {
-	function definition()
+	protected function definition()
 	{
-		global $CFG,$DB;
+		global $CFG, $DB;
 
 		$form = &$this->_form;
 
-		$form -> addElement("hidden", "template", $this->fid);
+		$form->addElement("hidden", "template", $this->fid);
 
-		$form -> addElement("header",
+		$form->addElement("header",
 		                    "formheader_feedback_new",
 		                    get_string("form_header_newfeedback", "block_coursefeedback"));
-		$form -> addElement("text","name",get_string("name"),"size=\"50\"");
+		$form->addElement("text", "name", get_string("name"), "size=\"50\"");
 
 		if($name = $DB->get_field("block_coursefeedback", "name", array("id" => $this->fid)))
 			$form->getElement("name")->setValue(get_string("copyof", "block_coursefeedback", stripslashes($name)));
@@ -55,9 +53,9 @@ class coursefeedback_feedback_new_form extends coursefeedbackform
 		$submits	= array();
 		$submits[]	= &$form->createElement("submit", "add", get_string("add"));
 		$submits[]	= &$form->createElement("cancel");
-		$form -> addGroup($submits, "submits", "", "&nbsp;");
+		$form->addGroup($submits, "submits", "", "&nbsp;");
 
-		// types
+		// Types..
 		$form->setType("name", PARAM_TEXT);
 		$form->setType("template", PARAM_INT);
 	}
@@ -70,9 +68,9 @@ class coursefeedback_feedback_new_form extends coursefeedbackform
  */
 class coursefeedback_feedback_edit_form extends coursefeedbackform
 {
-	function definition()
+	protected function definition()
 	{
-		global $CFG,$DB;
+		global $CFG, $DB;
 
 		$form = &$this->_form;
 
@@ -82,16 +80,16 @@ class coursefeedback_feedback_edit_form extends coursefeedbackform
 		$form->addElement("header",
 		                  "formheader_feedback_edit",
 		                  get_string("form_header_editfeedback", "block_coursefeedback"));
-		$form->addElement("text", "name",get_string("name"), "size=\"50\"");
+		$form->addElement("text", "name", get_string("name"), "size=\"50\"");
 
 		$form->addRule("name", get_string("requiredelement", "form"), "required");
 
 		$submits	= array();
 		$submits[]	= &$form->createElement("submit", "edit", get_string("savechanges"));
 		$submits[]	= &$form->createElement("cancel");
-		$form -> addGroup($submits, "submits", "", "&nbsp;");
+		$form->addGroup($submits, "submits", "", "&nbsp;");
 
-		// types
+		// Types.
 		$form->setType("template", PARAM_INT);
 		$form->setType("name", PARAM_TEXT);
 	}
@@ -104,13 +102,12 @@ class coursefeedback_feedback_edit_form extends coursefeedbackform
  */
 class coursefeedback_feedback_delete_form extends coursefeedbackform
 {
-	// define the form
-	function definition()
+	protected function definition()
 	{
-		global $CFG,$DB;
+		global $CFG, $DB;
 
 		$form =& $this->_form;
-		$name =  $DB->get_field("block_coursefeedback", "name", array("id" => $this->fid));
+		$name = $DB->get_field("block_coursefeedback", "name", array("id" => $this->fid));
 
 		$form->addElement("header", "header_confirm", get_string("form_header_confirm", "block_coursefeedback"));
 		$form->addElement("hidden", "template", $this->fid);
@@ -118,47 +115,47 @@ class coursefeedback_feedback_delete_form extends coursefeedbackform
 		$submits	= array();
 		$submits[]	= &$form->createElement("submit", "delete", get_string("confirm"));
 		$submits[]	= &$form->createElement("cancel");
-		$form -> addGroup($submits, "submits", "", "&nbsp;");
+		$form->addGroup($submits, "submits", "", "&nbsp;");
 
-		// types
+		// Types.
 		$form->setType("template", PARAM_INT);
 		$form->setType("confirm", PARAM_INT);
 
-		$form -> closeHeaderBefore("submits");
+		$form->closeHeaderBefore("submits");
 	}
 }
 
 class coursefeedback_delete_answers_form extends coursefeedbackform
 {
-	function definition()
+	protected function definition()
 	{
 		global $CFG;
 
 		$form = $this->_form;
 
-		$form -> addElement("header","deleteanswersheader",get_string("form_header_deleteanswers","block_coursefeedback"));
-		$form -> addElement("hidden","template",$this->fid);
+		$form->addElement("header", "deleteanswersheader", get_string("form_header_deleteanswers", "block_coursefeedback"));
+		$form->addElement("hidden", "template", $this->fid);
 
 		$html = html_writer::tag("p",
-		                         get_string("form_html_deleteanswerstext","block_coursefeedback"),
+		                         get_string("form_html_deleteanswerstext", "block_coursefeedback"),
 		                         array("style" => "margin-left: 3em; margin-right: 3em;"));
-		$form -> addElement("html", $html);
-		$form -> addElement("selectyesno","confirm",get_string("form_select_deleteanswers","block_coursefeedback"));
+		$form->addElement("html", $html);
+		$form->addElement("selectyesno", "confirm", get_string("form_select_deleteanswers", "block_coursefeedback"));
 
 		$html = html_writer::tag("p",
-		                         get_string("form_html_deleteanswerswarning","block_coursefeedback"),
+		                         get_string("form_html_deleteanswerswarning", "block_coursefeedback"),
 		                         array("style" => "margin-left: 3em; margin-right: 3em;"));
-		$form -> addElement("header", "warning", get_string("caution", "block_coursefeedback"));
-		$form -> addElement("html", $html);
+		$form->addElement("header", "warning", get_string("caution", "block_coursefeedback"));
+		$form->addElement("html", $html);
 
 		$submits	= array();
 		$submits[]	= &$form->createElement("submit", "danswers", get_string("confirm"));
 		$submits[]	= &$form->createElement("cancel");
-		$form -> addGroup($submits, "submits", "", "&nbsp;");
+		$form->addGroup($submits, "submits", "", "&nbsp;");
 
-		$form -> closeHeaderBefore("submits");
+		$form->closeHeaderBefore("submits");
 
-		// types
+		// Types.
 		$form->setType("template", PARAM_INT);
 		$form->setType("confirm", PARAM_INT);
 	}
@@ -171,7 +168,7 @@ class coursefeedback_delete_answers_form extends coursefeedbackform
  */
 class coursefeedback_questions_new_form extends coursefeedbackform
 {
-	function definition()
+	protected function definition()
 	{
 		global $CFG;
 
@@ -199,7 +196,7 @@ class coursefeedback_questions_new_form extends coursefeedbackform
 		$form->addRule("questiontext", get_string("requiredelement", "form"), "required");
 		$form->getElement("newlang")->setSelected($CFG->lang);
 
-		// types
+		// Types.
 		$form->setType("template", PARAM_INT);
 		$form->setType("questionid", PARAM_INT);
 		$form->setType("questiontext", PARAM_TEXT);
@@ -213,12 +210,12 @@ class coursefeedback_questions_new_form extends coursefeedbackform
  */
 class coursefeedback_questions_edit_form extends coursefeedbackform
 {
-	function definition()
+	protected function definition()
 	{
 		global $CFG,$DB;
 
 		$form =& $this->_form;
-		$name =  $DB->get_field("block_coursefeedback", "name", array("id" => $this->fid));
+		$name = $DB->get_field("block_coursefeedback", "name", array("id" => $this->fid));
 
 		$form->addElement("header", "header_move", get_string("form_header_editquestion", "block_coursefeedback"));
 		$form->addElement("hidden", "template", $this->fid);
@@ -232,14 +229,14 @@ class coursefeedback_questions_edit_form extends coursefeedbackform
 		$submits	= array();
 		$submits[]	= &$form->createElement("submit", "move", get_string("savechanges"));
 		$submits[]	= &$form->createElement("cancel");
-		$form -> addGroup($submits, "submits", "", "&nbsp;");
+		$form->addGroup($submits, "submits", "", "&nbsp;");
 
-		// types
+		// Types.
 		$form->setType("template", PARAM_INT);
 		$form->setType("questionid", PARAM_INT);
 		$form->setType("position", PARAM_INT);
 
-		$form -> closeHeaderBefore("submits");
+		$form->closeHeaderBefore("submits");
 	}
 }
 
@@ -250,31 +247,30 @@ class coursefeedback_questions_edit_form extends coursefeedbackform
  */
 class coursefeedback_questions_delete_form extends coursefeedbackform
 {
-	// define the form
-	function definition()
+	protected function definition()
 	{
-		global $CFG,$DB;
+		global $CFG, $DB;
 
 		$form =& $this->_form;
 		$name =  $DB->get_field("block_coursefeedback", "name", array("id" => $this->fid));
 
-		$form->addElement("header", "header_confirm",get_string("form_header_confirm","block_coursefeedback"));
+		$form->addElement("header", "header_confirm", get_string("form_header_confirm","block_coursefeedback"));
 		$form->addElement("hidden", "template", $this->fid);
 		$form->addElement("hidden", "questionid", $this->qid);
 		$form->addElement("hidden", "language", COURSEFEEDBACK_ALL);
-		$form->addElement("selectyesno", "confirm", get_string("form_select_confirmyesno",  "block_coursefeedback", $name));
+		$form->addElement("selectyesno", "confirm", get_string("form_select_confirmyesno", "block_coursefeedback", $name));
 		$submits	= array();
 		$submits[]	= &$form->createElement("submit", "delete", get_string("confirm"));
 		$submits[]	= &$form->createElement("cancel");
-		$form -> addGroup($submits, "submits", "", "&nbsp;");
+		$form->addGroup($submits, "submits", "", "&nbsp;");
 
-		//types
+		// Types.
 		$form->setType("template", PARAM_INT);
 		$form->setType("questionid", PARAM_INT);
 		$form->setType("language", PARAM_ALPHAEXT);
 		$form->setType("confirm", PARAM_INT);
 
-		$form -> closeHeaderBefore("submits");
+		$form->closeHeaderBefore("submits");
 	}
 }
 
@@ -285,12 +281,12 @@ class coursefeedback_questions_delete_form extends coursefeedbackform
  */
 class coursefeedback_question_delete_form extends coursefeedbackform
 {
-	function definition()
+	protected function definition()
 	{
-		global $CFG,$DB;
+		global $CFG, $DB;
 
 		$form =& $this->_form;
-		$name =  $DB->get_field("block_coursefeedback", "name", array("id" => $this->fid));
+		$name = $DB->get_field("block_coursefeedback", "name", array("id" => $this->fid));
 
 		$form->addElement("header", "header_confirm", get_string("form_header_confirm", "block_coursefeedback"));
 		$form->addElement("hidden", "template", $this->fid);
@@ -300,11 +296,11 @@ class coursefeedback_question_delete_form extends coursefeedbackform
 		$submits	= array();
 		$submits[]	= &$form->createElement("submit", "delete", get_string("confirm"));
 		$submits[]	= &$form->createElement("cancel");
-		$form -> addGroup($submits, "submits", "", "&nbsp;");
+		$form->addGroup($submits, "submits", "", "&nbsp;");
 
-		$form -> closeHeaderBefore("submits");
+		$form->closeHeaderBefore("submits");
 
-		// types
+		// Types.
 		$form->setType("template", PARAM_INT);
 		$form->setType("questionid", PARAM_INT);
 		$form->setType("language", PARAM_ALPHAEXT);
@@ -318,12 +314,12 @@ class coursefeedback_question_delete_form extends coursefeedbackform
  */
 class coursefeedback_question_edit_form extends coursefeedbackform
 {
-	function definition()
+	protected function definition()
 	{
-		global $CFG,$DB;
+		global $CFG, $DB;
 
-		$form     =& $this->_form;
-		$question =  $DB->get_field("block_coursefeedback_questns", "question", array("coursefeedbackid" => $this->fid,
+		$form =& $this->_form;
+		$question = $DB->get_field("block_coursefeedback_questns", "question", array("coursefeedbackid" => $this->fid,
 		                                                                              "questionid" => $this->qid,
 		                                                                              "language" => $this->lang));
 
@@ -347,13 +343,13 @@ class coursefeedback_question_edit_form extends coursefeedbackform
 		$submits   = array();
 		$submits[] = &$form->createElement("submit", "edit", get_string("confirm"));
 		$submits[] = &$form->createElement("cancel");
-		$form -> addGroup($submits, "submits", "", "&nbsp;");
+		$form->addGroup($submits, "submits", "", "&nbsp;");
 
-		$form -> closeHeaderBefore("submits");
+		$form->closeHeaderBefore("submits");
 
-		$form -> addRule("questiontext", get_string("requiredelement", "form"), "required");
+		$form->addRule("questiontext", get_string("requiredelement", "form"), "required");
 
-		// types
+		// Types.
 		$form->setType("template", PARAM_INT);
 		$form->setType("questionid", PARAM_INT);
 		$form->setType("language", PARAM_ALPHAEXT);
@@ -368,7 +364,7 @@ class coursefeedback_question_edit_form extends coursefeedbackform
  */
 class coursefeedback_question_new_form extends coursefeedbackform
 {
-	function definition()
+	protected function definition()
 	{
 		global $CFG;
 
@@ -399,11 +395,11 @@ class coursefeedback_question_new_form extends coursefeedbackform
 			$submits[] = &$form->createElement("submit", "cancel", get_string("next"));
 		}
 
-		$form -> addGroup($submits, "submits", "", "&nbsp;");
+		$form->addGroup($submits, "submits", "", "&nbsp;");
 
-		$form -> closeHeaderBefore("submits");
+		$form->closeHeaderBefore("submits");
 
-		// type
+		// Types.
 		$form->setType("template", PARAM_INT);
 		$form->setType("questionid", PARAM_INT);
 		$form->setType("questiontext", PARAM_TEXT);
@@ -411,13 +407,13 @@ class coursefeedback_question_new_form extends coursefeedbackform
 }
 
 /**
-* COURSEFEEDBACK_DELETE_LANGUAGE_FORM
-*
-* Formular for deleting an entire language of a feedback (for usability reasons).
-*/
+ * COURSEFEEDBACK_DELETE_LANGUAGE_FORM
+ *
+ * Formular for deleting an entire language of a feedback (for usability reasons).
+ */
 class coursefeedback_delete_language_form extends coursefeedbackform
 {
-	function definition()
+	protected function definition()
 	{
 		global $CFG;
 
@@ -448,7 +444,7 @@ class coursefeedback_delete_language_form extends coursefeedbackform
 
 		$form->closeHeaderBefore("submits");
 
-		// types
+		// Types.
 		$form->setType("template", PARAM_INT);
 	}
 }

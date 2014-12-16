@@ -1,7 +1,5 @@
 <?php
-// This file is part of ISIS - https://www.isis.tu-berlin.de/
-//
-// ISIS is based on Moodle 2.3
+// This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -25,46 +23,46 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-// moodle includes
-require_once __DIR__ . "/../../config.php";
-require_once $CFG->libdir . "/tablelib.php";
-require_once __DIR__ . "/forms/coursefeedback_admin_forms.php";
-require_once __DIR__ . "/lib.php";
+// Moodle includes.
+require_once(__DIR__ . "/../../config.php");
+require_once($CFG->libdir . "/tablelib.php");
+require_once(__DIR__ . "/forms/coursefeedback_admin_forms.php");
+require_once(__DIR__ . "/lib.php");
 
-// check for admin
+// Check for admin.
 require_login();
 $context = context_system::instance();
 require_capability("block/coursefeedback:managefeedbacks", $context);
 
-global $languagemenu,$formtype;
+global $languagemenu, $formtype;
 
 $PAGE->set_context($context);
 $PAGE->set_pagelayout("standard");
 
-$action	= required_param("action", PARAM_ALPHA);
-$mode	= required_param("mode", PARAM_ALPHA);
+$action = required_param("action", PARAM_ALPHA);
+$mode   = required_param("mode", PARAM_ALPHA);
 
-$fid		= intval(optional_param("fid", 0, PARAM_INT));
-$qid		= intval(optional_param("qid", null, PARAM_INT));
-$language	= optional_param("lng", null, PARAM_ALPHA);
+$fid      = intval(optional_param("fid", 0, PARAM_INT));
+$qid      = intval(optional_param("qid", null, PARAM_INT));
+$language = optional_param("lng", null, PARAM_ALPHA);
 
-$errormsg 	= "";
-$statusmsg	= "";
+$errormsg  = "";
+$statusmsg = "";
 
-// Initialize forms:
-if(!isset($forms))
+// Initialize forms.
+if (!isset($forms))
 {
 	$forms["questions"]["dlang"]   = new coursefeedback_delete_language_form("?mode=questions&action=dlang&fid={$fid}", $fid);
 	$forms["feedback"]["danswers"] = new coursefeedback_delete_answers_form("?mode=feedback&action=danswers&fid={$fid}", $fid);
-	foreach(array("feedback","questions","question") as $i)
+	foreach (array("feedback", "questions", "question") as $i)
 	{
-		foreach(array("new", "edit", "delete") as $j)
+		foreach (array("new", "edit", "delete") as $j)
 		{
 			$formtype 		= "coursefeedback_{$i}_{$j}_form";
 			$link			= "?mode={$i}&action={$j}";
-			if($fid >= 0)	$link .= "&fid=".$fid;
-			if($qid >= 0)	$link .= "&qid=".$qid;
-			if($language)	$link .= "&lng=".$language;
+			if ($fid >= 0)	$link .= "&fid=".$fid;
+			if ($qid >= 0)	$link .= "&qid=".$qid;
+			if ($language)	$link .= "&lng=".$language;
 			$forms[$i][$j] 	= new $formtype($link, $fid, $qid, $language);
 		}
 	}
@@ -72,14 +70,13 @@ if(!isset($forms))
 
 $form = &$forms[$mode][$action];
 
-// Process subbmitted data:
-// Actions are defined by GET:
-switch($mode.$action)
+// Process subbmitted data (Actions are defined by GET).
+switch ($mode.$action)
 {
 	case "feedbackactivate":
 	{
 		$notifications = block_coursefeedback_validate($fid, true);
-		if(!empty($notifications))
+		if (!empty($notifications))
 		{
 			$errormsg  = html_writer::tag("div",
 			                              get_string("page_html_intronotifications", "block_coursefeedback"),
@@ -88,8 +85,8 @@ switch($mode.$action)
 			$encl      = array(html_writer::start_tag("div"), html_writer::end_tag("div"));
 			$errormsg .= $encl[0] . join($encl[1].$encl[0], $notifications) . $encl[1];
 		}
-		elseif(block_coursefeedback_set_active($fid)) {
-			if($fid != 0)
+		else if (block_coursefeedback_set_active($fid)) {
+			if ($fid != 0)
 				$statusmsg = get_string("page_html_activated", "block_coursefeedback", $fid);
 			else
 				$statusmsg = get_string("page_html_nofeedbackactive", "block_coursefeedback");
@@ -101,30 +98,30 @@ switch($mode.$action)
 	}
 }
 
-// Actions defined by POST:
-if(isset($form) && get_parent_class($form) === "coursefeedbackform" && $form->is_submitted())
+// Process subbmitted data (Actions defined by POST).
+if (isset($form) && get_parent_class($form) === "coursefeedbackform" && $form->is_submitted())
 {
-	$data = $form -> get_data();
+	$data = $form->get_data();
 	$trigger = $mode.key($forms[$mode][$action]->_form->exportValue("submits"));
 
-	switch($trigger)
+	switch ($trigger)
 	{
 		case "feedbackadd":
 		{
-			if($form->is_validated())
+			if ($form->is_validated())
 			{
-				if($data->name && isset($data->template)
+				if ($data->name && isset($data->template)
 				){
-					if($DB->record_exists("block_coursefeedback", array("id" => intval($data->template))))
+					if ($DB->record_exists("block_coursefeedback", array("id" => intval($data->template))))
 					{
-						if(block_coursefeedback_copy_feedback($data->template, $data->name))
+						if (block_coursefeedback_copy_feedback($data->template, $data->name))
 							$statusmsg = get_string("changessaved");
 						else
-							$errormsg = get_string("therewereerrors","admin");
+							$errormsg = get_string("therewereerrors", "admin");
 					}
 					else
 					{
-						switch(block_coursefeedback_insert_feedback($data->name))
+						switch (block_coursefeedback_insert_feedback($data->name))
 						{
 							case -1:
 								$errormsg = get_string("semicolonerror", "block_coursefeedback");
@@ -144,18 +141,18 @@ if(isset($form) && get_parent_class($form) === "coursefeedbackform" && $form->is
 		}
 		case "feedbackdelete":
 		{
-			if($form -> is_validated())
+			if ($form->is_validated())
 			{
-				if($data->confirm === "1" && isset($data->template))
+				if ($data->confirm === "1" && isset($data->template))
 				{
-					if(block_coursefeedback_delete_feedback($data->template))
+					if (block_coursefeedback_delete_feedback($data->template))
 						$statusmsg = get_string("deletedcourse",
 						                        "moodle",
 						                        get_string("pluginname", "block_coursefeedback") . " (" . $fid . ")");
 					else
 						$errormsg = get_string("deletednot", "moodle", $text);
 				}
-				elseif($data->confirm === "0")
+				else if ($data->confirm === "0")
 					$statusmsg = get_string("cancelled");
 				else
 					$errormsg = get_string("therewereerrors", "admin");
@@ -165,12 +162,12 @@ if(isset($form) && get_parent_class($form) === "coursefeedbackform" && $form->is
 		}
 		case "feedbackedit":
 		{
-			if($form -> is_validated())
+			if ($form->is_validated())
 			{
-				if( $data -> name
+				if ( $data->name
 					&& isset($data->template)
 				){
-					if(block_coursefeedback_rename_feedback($data->template, $data->name))
+					if (block_coursefeedback_rename_feedback($data->template, $data->name))
 						$statusmsg = get_string("changessaved");
 					else
 						$errormsg = get_string("error");
@@ -182,22 +179,22 @@ if(isset($form) && get_parent_class($form) === "coursefeedbackform" && $form->is
 		}
 		case "feedbackdanswers":
 		{
-			if($form -> is_validated())
+			if ($form->is_validated())
 			{
-				if($data->confirm === "1")
+				if ($data->confirm === "1")
 				{
-					if(isset($data->template))
+					if (isset($data->template))
 					{
-						if(block_coursefeedback_delete_answers($data->template))
+						if (block_coursefeedback_delete_answers($data->template))
 							$statusmsg = get_string("page_html_answersdeleted", "block_coursefeedback");
 						else
 							$errormsg = get_string("therewereaerrors", "admin");
 					}
 					else {
-						$errormsg = get_string("therewereaerrors","admin");
+						$errormsg = get_string("therewereaerrors", "admin");
 					}
 				}
-				elseif($data -> confirm === "0"){
+				else if ($data->confirm === "0"){
 					$statusmsg = get_string("cancelled");
 				}
 				else {
@@ -209,15 +206,15 @@ if(isset($form) && get_parent_class($form) === "coursefeedbackform" && $form->is
 		}
 		case "questionsadd":
 		{
-			if($form -> is_validated())
+			if ($form->is_validated())
 			{
-				if(
-					$data -> questiontext
-					&& $data -> newlang
+				if (
+					$data->questiontext
+					&& $data->newlang
 					&& isset($data->template)
 					&& isset($data->questionid)
 				){
-					if(block_coursefeedback_insert_question($data->questiontext,
+					if (block_coursefeedback_insert_question($data->questiontext,
 					                                        $data->template,
 					                                        $data->questionid,
 					                                        $data->newlang))
@@ -233,13 +230,13 @@ if(isset($form) && get_parent_class($form) === "coursefeedbackform" && $form->is
 		}
 		case "questionsmove":
 		{
-			if($form->is_validated())
+			if ($form->is_validated())
 			{
-				if( isset($data->position)
+				if ( isset($data->position)
 					&& isset($data->template)
 					&& isset($data->questionid)
 				){
-					if(block_coursefeedback_swap_questions($data->template,
+					if (block_coursefeedback_swap_questions($data->template,
 					                                       $data->questionid,
 					                                       $data->position))
 						$statusmsg = get_string("changessaved");
@@ -253,12 +250,12 @@ if(isset($form) && get_parent_class($form) === "coursefeedbackform" && $form->is
 		}
 		case "questionsdlang":
 		{
-			if($form->is_validated())
+			if ($form->is_validated())
 			{
-				if(	isset($data->unwantedlang)
+				if (	isset($data->unwantedlang)
 					&& isset($data->template)
 				){
-					if(block_coursefeedback_delete_questions($data->template,
+					if (block_coursefeedback_delete_questions($data->template,
 					                                         $data->unwantedlang))
 						$statusmsg = get_string("changessaved");
 					else
@@ -273,21 +270,21 @@ if(isset($form) && get_parent_class($form) === "coursefeedbackform" && $form->is
 		case "questiondelete":
 		case "questionsdelete":
 		{
-			if($form->is_validated())
+			if ($form->is_validated())
 			{
-				if(	$data->confirm === "1"
+				if (	$data->confirm === "1"
 					&& isset($data->language)
 					&& isset($data->template)
 					&& isset($data->questionid)
 				){
-					if(block_coursefeedback_delete_question($data->template,
+					if (block_coursefeedback_delete_question($data->template,
 					                                        $data->questionid,
 					                                        $data->language))
 						$statusmsg = get_string("changessaved");
 					else
 						$errormsg = get_string("therewereerrors", "admin");
 				}
-				elseif($data->confirm === "0")
+				else if ($data->confirm === "0")
 					$statusmsg = get_string("cancelled");
 				else
 					$errormsg = get_string("therewereerrors", "admin");
@@ -298,14 +295,14 @@ if(isset($form) && get_parent_class($form) === "coursefeedbackform" && $form->is
 		}
 		case "questionadd":
 		{
-			if($form->is_validated())
+			if ($form->is_validated())
 			{
-				if(	$data->questiontext
+				if (	$data->questiontext
 					&& $data->newlanguage
 					&& $data->template
 					&& $data->questionid
 				){
-					if(block_coursefeedback_insert_question($data->questiontext,
+					if (block_coursefeedback_insert_question($data->questiontext,
 					                                        $data->template,
 					                                        $data->questionid,
 					                                        $data->newlanguage))
@@ -320,14 +317,14 @@ if(isset($form) && get_parent_class($form) === "coursefeedbackform" && $form->is
 		}
 		case "questionedit":
 		{
-			if($form->is_validated())
+			if ($form->is_validated())
 			{
-				if(	$data->questiontext
+				if (	$data->questiontext
 					&& isset($data->template)
 					&& isset($data->questionid)
 					&& $data->language
 				){
-					if(block_coursefeedback_update_question($data->template,
+					if (block_coursefeedback_update_question($data->template,
 					                                        $data->questionid,
 					                                        $data->questiontext,
 					                                        $data->language))
@@ -347,20 +344,19 @@ if(isset($form) && get_parent_class($form) === "coursefeedbackform" && $form->is
 			$statusmsg = get_string("cancelled");
 		default:
 		{
-			// most times on "cancel"
-			if($mode === "question") $mode = "questions";
+			// This occurs most times on "cancel".
+			if ($mode === "question") $mode = "questions";
 			$action	= "view";
 			break;
 		}
 	}
 }
 
-/**
+/*
 * $MODE
 * Has to be "feedback" or "question" and depends on which data is to be edited.
 */
 
-//=========================================================================//
 $checkresult 	= block_coursefeedback_get_editerrors($fid);
 $editable	 	= empty($checkresult);
 $allowedactions = array(
@@ -368,11 +364,11 @@ $allowedactions = array(
 						"feedbacknew",
 						"feedbackview",
 						"feedbackedit"
-						); // actions allowed, even if the feedback is activ or is answered by users
+						); // Allowed actions, even if the feedback is active or is answered by users.
 
-if(!$editable and !in_array($mode.$action,$allowedactions))
+if (!$editable and !in_array($mode.$action, $allowedactions))
 {
-	//break current event!
+	// Break current event!
 	$action = "view";
 	$mode	= "questions";
 }
@@ -387,22 +383,18 @@ $PAGE->navbar->add(get_string("pluginname", "block_coursefeedback"),
 $PAGE->navbar->add(get_string("page_headline_admin", "block_coursefeedback"),
                               new moodle_url("/blocks/coursefeedback/admin.php", array("mode" => "feedback", "action" => "view")));
 
-//===================================================
-// Start printing output
-
+// Start output.
 echo $OUTPUT->header();
 
-/**
+/*
  * NOTIFICATION HANDLING
  */
-if(!empty($errormsg)) {
+if (!empty($errormsg))
 	echo $OUTPUT->notification($errormsg);
-}
-elseif(!empty($statusmsg)) {
+else if (!empty($statusmsg))
 	echo $OUTPUT->notification($statusmsg, "notifysuccess");
-}
 
-if($action === "view")
+if ($action === "view")
 {
 	// FB-view and Q-view are the only modes for hard coded output
 	$displayform = false; // display form anyway?
@@ -411,7 +403,7 @@ if($action === "view")
 
 	echo "<fieldset>";
 
-	if($mode === "feedback")
+	if ($mode === "feedback")
 	{
 		$alink = block_coursefeedback_adminurl("feedback", "new");
 		$slink = new moodle_url("/" . $CFG->admin . "/settings.php", array("section" => "blocksettingcoursefeedback"));
@@ -422,44 +414,44 @@ if($action === "view")
 		$active = get_config("block_coursefeedback", "active_feedback");
 		$table 			= new html_table();
 
-		$table -> head 	= array("ID",
+		$table->head 	= array("ID",
 		                        get_string("name"),
 		                        get_string("action"),
-		                        get_string("table_header_languages","block_coursefeedback"),
-		                        get_string("table_header_questions","block_coursefeedback"),
+		                        get_string("table_header_languages", "block_coursefeedback"),
+		                        get_string("table_header_questions", "block_coursefeedback"),
 		                        get_string("active"));
-		$table -> align	= array("left","left","left","left","left","center");
-		$table -> size  = array("5%","30%","15%","15%","5%","10%");
-		$table -> width = "80%";
-		$table -> data	= array();
+		$table->align	= array("left", "left", "left", "left", "left", "center");
+		$table->size  = array("5%", "30%", "15%", "15%", "5%", "10%");
+		$table->width = "80%";
+		$table->data	= array();
 
 		$table->data[]	= array(
 								"",
-								get_string("table_html_nofeedback","block_coursefeedback"),
+								get_string("table_html_nofeedback", "block_coursefeedback"),
 								"",
 								"",
 								"",
 								($active == 0) ? "X" : block_coursefeedback_create_activate_button(0)
 		);
 
-		if($feedbacks = $DB->get_records("block_coursefeedback", null, "id"))
+		if ($feedbacks = $DB->get_records("block_coursefeedback", null, "id"))
 		{
-			foreach($feedbacks as $feedback)
+			foreach ($feedbacks as $feedback)
 			{
 				$languages = block_coursefeedback_get_combined_languages($feedback->id, false);
-				if(!empty($languages))
+				if (!empty($languages))
 				{
-					$langtext = join(", ",$languages);
+					$langtext = join(", ", $languages);
 					$q = $DB->count_records_select("block_coursefeedback_questns",
 					                               "coursefeedbackid = :fid AND language = :curlang GROUP BY language",
 					                               array("fid" => $feedback->id, "curlang" => current(array_keys($languages))));
 				}
 				else
 				{
-					$langtext 	= "&nbsp;";
-					$q		  	= 0;
+					$langtext = "&nbsp;";
+					$q = 0;
 				}
-				$feedback->name=format($feedback->name);
+				$feedback->name = format($feedback->name);
 				$url1 = block_coursefeedback_adminurl("feedback", "new", $feedback->id);
 				$url2 = block_coursefeedback_adminurl("feedback", "edit", $feedback->id);
 				$url3 = block_coursefeedback_adminurl("questions", "view", $feedback->id);
@@ -475,14 +467,14 @@ if($action === "view")
 
 		$html = html_writer::tag("h4",
 		                         get_string("page_headline_listoffeedbacks", "block_coursefeedback"),
-		                         array("class"=>"main"))
+		                         array("class" => "main"))
 		      . html_writer::table($table);
 	}
-	elseif($mode === "questions")
+	else if ($mode === "questions")
 	{
 		block_coursefeedback_print_header($editable, $fid);
 
-		if($editable && $questions = block_coursefeedback_get_question_ids($fid))
+		if ($editable && $questions = block_coursefeedback_get_question_ids($fid))
 		{
 			$requiredlangs 	= block_coursefeedback_get_implemented_languages($fid);
 			$html	  		= "<h4 class=\"main\">"
@@ -491,40 +483,40 @@ if($action === "view")
 			                             block_coursefeedback_get_feedbackname($fid))
 			                . "</h4>";
 
-			$table 			= new html_table();
-			$table -> head 	= array("ID", get_string("language"), get_string("question"), get_string("action"));
-			$table -> align	= array("left", "left", "left", "left");
-			$table -> size  = array("5%", "10%", "*", "*");
-			$table -> width = "80%";
-			$table -> data	= array();
+			$table        = new html_table();
+			$table->head  = array("ID", get_string("language"), get_string("question"), get_string("action"));
+			$table->align = array("left", "left", "left", "left");
+			$table->size  = array("5%", "10%", "*", "*");
+			$table->width = "80%";
+			$table->data  = array();
 
-			foreach($questions as $questionid)
+			foreach ($questions as $questionid)
 			{
-				$listing	= "";
-				$languages	= "";
-				$links		= "";
+				$listing   = "";
+				$languages = "";
+				$links     = "";
 
-				if($requiredlangs)
-				foreach($requiredlangs as $language)
+				if ($requiredlangs)
+				foreach ($requiredlangs as $language)
 				{
-					if($question = $DB->get_field("block_coursefeedback_questns",
+					if ($question = $DB->get_field("block_coursefeedback_questns",
 					                              "question",
 					                              array("coursefeedbackid" => $fid,
 					                                    "questionid" => $questionid,
 					                                    "language" => $language)))
 					{
-						$question=format($question);
-						$listing 	.= "<div>";
-						if(strlen($question) > 50 && $p=strpos($question, " ", 50))
+						$question = format($question);
+						$listing .= "<div>";
+						if (strlen($question) > 50 && $p = strpos($question, " ", 50))
 						{
 							$listing .= str_replace(" ", "&nbsp;", substr($question, 0, $p) . "&nbsp;[...]");
 						}
 						else
 						{
-							$listing .= str_replace(" ","&nbsp;", $question);
+							$listing .= str_replace(" ", "&nbsp;", $question);
 						}
-						$listing	.= "</div>\n";
-						$languages	.= html_writer::tag("span", $language, array("style" => "padding:0px;")) ."<br/>\n";
+						$listing .= "</div>\n";
+						$languages .= html_writer::tag("span", $language, array("style" => "padding:0px;")) ."<br/>\n";
 						$url1 = block_coursefeedback_adminurl("question",
 						                                      "edit",
 						                                      $fid,
@@ -559,7 +551,7 @@ if($action === "view")
 						                            "fid" => $fid,
 						                            "qid" => $questionid,
 						                            "lng" => $language));
-						$links .= html_writer::tag("span", html_writer::link($url, get_string("add")), array("style"=>"padding:0px;")) . "<br />";
+						$links .= html_writer::tag("span", html_writer::link($url, get_string("add")), array("style" => "padding:0px;")) . "<br />";
 					}
 				}
 
@@ -577,7 +569,7 @@ if($action === "view")
 			}
 			$html .= html_writer::table($table);
 		}
-		elseif(!$editable)	{
+		else if (!$editable)	{
 			block_coursefeedback_print_noperm_page($checkresult,$fid);
 		}
 		else {
@@ -589,37 +581,36 @@ if($action === "view")
 	}
 	else error("Wrong parameters");
 
-	if($html > "")
+	if ($html > "")
 		echo $OUTPUT->box($html);
 
 	echo "</fieldset>";
 }
-//=========================================================================//
 else
 {
-	$form = &$forms[$mode][$action]; // reset form
+	$form = &$forms[$mode][$action]; // Reset form.
 
-	if($action === "edit")
+	if ($action === "edit")
 	{
-		if($mode === "feedback")
+		if ($mode === "feedback")
 		{
-			$name = $DB->get_field("block_coursefeedback", "name", array("id"=>$fid));
+			$name = $DB->get_field("block_coursefeedback", "name", array("id" => $fid));
 			$form->_form->getElement("name")->setValue(stripslashes($name));
 		}
-		elseif($mode === "questions")
+		else if ($mode === "questions")
 		{
 			$form->_form->getElement("position")->setSelected($qid);
 		}
-		elseif($mode === "question")
+		else if ($mode === "question")
 		{
 			$question = $DB->get_field("block_coursefeedback_questns",
 			                           "question",
-			                           array("coursefeedbackid"=>$fid, "questionid"=>$qid, "language"=>$language));
+			                           array("coursefeedbackid" => $fid, "questionid" => $qid, "language" => $language));
 			$form->_form->getElement("questiontext")->setValue(format($question));
 		}
 	}
 
-	if($editable or in_array($mode.$action, $allowedactions)) {
+	if ($editable or in_array($mode.$action, $allowedactions)) {
 		$form->display();
 	} else {
 		block_coursefeedback_print_header();

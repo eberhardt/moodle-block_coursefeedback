@@ -1,7 +1,5 @@
 <?php
-// This file is part of ISIS - https://www.isis.tu-berlin.de/
-//
-// ISIS is based on Moodle 2.3
+// This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -29,11 +27,11 @@ function xmldb_block_coursefeedback_uninstall()
 {
 	global $DB;
 
-	$dbman=$DB->get_manager();
+	$dbman = $DB->get_manager();
 
 	$tbls = array("block_coursefeedback",
 	              "block_coursefeedback_questns",
-	              "block_coursefeedback_answers"); // tables marked for deletion
+	              "block_coursefeedback_answers"); // Tables marked for deletion.
 
 	foreach ($tbls as &$tbl)
 	{

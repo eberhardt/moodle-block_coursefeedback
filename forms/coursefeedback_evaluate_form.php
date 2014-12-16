@@ -1,7 +1,5 @@
 <?php
-// This file is part of ISIS - https://www.isis.tu-berlin.de/
-//
-// ISIS is based on Moodle 2.3
+// This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -26,8 +24,8 @@
  */
 
 defined("MOODLE_INTERNAL") || die();
-require_once __DIR__ . "/coursefeedbackform.php";
-require_once $CFG->dirroot . "/blocks/coursefeedback/lib.php";
+require_once(__DIR__ . "/coursefeedbackform.php");
+require_once($CFG->dirroot . "/blocks/coursefeedback/lib.php");
 
 /**
  * CLASS COURSEFEEDBACK_EVALUATE_FORM
@@ -39,11 +37,10 @@ require_once $CFG->dirroot . "/blocks/coursefeedback/lib.php";
 class coursefeedback_evaluate_form extends moodleform
 {
 	public $lang;
-	//private $scale;
 	public $course;
 	public $abstain;
 
-	public function __construct($action, $course, $lang, $abstain=true)
+	public function __construct($action, $course, $lang, $abstain = true)
 	{
 		$this->lang    = $lang;
 		$this->course  = $course;
@@ -52,7 +49,7 @@ class coursefeedback_evaluate_form extends moodleform
 		parent::__construct($action);
 	}
 
-	public function definition()
+	protected function definition()
 	{
 		global $DB;
 
@@ -62,11 +59,11 @@ class coursefeedback_evaluate_form extends moodleform
 
 		$lang = block_coursefeedback_find_language($this->lang);
 		$questions = $DB->get_records("block_coursefeedback_questns",
-		                              array("coursefeedbackid" => get_config("block_coursefeedback","active_feedback"),
+		                              array("coursefeedbackid" => get_config("block_coursefeedback", "active_feedback"),
 		                                    "language" => $lang));
-		if($lang !== null && $questions)
+		if ($lang !== null && $questions)
 		{
-			foreach($questions as $question)
+			foreach ($questions as $question)
 			{
 				$form->addElement("header", "header_question" . $question->questionid, format($question->question));
 				$form->addElement("hidden", "answers[".$question->questionid."]"); // Dirty hack.
@@ -74,7 +71,7 @@ class coursefeedback_evaluate_form extends moodleform
 
 				$table = new html_table();
 				$scale = $this->abstain ? 7 : 6;
-				$table->size = array_fill(0, $scale, floor(100/$scale) . "%"); // Equidistant arrangement.
+				$table->size = array_fill(0, $scale, floor(100 / $scale) . "%"); // Equidistant arrangement.
 				$table->align = array_fill(0, $scale, "center");
 				$table->tablealign = "center";
 				$table->head = array(get_string("table_header_good", "block_coursefeedback"),
@@ -82,9 +79,9 @@ class coursefeedback_evaluate_form extends moodleform
 				                     "",
 				                     "",
 				                     "",
-				                     get_string("table_header_bad","block_coursefeedback"));
+				                     get_string("table_header_bad", "block_coursefeedback"));
 				$table->data = array(array());
-				for($i=1; $i<7; $i++)
+				for ($i = 1; $i < 7; $i++)
 				{
 					$attributes = array("name" => "answers[" . $question->questionid . "]",
 					                    "value" => $i,
@@ -92,7 +89,7 @@ class coursefeedback_evaluate_form extends moodleform
 					                    "id" => "id_answers_" . $question->questionid . "_" . $i);
 					$table->data[0][] = html_writer::empty_tag("input", $attributes) . "<br/>" . $i;
 				}
-				if($this->abstain)
+				if ($this->abstain)
 				{
 					$table->head[] = get_string("table_header_abstain", "block_coursefeedback");
 					$attributes = array("name" => "answers[" . $question->questionid . "]",
@@ -119,9 +116,9 @@ class coursefeedback_evaluate_form extends moodleform
 		$errors = array();
 		foreach ($data["answers"] as $answer)
 		{
+			//TODO Implement this option.
 			if (!$this->abstain && $answer == 0)
 			{
-				//TODO Fix: Wird nicht angezeigt, für uns erst einmal unwichtig, da wir Enthaltung immer erlauben
 				$errors["submitbutton"] = get_string("required");
 				return $errors;
 			}

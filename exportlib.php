@@ -1,7 +1,5 @@
 <?php
-// This file is part of ISIS - https://www.isis.tu-berlin.de/
-//
-// ISIS is based on Moodle 2.3
+// This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -26,7 +24,8 @@
  */
 
 defined("MOODLE_INTERNAL") || die();
-require_once $CFG->dirroot . "/blocks/coursefeedback/lib.php";
+
+require_once($CFG->dirroot . "/blocks/coursefeedback/lib.php");
 
 class feedbackexport
 {
@@ -57,8 +56,8 @@ class feedbackexport
 	{
 		if(in_array($format, $this->get_filetypes()))
 		{
-			$exportformat_class = "exportformat_".$format;
-			$this->format = new $exportformat_class();
+			$exportformatclass = "exportformat_" . $format;
+			$this->format = new $exportformatclass();
 			return true;
 		}
 		else
@@ -67,7 +66,7 @@ class feedbackexport
 
 	public function create_file($lang)
 	{
-		global $CFG,$DB;
+		global $CFG, $DB;
 
 		if(!isset($this->format))
 		{
@@ -114,9 +113,9 @@ abstract class exportformat
  */
 class exportformat_csv extends exportformat
 {
-	public  $seperator;
-	public  $newline;
-	public  $quotes;
+	public $seperator;
+	public $newline;
+	public $quotes;
 
 	/**
 	 * Set CSV options.
@@ -135,19 +134,20 @@ class exportformat_csv extends exportformat
 	 * (non-PHPdoc)
 	 * @see exportformat::build()
 	 */
-	public function build($answers,$lang = null)
+	public function build($answers, $lang = null)
 	{
 		global $DB;
 		$config  = get_config("block_coursefeedback");
 		$content = $this->quote(get_string("download_thead_questions", "block_coursefeedback"))
 		         . $this->seperator
 		         . $this->quote(get_string("table_html_abstain", "block_coursefeedback"));
-		for($i=1;$i<7;$i++) $content .= $this->seperator.$i;
+		for ($i = 1; $i < 7; $i++)
+			$content .= $this->seperator . $i;
 		$content .= $this->newline;
 
 		$lang = block_coursefeedback_find_language($lang);
 
-		foreach($answers as $questionid => $values)
+		foreach ($answers as $questionid => $values)
 		{
 			$conditions = array("coursefeedbackid" => $config->active_feedback,
 			                    "language" => $lang,

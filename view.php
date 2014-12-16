@@ -1,7 +1,5 @@
 <?php
-// This file is part of ISIS - https://www.isis.tu-berlin.de/
-//
-// ISIS is based on Moodle 2.3
+// This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -25,9 +23,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once __DIR__ . "/../../config.php";
-require_once __DIR__ . "/lib.php";
-require_once __DIR__ . "/exportlib.php";
+require_once(__DIR__ . "/../../config.php");
+require_once(__DIR__ . "/lib.php");
+require_once(__DIR__ . "/exportlib.php");
 
 $id = required_param("id", PARAM_INT);
 $download = optional_param("download", null, PARAM_ALPHA);
@@ -39,18 +37,18 @@ if (! ($course = $DB->get_record("course", array("id" => $id))) ) {
 
 require_login($course);
 $context = context_course::instance($course->id);
-$fid     = get_config("block_coursefeedback", "active_feedback");
+$fid = get_config("block_coursefeedback", "active_feedback");
 
 require_capability("block/coursefeedback:viewanswers", $context);
 
-$statusmsg	= "";
-$errormsg 	= "";
+$statusmsg = "";
+$errormsg = "";
 
-if(!empty($download))
+if (!empty($download))
 {
 	require_capability("block/coursefeedback:download", $context);
 	$export = new feedbackexport($course->id);
-	if($export->init_format($download))
+	if ($export->init_format($download))
 	{
 		$filename = get_string("download_html_filename", "block_coursefeedback")
 		          . date("_Y-m-d-H-i")
@@ -99,8 +97,8 @@ if ($questions) {
 		$c11->colspan = 9;
 		$c11->style   = "padding-bottom:1em;";
 		$c11->text    = html_writer::tag("span",
-		                                 get_string("form_header_question","block_coursefeedback",$question->id) . ": ",
-		                                 array("style"=>"font-weight:bold;"))
+		                                 get_string("form_header_question", "block_coursefeedback", $question->id) . ": ",
+		                                 array("style" => "font-weight:bold;"))
 		              . format($question->question);
 		$table->data[$j++]->cells = array($c11);
 
@@ -124,12 +122,12 @@ if ($questions) {
 
 		$table->data[$j] = new html_table_row();
 		$table->data[$j]->attributes = array("class" => "coursefeedback_table_descrow");
-		for($i=1;$i<=9;$i++) // Ausgabe Noten
+		for($i = 1; $i <= 9; $i++)
 		{
 			$cn = "c3".$i;
 			${$cn} = new html_table_cell();
 			${$cn}->style = "font-weight:bold;";
-			if($i <= 6)
+			if ($i <= 6)
 				${$cn}->text = $i;
 		}
 		$c37->text = get_string("table_html_abstain", "block_coursefeedback");
@@ -141,54 +139,55 @@ if ($questions) {
 		$vsum = 0;
 		$table->data[$j] = new html_table_row();
 		$table->data[$j]->attributes = array("class" => "coursefeedback_table_graderow");
-		for($i = 1; $i<=6; $i++)
+		for($i = 1; $i <= 6; $i++)
 		{
 			$cn = "c4".$i;
 			${$cn} = new html_table_cell();
 			${$cn}->text  = $question->answers[$i];
-			$vsum += $i*$question->answers[$i];
+			$vsum += $i * $question->answers[$i];
 		}
 		$choices = array_sum($question->answers);
-		$ksum    =  $choices - $question->answers[0];
+		$ksum    = $choices - $question->answers[0];
 		$average = $ksum > 0 ? ($vsum / $ksum) : 0;
 		$c47 = new html_table_cell();
 		$c48 = new html_table_cell();
 		$c49 = new html_table_cell();
 		$c47->text = $question->answers[0];
-		$c48->text = number_format($average,2);
+		$c48->text = number_format($average, 2);
 		$c49->text = $choices;
 		$table->data[$j++]->cells = array($c41, $c42, $c43, $c44, $c45, $c46, $c47, $c48, $c49);
 		$table->data[$j] = new html_table_row();
 		$table->data[$j]->attributes = array("class" => "coursefeedback_table_blankrow");
-		$table->data[$j++]->style="height:3em;border:none;";
+		$table->data[$j++]->style = "height:3em;border:none;";
 	}
 	$html = html_writer::table($table);
-	$params = array("id"=>$course->id,"download"=>"csv");
+	$params = array("id" => $course->id, "download" => "csv");
 	if ($lang !== null)
 		$params["lang"] = $lang;
-	$link = html_writer::link(new moodle_url("/blocks/coursefeedback/view.php",$params),
+	$link = html_writer::link(new moodle_url("/blocks/coursefeedback/view.php", $params),
 	                          get_string("page_link_download", "block_coursefeedback", "CSV"));
 }
-elseif($fid > 0)
+else if ($fid > 0)
 	$html = get_string("page_html_noquestions", "block_coursefeedback");
 else
-	redirect(new moodle_url("/course/view.php", array("id"=>$course->id)),
+	redirect(new moodle_url("/course/view.php", array("id" => $course->id)),
 	         get_string("page_html_nofeedbackactive", "block_coursefeedback"));
 
-// start output
+
+// Start output.
 echo $OUTPUT->header();
-if($errormsg !== "")
+if ($errormsg !== "")
 {
 	echo $OUTPUT->notification($errormsg);
 }
-elseif($statusmsg !== "")
+else if ($statusmsg !== "")
 {
 	echo $OUTPUT->notification($statusmsg, "notifysuccess");
 }
 echo $OUTPUT->box_start("generalbox coursefeedbackbox");
-if($link > "")
+if ($link > "")
 	echo $link . "<br/>";
-echo html_writer::tag("span",get_string("page_html_viewintro","block_coursefeedback"),array("id"=>"viewintro"))
+echo html_writer::tag("span", get_string("page_html_viewintro", "block_coursefeedback"), array("id" => "viewintro"))
    . $OUTPUT->box_end()
    . $OUTPUT->box($html)
    . $OUTPUT->footer();

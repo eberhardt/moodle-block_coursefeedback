@@ -1,10 +1,10 @@
 <?php #ENGLISH
-// Defaults
+/* Defaults */
 $string['pluginname']                      = 'Course feedback';
 $string['caution']                         = 'Warning';
 $string['copyof']                          = 'Copy of "{$a}"';
 $string['untitled']                        = 'Untitled';
-// Adminpage
+/* Adminpage */
 $string['adminpage_link_feedbackedit']     = 'edit/create survey';
 $string['adminpage_html_activefeedbacka']  = 'Current survey:';
 $string['adminpage_html_activefeedbackb']  = 'Choose a questionnaire. This will be provided for evaluation in block "Course feedback".<br />You can change the available questions under "edit/create survey".';
@@ -14,8 +14,7 @@ $string['adminpage_html_allowhidinga']     = 'Allow hiding';
 $string['adminpage_html_allowhidingb']     = 'If enabled, teachers can eidt the visibility of the block.';
 $string['adminpage_html_setstickya']       = 'Stick it';
 $string['adminpage_html_setstickyb']       = 'If enabled, an instance of this block, which cannot be deleted by the teachers, appears in each course main page.';
-
-// Page
+/* Page */
 $string['page_headline_admin']             = 'Course feedback Administration';
 $string['page_headline_listoffeedbacks']   = 'List of surveys';
 $string['page_headline_listofquestions']   = 'Questionnaire of \'{$a}\'';
@@ -33,9 +32,9 @@ $string['page_link_newlanguage']           = 'Add different language';
 $string['page_link_download']              = 'Save results as {$a}-file';
 $string['page_link_use']                   = 'Use';
 $string['page_html_editallquestions']      = 'Apply to all languages';
-$string['page_html_viewnavbar']	           = 'Analysis of the survey';
+$string['page_html_viewnavbar']            = 'Analysis of the survey';
 $string['page_html_viewintro']             = 'Survey analysis. The result shows the number of votes for each grade and the average.';
-$string['page_html_evalintro']             = 'The course can be evaluated here. Only courses and not the contents of the course can be evaluated. The survey is conducted anonymously and the summary of results are only visible to the appropricate course trainer.'; // obsolete - defined in admin settings
+$string['page_html_evalintro']             = 'The course can be evaluated here. Only courses and not the contents of the course can be evaluated. The survey is conducted anonymously and the summary of results are only visible to the appropricate course trainer.';
 $string['page_html_evaluated']             = 'You have already evaluated this course.';
 $string['page_html_saveerr']               = 'An error has occurred while saving your evaluation.';
 $string['page_html_thx']                   = 'Many thanks for your course evaluation.';
@@ -47,7 +46,7 @@ $string['page_html_intronotifications']    = 'This feedback has to fullfill the 
 $string['page_html_servedefaultlang']      = 'All questions should be defined in default language.';
 $string['page_html_norelations']           = 'All questions have to be defined in at least one common language.';
 $string['page_html_nolinks']               = 'You are not allowed to participate in this feedback.';
-// Tables
+/* Tables */
 $string['table_header_languages']          = 'Available languages';
 $string['table_header_bad']                = 'Poor';
 $string['table_header_good']               = 'Very good';
@@ -58,7 +57,7 @@ $string['table_html_abstain']              = 'Abstain';
 $string['table_html_average']              = 'Average';
 $string['table_html_nofeedback']           = 'No survey';
 $string['table_html_undefinedlang']        = 'Translation missing. Language \'{$a}\' unavailable.'; // 50 chars max
-// Forms
+/* Forms */
 $string['form_header_newfeedback']         = 'New survey';
 $string['form_header_editfeedback']        = 'Edit survey';
 $string['form_header_confirm']             = 'Confirmation necessary';
@@ -79,10 +78,10 @@ $string['form_html_deleteanswerstext']     = 'The questionaire cannot be edited 
 $string['form_html_currentlang']           = 'You are editting {$a}';
 $string['form_html_nolangimplemented']     = 'This feedback has no implemented languages.';
 $string['form_html_notextendable']         = 'You cannot extend this question, because there are no additional languages available.';
-// Download
+/* Download */
 $string['download_html_filename']          = 'Results';
 $string['download_thead_questions']        = 'Question';
-// Permission
+/* Permission */
 $string['coursefeedback:managefeedbacks']  = 'Edit global settings of the coursefeedback block';
 $string['coursefeedback:viewanswers']      = 'See the analysis of the current coursefeedback';
 $string['coursefeedback:download']         = 'Save result of the current coursefeedback into a file';
@@ -94,16 +93,3 @@ $string['perm_html_erroractive']           = 'You can not change the current sur
 $string['perm_html_duplicatelink']         = 'To create a new survey with the same questions, you can <a href="admin.php?fid={$a}&mode=feedback&action=new">copy the survey</a> or register another questionnaire as the current survey.';
 $string['perm_html_answersexists']         = 'This feedback has already been completed by users.';
 $string['perm_html_danswerslink']          = 'To create a new survey with the same questions, you can <a href="admin.php?fid={$a}&mode=feedback&action=new">copy the feedback</a> or <a href="admin.php?fid={$a}&mode=feedback&action=danswers">delete the user answers</a>.';
-/*
-OBSOLETE OR NOT USED
-$string['page_html_defaultlangnotserved']  = 'This feedback can\'t be used, because there are no questions in default language ({$a}) available.';
-$string['adminpage_area_defaulttext']      = 'Description';
-$string['page_html_noediting']             = 'The questionnaire can not be edited currently.';
-$string['page_html_trainerdenied']         = 'Trainers may not evaluate their own courses.';
-$string['page_html_nomember']              = 'You are not subscribed to this course!';
-$string['page_html_feedbackcopied']        = 'The survey has been copied.';
-$string['download_html_saved']             = 'The data has been saved in the file system and can be found via the file administration, in directory "{$a}".';
-$string['form_html_deletefeedbackwarning'] = 'The deletion of a survey leads automatically to the deletion of all user answers. <br/>Please ensure yourself, that this data is not required anymore.';
-$string['form_html_deletelanguagewarning'] = 'The deletion of a question in all languages means the corresponding user answers will be deleted simultaneously. <br/>Please ensure yourself, that this data is not required anymore';
-$string['form_html_deletequestionwarning'] = 'The deletion of a question means the corresponding user answers will be deleted simultaneously. <br/>Please ensure yourself, that this data is not required anymore.';
-*/

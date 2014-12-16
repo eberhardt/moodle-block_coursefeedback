@@ -1,7 +1,5 @@
 <?php
-// This file is part of ISIS - https://www.isis.tu-berlin.de/
-//
-// ISIS is based on Moodle 2.3
+// This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -25,15 +23,15 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once $CFG->libdir . "/authlib.php"; // capabilities. show evaluate only for students and admin.
-require_once __DIR__ . "/lib.php";
+require_once($CFG->libdir . "/authlib.php"); // Capabilities: show evaluate only for students and admin.
+require_once(__DIR__ . "/lib.php");
 
 class block_coursefeedback extends block_base {
 
 	/**
 	 * Initializes the block.
 	 */
-	function init()
+	public function init()
 	{
 		$this->title = get_string("pluginname", "block_coursefeedback");
 		$this->content_type = BLOCK_TYPE_TEXT;
@@ -43,41 +41,42 @@ class block_coursefeedback extends block_base {
 	 * (non-PHPdoc)
 	 * @see block_base::get_content()
 	 */
-	function get_content() {
+	public function get_content()
+	{
 		global $CFG,$COURSE;
 
-		// don"t reload block content
-		if($this->content !== NULL) {
+		// Don't reload block content!
+		if ($this->content !== null) {
 			return $this->content;
 		}
 
 		$this->content = new stdClass;
 		$context = context_course::instance($COURSE->id);
-		if(get_config("block_coursefeedback", "active_feedback") == 0)
+		if (get_config("block_coursefeedback", "active_feedback") == 0)
 			$this->content->text = get_string("page_html_nofeedbackactive", "block_coursefeedback");
-		elseif(block_coursefeedback_questions_exist())
+		else if (block_coursefeedback_questions_exist())
 		{
 			$link = "";
 			$this->content->text = html_writer::start_tag("ul", array("style" => "list-style:none;"));
-		  	if(has_capability("block/coursefeedback:managefeedbacks", $context))
+		  	if (has_capability("block/coursefeedback:managefeedbacks", $context))
 			{
 				$link = html_writer::link(new moodle_url("/admin/settings.php?section=blocksettingcoursefeedback"),
 				                          get_string("page_link_settings", "block_coursefeedback"));
 				$this->content->text .= html_writer::tag("li", $link);
 			}
-			if(has_capability("block/coursefeedback:evaluate", $context))
+			if (has_capability("block/coursefeedback:evaluate", $context))
 			{
 				$link = html_writer::link(new moodle_url("/blocks/coursefeedback/evaluate.php", array("id" => $COURSE->id)),
 				                          get_string("page_link_evaluate", "block_coursefeedback"));
 				$this->content->text .= html_writer::tag("li", $link);
 			}
-			if(has_capability("block/coursefeedback:viewanswers", $context))
+			if (has_capability("block/coursefeedback:viewanswers", $context))
 			{
 				$link = html_writer::link(new moodle_url("/blocks/coursefeedback/view.php", array("id" => $COURSE->id)),
 				                          get_string("page_link_view", "block_coursefeedback"));
 				$this->content->text .= html_writer::tag("li", $link);
 			}
-			if(empty($link))
+			if (empty($link))
 			{
 				// Show message, if no links are available.
 				$this->content->text = get_string("page_html_nolinks", "block_coursefeedback");
@@ -96,7 +95,7 @@ class block_coursefeedback extends block_base {
 	 * (non-PHPdoc)
 	 * @see block_base::has_config()
 	 */
-	function has_config()
+	public function has_config()
 	{
 		return true;
 	}
@@ -105,7 +104,7 @@ class block_coursefeedback extends block_base {
 	 * (non-PHPdoc)
 	 * @see block_base::instance_can_be_hidden()
 	 */
-	function instance_can_be_hidden()
+	public function instance_can_be_hidden()
 	{
 		return get_config("block_coursefeedback", "allow_hiding");
 	}

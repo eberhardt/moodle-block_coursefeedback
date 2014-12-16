@@ -1,7 +1,5 @@
 <?php
-// This file is part of ISIS - https://www.isis.tu-berlin.de/
-//
-// ISIS is based on Moodle 2.3
+// This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -89,7 +87,7 @@ $capabilities = array(
 		"archtypes" => array(
 			"manager" => CAP_PROHIBIT,
 			"user" => CAP_PROHIBIT
-		) // this plugin has no sense at all on "my page"
+		) // This plugin is useless on "my page".
 	)
 );
 
