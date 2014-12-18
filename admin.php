@@ -575,7 +575,7 @@ if ($action === "view")
 		else {
 			$url = block_coursefeedback_adminurl("questions", "new", $fid);
 			$html = html_writer::tag("h4",
-			                         html_writer::link($url1, get_string("page_link_noquestion", "block_coursefeedback")),
+			                         html_writer::link($url, get_string("page_link_noquestion", "block_coursefeedback")),
 			                         array("style" => "text-align:center;"));
 		}
 	}
