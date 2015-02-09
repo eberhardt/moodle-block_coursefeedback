@@ -78,3 +78,6 @@ $string['perm_html_erroractive'] = 'On ne peut pas modifier un sondage actif.';
 $string['perm_html_duplicatelink'] = 'Pour lancer un sondage avec les m&ecirc;mes questions, vous pouvez <a href="admin.php?fid={$a}&mode=feedback&action=new">copier</a> le sondage  o&ugrave; activer un autre sondage.';
 $string['perm_html_answersexists'] = 'Le sondage a d&eacute;j&agrave; &eacute;t&eacute; repondu par quelques participants.';
 $string['perm_html_danswerslink'] = 'Pour lancer un sondage avec les m&ecirc;mes questions, vous pouvez <a href="admin.php?fid={$a}&mode=feedback&action=new">copier</a> le sondage o&ugrave; <a href="admin.php?fid={$a}&mode=feedback&action=danswers">supprimer les r&eacute;ponses des utilisateurs</a>.';
+/* Events */
+$string['eventviewed'] = 'Vu les r&eacute;sultats';
+$string['eventevaluated'] = '&Eacute;valu&eacute; le cours';

@@ -67,7 +67,7 @@ if ($course->id == SITEID) {
 	redirect($CFG->wwwroot);
 }
 
-add_to_log($course->id, "coursefeedback", "view", "view.php?id={$course->id}", $course->id);
+\block_coursefeedback\event\coursefeedback_viewed::create(array("context" => $context))->trigger();
 
 $PAGE->set_url(new moodle_url("/blocks/coursefeedback/view.php", array("id" => $course->id)));
 $PAGE->set_context($context);

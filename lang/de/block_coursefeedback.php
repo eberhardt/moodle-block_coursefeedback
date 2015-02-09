@@ -93,3 +93,6 @@ $string['perm_html_erroractive']           = 'Eine aktive Umfrage darf nicht bea
 $string['perm_html_duplicatelink']         = 'Um eine neue Umfrage mit den gleichen Fragen zu starten, k&ouml;nnen Sie die <a href="admin.php?fid={$a}&mode=feedback&action=new">Umfrage kopieren</a> oder eine andere Umfrage aktivieren.';
 $string['perm_html_answersexists']         = 'Die Umfrage wurde bereits von einigen Teilnehmern beantwortet.';
 $string['perm_html_danswerslink']          = 'Um eine neue Umfrage mit den gleichen Fragen zu starten, k&ouml;nnen Sie die <a href="admin.php?fid={$a}&mode=feedback&action=new">Umfrage kopieren</a> oder die <a href="admin.php?fid={$a}&mode=feedback&action=danswers">Benutzerantworten l&ouml;schen</a>.';
+/* Events */
+$string['eventviewed']                     = 'Ergebnisse angezeigt';
+$string['eventevaluated']                  = 'Kurs bewertet';

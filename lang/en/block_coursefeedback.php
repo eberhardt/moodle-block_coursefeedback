@@ -93,3 +93,6 @@ $string['perm_html_erroractive']           = 'You can not change the current sur
 $string['perm_html_duplicatelink']         = 'To create a new survey with the same questions, you can <a href="admin.php?fid={$a}&mode=feedback&action=new">copy the survey</a> or register another questionnaire as the current survey.';
 $string['perm_html_answersexists']         = 'This feedback has already been completed by users.';
 $string['perm_html_danswerslink']          = 'To create a new survey with the same questions, you can <a href="admin.php?fid={$a}&mode=feedback&action=new">copy the feedback</a> or <a href="admin.php?fid={$a}&mode=feedback&action=danswers">delete the user answers</a>.';
+/* Events */
+$string['eventviewed']                     = 'Results viewed';
+$string['eventevaluated']                  = 'Course evaluated';
