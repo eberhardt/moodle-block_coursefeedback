@@ -194,7 +194,7 @@ function block_coursefeedback_insert_question($question, $feedbackid, $questioni
 
 	$feedbackid = intval($feedbackid);
 	$questionid = intval($questionid);
-	$language   = preg_replace("/[^a-z]/", "", $language);
+	$language   = preg_replace("/[^a-z\_]/", "", strtolower($language));
 
 	if (!$DB->record_exists("block_coursefeedback_questns",
 	                        array("coursefeedbackid" => $feedbackid, "questionid" => $questionid, "language" => $language)))
