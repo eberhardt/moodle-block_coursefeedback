@@ -14,6 +14,7 @@ $string['adminpage_html_allowhidinga']     = 'Allow hiding';
 $string['adminpage_html_allowhidingb']     = 'If enabled, teachers can eidt the visibility of the block.';
 $string['adminpage_html_setstickya']       = 'Stick it';
 $string['adminpage_html_setstickyb']       = 'If enabled, an instance of this block, which cannot be deleted by the teachers, appears in each course main page.';
+$string['adminpage_html_notinstalled']     = '\'{$a}\' (not installed)';
 /* Page */
 $string['page_headline_admin']             = 'Course feedback Administration';
 $string['page_headline_listoffeedbacks']   = 'List of surveys';

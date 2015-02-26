@@ -397,15 +397,15 @@ function block_coursefeedback_delete_answers($feedbackid, $questionid = null)
  * @param bool $codesonly
  * @return array Language codes
  */
-function block_coursefeedback_get_combined_languages($feedbackid = COURSEFEEDBACK_DEFAULT, $codesonly = true)
-{
+function block_coursefeedback_get_combined_languages($feedbackid = COURSEFEEDBACK_DEFAULT, $codesonly = true) {
 	global $CFG, $DB;
 
 	// Clean params.
-	if ($feedbackid === COURSEFEEDBACK_DEFAULT)
+	if ($feedbackid === COURSEFEEDBACK_DEFAULT) {
 		$feedbackid = get_config("block_coursefeedback", "active_feedback");
-	else
+	} else {
 		$feedbackid = intval($feedbackid);
+	}
 	$codesonly  = clean_param($codesonly, PARAM_BOOL);
 
 	$count  = block_coursefeedback_get_questionid($feedbackid) - 1;
@@ -414,11 +414,14 @@ function block_coursefeedback_get_combined_languages($feedbackid = COURSEFEEDBAC
 	$langs  = $DB->get_records_select("block_coursefeedback_questns", $select, $params, "", "language");
 	$langs  = array_keys($langs);
 
-	if ($langs && !$codesonly)
-	{
+	if ($langs && !$codesonly) {
 		$listoflanguages = get_string_manager()->get_list_of_translations();
 		$languages		 = array();
-		foreach ($langs as $langcode) $languages[$langcode] = $listoflanguages[$langcode];
+		foreach ($langs as $langcode) {
+			$languages[$langcode] = isset($listoflanguages[$langcode])
+			                      ? $listoflanguages[$langcode]
+			                      : get_string("adminpage_html_notinstalled", "blocks_coursefeedback", $langcode);
+		}
 		$langs = $languages;
 	}
 

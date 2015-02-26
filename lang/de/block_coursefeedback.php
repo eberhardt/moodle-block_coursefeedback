@@ -14,6 +14,7 @@ $string['adminpage_html_allowhidinga']     = 'Verstecken erlauben';
 $string['adminpage_html_allowhidingb']     = 'Wenn aktiviert, k&ouml;nnen Trainer/innen die Sichtbarkeit des Blockes bearbeiten.';
 $string['adminpage_html_setstickya']       = 'Anheften';
 $string['adminpage_html_setstickyb']       = 'Wenn aktiviert, erscheint in jeder Kurshauptseite eine Instanz dieses Blockes, die von den Kursverantwortlichen nicht gel&ouml;scht werden kann.';
+$string['adminpage_html_notinstalled']     = '\'{$a}\' (nicht installiert)';
 /* Page */
 $string['page_headline_admin']             = 'Kursfeedback Administration';
 $string['page_headline_listoffeedbacks']   = 'Liste aller Feedbacks';
