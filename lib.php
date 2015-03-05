@@ -420,7 +420,7 @@ function block_coursefeedback_get_combined_languages($feedbackid = COURSEFEEDBAC
 		foreach ($langs as $langcode) {
 			$languages[$langcode] = isset($listoflanguages[$langcode])
 			                      ? $listoflanguages[$langcode]
-			                      : get_string("adminpage_html_notinstalled", "blocks_coursefeedback", $langcode);
+			                      : get_string("adminpage_html_notinstalled", "block_coursefeedback", $langcode);
 		}
 		$langs = $languages;
 	}

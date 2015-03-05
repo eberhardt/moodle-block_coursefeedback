@@ -25,8 +25,8 @@
 
 defined("MOODLE_INTERNAL") || die();
 
-$plugin->version   = 2015020901;
+$plugin->version   = 2015020902;
 $plugin->requires  = 2014051200;
 $plugin->maturity  = MATURITY_STABLE;
-$plugin->release   = "2.0.1 (Build: 2015020901)";
+$plugin->release   = "2.0.2 (Build: 2015020902)";
 $plugin->component = "block_coursefeedback";
