@@ -1054,3 +1054,21 @@ function block_coursefeedback_is_sticky()
 
 	return $active;
 }
+
+/**
+ * Calculates a rating from all given answers
+ *
+ * @param integer $course the course for which the rating should be calculated.
+ * @param integer $treshold the number of answers, which has to be given, before a rating is calculated
+ * @return number|NULL A float rating (between 1 and 6) or NULL, if $treshold is not reached
+ */
+function block_coursefeedback_get_course_rating($course, $treshold = 20) {
+	global $DB;
+	$course = intval($course);
+	$answers = $DB->get_fieldset_select("block_coursefeedback_answers", "answer", "course = ? AND answer > 0", array($course));
+	if ($answers && count($answers) >= $treshold) {
+		return array_sum($answers)/count($answers);
+	} else {
+		return null;
+	}
+}
