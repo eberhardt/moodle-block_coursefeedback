@@ -557,8 +557,8 @@ if ($action === "view")
 
 				$other = array("qid" => $questionid);
 				$url1 = block_coursefeedback_adminurl("questions", "edit", $fid, $other);
-				$url2 = block_coursefeedback_adminurl("delete", "edit", $fid, $other);
-				$url3 = block_coursefeedback_adminurl("delete", "new", $fid, $other);
+				$url2 = block_coursefeedback_adminurl("questions", "delete", $fid, $other);
+				$url3 = block_coursefeedback_adminurl("question", "new", $fid, $other);
 				$listing .= "<br/>" . get_string("page_html_editallquestions", "block_coursefeedback") . ": "
 				          . html_writer::link($url1, get_string("move"))
 				          . " &#124; "

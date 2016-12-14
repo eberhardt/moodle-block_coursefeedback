@@ -43,7 +43,7 @@ class block_coursefeedback extends block_base {
 	 */
 	public function get_content()
 	{
-		global $CFG,$COURSE;
+		global $CFG;
 
 		// Don't reload block content!
 		if ($this->content !== null) {
@@ -51,41 +51,38 @@ class block_coursefeedback extends block_base {
 		}
 
 		$this->content = new stdClass;
-		$context = context_course::instance($COURSE->id);
-		if (get_config("block_coursefeedback", "active_feedback") == 0)
+		$context = context_course::instance($this->page->course->id);
+		$config = get_config("block_coursefeedback");
+		if (!isset($config->active_feedback) || $config->active_feedback == 0)
 			$this->content->text = get_string("page_html_nofeedbackactive", "block_coursefeedback");
 		else if (block_coursefeedback_questions_exist())
 		{
-			$link = "";
-			$this->content->text = html_writer::start_tag("ul", array("style" => "list-style:none;"));
-		  	if (has_capability("block/coursefeedback:managefeedbacks", $context))
-			{
-				$link = html_writer::link(new moodle_url("/admin/settings.php?section=blocksettingcoursefeedback"),
-				                          get_string("page_link_settings", "block_coursefeedback"));
-				$this->content->text .= html_writer::tag("li", $link);
+			$renderer = $this->page->get_renderer("block_coursefeedback");
+			$list = array();
+			if (has_capability("block/coursefeedback:managefeedbacks", $context)) {
+				$list[] = $renderer->render_manage_link();
 			}
-			if (has_capability("block/coursefeedback:evaluate", $context))
-			{
-				$link = html_writer::link(new moodle_url("/blocks/coursefeedback/evaluate.php", array("id" => $COURSE->id)),
-				                          get_string("page_link_evaluate", "block_coursefeedback"));
-				$this->content->text .= html_writer::tag("li", $link);
+			if (has_capability("block/coursefeedback:evaluate", $context)) {
+				$list[] = $renderer->render_view_link($this->page->course->id);
 			}
-			if (has_capability("block/coursefeedback:viewanswers", $context))
-			{
-				$link = html_writer::link(new moodle_url("/blocks/coursefeedback/view.php", array("id" => $COURSE->id)),
-				                          get_string("page_link_view", "block_coursefeedback"));
-				$this->content->text .= html_writer::tag("li", $link);
+			if (has_capability("block/coursefeedback:viewanswers", $context)) {
+				$list[] = $renderer->render_results_link($this->page->course->id);
 			}
-			if (empty($link))
-			{
+			if (empty($list)) {
 				// Show message, if no links are available.
 				$this->content->text = get_string("page_html_nolinks", "block_coursefeedback");
 			}
-			else
-				$this->content->text .= html_writer::end_tag("ul");
+			else {
+				$this->content->text = html_writer::alist($list, array("style" => "list-style:none"));
+			}
 		}
-		else
+		else {
 			$this->content->text = get_string("page_html_noquestions", "block_coursefeedback");
+		}
+		$rating = block_coursefeedback_get_course_rating($this->page->course->id, $config->ratingtreshold);
+		if ($rating >= $config->ratingtreshold) {
+			$this->content->text .= $renderer->render_rating($rating);
+		}
 		$this->content->footer = "";
 
 		return $this->content;

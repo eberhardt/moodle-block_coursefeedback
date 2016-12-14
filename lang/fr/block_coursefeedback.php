@@ -14,6 +14,8 @@ $string['adminpage_html_allowhidingb'] = 'Si elle est activ&eacute;e, les enseig
 $string['adminpage_html_setstickya']  = 'Fixer le bloc';
 $string['adminpage_html_setstickyb'] = 'Si elle est activ&eacute;e, une instance de ce bloc, qui ne peut &ecirc;tre supprim&eacute; par les enseignants, appara&icirc;t dans chaque page principale du cours.';
 $string['adminpage_html_notinstalled']     = '\'{$a}\' (ne est pas install&eacute;)';
+$string['adminpage_html_ratingtresholda']  = 'Seuil d\'&eacute;valuation';
+$string['adminpage_html_ratingtresholdb']  = 'Le nombre de r&eacute;ponses n&eacute;cessaires jusqu\'&aacute; ce qu\'une &eacute;valuation globale appara&icirc;t dans le bloc.';
 /* Page */
 $string['page_headline_admin'] = 'Administration des feedbacks sur le cours';
 $string['page_headline_listoffeedbacks'] = 'Liste avec tous les feedbacks';
@@ -41,6 +43,7 @@ $string['page_html_activated'] = 'Feedback sur le cours ({$a}) inscrit comme son
 $string['page_html_answersdeleted'] = 'R&eacute;ponses supprim&eacute;es.';
 $string['page_html_nofeedbackactive'] = 'Sondages d&eacute;sactiv&eacute;s.';
 $string['page_html_noquestions'] = 'Pas de questions trouv&eacute;s.';
+$string['page_html_courserating'] = 'Commentaires des participants';
 /* Tables */
 $string['table_header_languages'] = 'Langues disponibles';
 $string['table_header_bad'] = 'Mal';
@@ -56,6 +59,7 @@ $string['form_header_newfeedback'] = 'Nouveau sondage';
 $string['form_header_editfeedback'] = 'Modifier sondage';
 $string['form_header_confirm'] = 'Confirmation n&eacute;cessaire';
 $string['form_header_newquestion'] = 'Nouvelle question';
+$string['form_header_addlang'] = 'Ajouter un texte &agrave; une autre langue';
 $string['form_header_deletelang'] = 'Supprimer langue(s)';
 $string['form_header_editquestion'] = 'Modifier la question';
 $string['form_header_deleteanswers'] = 'Supprimer les r&eacute;ponses';

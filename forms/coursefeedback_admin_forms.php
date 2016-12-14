@@ -371,7 +371,7 @@ class coursefeedback_question_new_form extends coursefeedbackform
 		$form =& $this->_form;
 		$submits	= array();
 
-		$form->addElement("header", "header_new_language", get_string("form_header_newquestion", "block_coursefeedback"));
+		$form->addElement("header", "header_new_language", get_string("form_header_addlang", "block_coursefeedback"));
 		$form->addElement("hidden", "template", $this->fid);
 		$form->addElement("hidden", "questionid", $this->qid);
 		$implemented = block_coursefeedback_get_implemented_languages($this->fid, $this->qid, false, true);

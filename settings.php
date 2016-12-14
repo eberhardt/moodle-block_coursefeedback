@@ -60,6 +60,11 @@ $settings->add(new admin_setting_configcheckbox("block_coursefeedback/allow_hidi
                                                 get_string("adminpage_html_allowhidinga", "block_coursefeedback"),
                                                 get_string("adminpage_html_allowhidingb", "block_coursefeedback"),
                                                 false));
+$settings->add(new admin_setting_configtext("block_coursefeedback/ratingtreshold",
+                                            get_string("adminpage_html_ratingtresholda", "block_coursefeedback"),
+                                            get_string("adminpage_html_ratingtresholdb", "block_coursefeedback"),
+                                            50,
+                                            PARAM_INT));
 
 /* Sticky handling */
 $sticky = optional_param("s_block_coursefeedback_setsticky", -1, PARAM_INT);

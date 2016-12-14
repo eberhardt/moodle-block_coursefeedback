@@ -15,6 +15,8 @@ $string['adminpage_html_allowhidingb']     = 'Wenn aktiviert, k&ouml;nnen Traine
 $string['adminpage_html_setstickya']       = 'Anheften';
 $string['adminpage_html_setstickyb']       = 'Wenn aktiviert, erscheint in jeder Kurshauptseite eine Instanz dieses Blockes, die von den Kursverantwortlichen nicht gel&ouml;scht werden kann.';
 $string['adminpage_html_notinstalled']     = '\'{$a}\' (nicht installiert)';
+$string['adminpage_html_ratingtresholda']  = 'Zur Gesamtbewertung nötige Antworten';
+$string['adminpage_html_ratingtresholdb']  = 'Die Anzahl an benötigten Antworten, bis eine Gesamtbewertung im Block angezeigt wird.';
 /* Page */
 $string['page_headline_admin']             = 'Kursfeedback Administration';
 $string['page_headline_listoffeedbacks']   = 'Liste aller Feedbacks';
@@ -47,6 +49,7 @@ $string['page_html_intronotifications']    = 'Dieses Feedback muss folgende Kond
 $string['page_html_servedefaultlang']      = 'Alle Fragen sollten in der eingestellte Standardsprache ({$a}) vorhanden sein.';
 $string['page_html_norelations']           = 'Alle Fragen müssen in mindestens einer gemeinsamen Sprache vorhanden sein.';
 $string['page_html_nolinks']               = 'Die Teilnahme an diesem Feedback ist Ihnen nicht erlaubt.';
+$string['page_html_courserating']          = 'Kursbewertung';
 /* Tables */
 $string['table_header_languages']          = 'Verf&uuml;gbare Sprachen';
 $string['table_header_questions']          = 'Fragen';
@@ -63,6 +66,7 @@ $string['form_header_newfeedback']         = 'Neue Umfrage';
 $string['form_header_editfeedback']        = 'Umfrage bearbeiten';
 $string['form_header_confirm']             = 'Best&auml;tigung erforderlich';
 $string['form_header_newquestion']         = 'Neue Frage';
+$string['form_header_addlang']             = 'Einen Text f&uuml;r eine neue Sprache hinzuf&uuml;gen';
 $string['form_header_deletelang']          = 'Sprache(n) verwerfen';
 $string['form_header_editquestion']        = 'Frage bearbeiten';
 $string['form_header_deleteanswers']       = 'Benutzerantworten l&ouml;schen';

@@ -15,6 +15,8 @@ $string['adminpage_html_allowhidingb']     = 'If enabled, teachers can eidt the 
 $string['adminpage_html_setstickya']       = 'Stick it';
 $string['adminpage_html_setstickyb']       = 'If enabled, an instance of this block, which cannot be deleted by the teachers, appears in each course main page.';
 $string['adminpage_html_notinstalled']     = '\'{$a}\' (not installed)';
+$string['adminpage_html_ratingtresholda']  = 'Rating treshold';
+$string['adminpage_html_ratingtresholdb']  = 'The number of responses required until an overall rating is displayed in the block.';
 /* Page */
 $string['page_headline_admin']             = 'Course feedback Administration';
 $string['page_headline_listoffeedbacks']   = 'List of surveys';
@@ -47,6 +49,7 @@ $string['page_html_intronotifications']    = 'This feedback has to fullfill the 
 $string['page_html_servedefaultlang']      = 'All questions should be defined in default language.';
 $string['page_html_norelations']           = 'All questions have to be defined in at least one common language.';
 $string['page_html_nolinks']               = 'You are not allowed to participate in this feedback.';
+$string['page_html_courserating']          = 'Course rating';
 /* Tables */
 $string['table_header_languages']          = 'Available languages';
 $string['table_header_bad']                = 'Poor';
@@ -62,6 +65,7 @@ $string['table_html_undefinedlang']        = 'Translation missing. Language \'{$
 $string['form_header_newfeedback']         = 'New survey';
 $string['form_header_editfeedback']        = 'Edit survey';
 $string['form_header_confirm']             = 'Confirmation necessary';
+$string['form_header_addlang']             = 'Add a text for another language';
 $string['form_header_newquestion']         = 'New question';
 $string['form_header_deletelang']          = 'Delete language(s)';
 $string['form_header_editquestion']        = 'Edit question';
