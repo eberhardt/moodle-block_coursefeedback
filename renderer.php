@@ -31,7 +31,7 @@ class block_coursefeedback_renderer extends plugin_renderer_base {
 	 */
 	public function render_rating($rating) {
 		$rating = round($rating, 1, PHP_ROUND_HALF_UP);
-		$ratingtext = $this->star_rating($rating, $rating);
+		$ratingtext = $this->star_rating($rating);
 		return html_writer::empty_tag("hr", array("size" => 1))
 		     . html_writer::div(get_String("page_html_courserating", "block_coursefeedback"), "center notifytiny")
 		     . html_writer::div($ratingtext, "center");
@@ -39,18 +39,15 @@ class block_coursefeedback_renderer extends plugin_renderer_base {
 
 	/**
 	 * @param number $rating
-	 * @param number $max
+	 * @param number $maxstars
+	 * @param number $ratingscale
 	 * @return string
 	 */
-	public function star_rating($rating, $max = 5) {
-		$ratingtext = "";
-		for ($i = 1; $i <= $max; $i++) {
-			if ($i <= $rating) {
-				$ratingtext .= '&#9733; ';
-			} else {
-				$ratingtext .= '&#9734; ';
-			}
-		}
+	public function star_rating($rating, $maxstars = 5, $ratingscale = 6) {
+		$computedrating = round(($ratingscale+1-$rating)/$ratingscale*$maxstars, 0, PHP_ROUND_HALF_UP);
+		$ratingtext = str_repeat('&#9733; ', $computedrating)
+		            . str_repeat('&#9734; ', $maxstars-$computedrating);
+
 		return $ratingtext;
 	}
 
