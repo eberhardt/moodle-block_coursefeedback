@@ -53,6 +53,7 @@ class block_coursefeedback extends block_base {
 		$this->content = new stdClass;
 		$context = context_course::instance($this->page->course->id);
 		$config = get_config("block_coursefeedback");
+        $renderer = null;
 		if (!isset($config->active_feedback) || $config->active_feedback == 0)
 			$this->content->text = get_string("page_html_nofeedbackactive", "block_coursefeedback");
 		else if (block_coursefeedback_questions_exist())
@@ -81,6 +82,9 @@ class block_coursefeedback extends block_base {
 		}
 		$rating = block_coursefeedback_get_course_rating($this->page->course->id, $config->ratingtreshold);
 		if ($rating >= $config->ratingtreshold) {
+		    if (is_null($renderer)) {
+                $renderer = $this->page->get_renderer("block_coursefeedback");
+            }
 			$this->content->text .= $renderer->render_rating($rating);
 		}
 		$this->content->footer = "";
