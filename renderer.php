@@ -19,37 +19,11 @@
  *
  * @package    block
  * @subpackage coursefeedback
- * @copyright  2011-2014 onwards Jan Eberhardt (@ innoCampus, TU Berlin)
+ * @copyright  2011-2014 onwards Jan Eberhardt / Felix Di Lenarda (@ innoCampus, TU Berlin)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 class block_coursefeedback_renderer extends plugin_renderer_base {
-
-	/**
-	 * @param float $rating
-	 * @return string
-	 */
-	public function render_rating($rating) {
-		$rating = round($rating, 1, PHP_ROUND_HALF_UP);
-		$ratingtext = $this->star_rating($rating);
-		return html_writer::empty_tag("hr", array("size" => 1))
-		     . html_writer::div(get_String("page_html_courserating", "block_coursefeedback"), "center notifytiny")
-		     . html_writer::div($ratingtext, "center");
-	}
-
-	/**
-	 * @param number $rating
-	 * @param number $maxstars
-	 * @param number $ratingscale
-	 * @return string
-	 */
-	public function star_rating($rating, $maxstars = 5, $ratingscale = 6) {
-		$computedrating = round(($ratingscale+1-$rating)/$ratingscale*$maxstars, 0, PHP_ROUND_HALF_UP);
-		$ratingtext = str_repeat('&#9733; ', $computedrating)
-		            . str_repeat('&#9734; ', $maxstars-$computedrating);
-
-		return $ratingtext;
-	}
 
 	/**
 	 * @return string
@@ -61,19 +35,130 @@ class block_coursefeedback_renderer extends plugin_renderer_base {
 
 	/**
 	 * @param number $courseid
+     * @param number $feedbackid
 	 * @return string
 	 */
-	public function render_view_link($courseid) {
-		return html_writer::link(new moodle_url("/blocks/coursefeedback/evaluate.php", array("id" => $courseid)),
-				                 get_string("page_link_evaluate", "block_coursefeedback"));
+	public function render_results_link($courseid, $feedbackid) {
+		return html_writer::link(new moodle_url("/blocks/coursefeedback/view.php", array("course" => $courseid, "feedback" => $feedbackid)),
+				                 get_string("page_link_viewresults", "block_coursefeedback"));
 	}
 
-	/**
-	 * @param number $courseid
-	 * @return string
-	 */
-	public function render_results_link($courseid) {
-		return html_writer::link(new moodle_url("/blocks/coursefeedback/view.php", array("id" => $courseid)),
-				                 get_string("page_link_view", "block_coursefeedback"));
-	}
+    /**
+     * @param number $courseid
+     * @return array
+     */
+    public function render_result_links($courseid) {
+        global $DB;
+        $results = array();
+        $sql = "SELECT DISTINCT ans.coursefeedbackid
+                FROM {block_coursefeedback_answers} ans
+                WHERE ans.course = ?";
+        $oldfbs = $DB->get_records_sql($sql, array($courseid));
+        foreach ($oldfbs as $oldfb) {
+            $feedback = $DB->get_record("block_coursefeedback", array("id" => $oldfb->coursefeedbackid));
+            $results[] = html_writer::link(new moodle_url("/blocks/coursefeedback/view.php", array("course" => $courseid, "feedback" => $feedback->id)),
+                $feedback->name);
+        }
+        return $results;
+    }
+
+    /**
+     * @return string
+     */
+    public function render_ranking_link() {
+        return html_writer::link(new moodle_url("/blocks/coursefeedback/ranking.php"),
+            get_string("page_link_rankings", "block_coursefeedback"));
+    }
+
+    /**
+     * @return string
+     */
+    public function render_moreinfo_link($params) {
+        return html_writer::link(new moodle_url("/blocks/coursefeedback/feedbackinfo.php", $params),
+            get_string("infopage_link_feedbackinfo", "block_coursefeedback"));
+    }
+    /**
+     * @param object $feedback
+     * @param array $openquestions
+     * @return string
+     */
+    public function render_notif_message_fb($feedback, $openquestions) {
+        $feedbackheading = $feedback->heading;
+        $message = '
+            <div class="cfb-notification-container">
+                <b>' . $feedbackheading . ' </b>
+                <p>
+                    <span class="cfb-question-info">'
+                        . get_string("notif_question","block_coursefeedback")
+                        . $openquestions['currentopenqstn']->questionid . '/' . $openquestions['questionsum'].': 
+                    </span>
+                    <b class="cfb-question">' . $openquestions['currentopenqstn']->question .'</b>
+                </p>
+                <div class="position-relative cfb-loadingblock"> 
+                    <div class="overlay-icon-container cfb-overlay-icon">
+                        <div class="loading-icon">
+                            <div class="spinner-border overlay" role="status">
+                                <span class="sr-only">Loading...</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="invisible container cfb-button-containaer" >               
+                        <div class="row" >
+                            <div class="col btn btn-secondary btn-sm mx-2 rounded cfb-fbemoji" >
+                                <span style="font-size: 1.5rem;">&#128515;</span><br>
+                                <span>'
+                                    . get_string("notif_emoji_super","block_coursefeedback") . '
+                                </span>
+                            </div>
+                            <div class="col btn btn-secondary btn-sm mx-2 rounded cfb-fbemoji">
+                                <span style="font-size: 1.5rem">&#128522;</span><br>
+                                <span> '
+                                    . get_string("notif_emoji_good","block_coursefeedback") . '
+                                </span>
+                            </div>
+                            <div class="col btn btn-secondary btn-sm mx-2 rounded cfb-fbemoji" style="border-radius: 8px">
+                                <span style="font-size: 1.5rem">&#128578;</span><br>
+                                <span> '
+                                    . get_string("notif_emoji_ok","block_coursefeedback") . '
+                                </span>                        
+                            </div>
+                            <div class="col btn btn-secondary btn-sm mx-2 rounded cfb-fbemoji">
+                                <span style="font-size: 1.5rem">&#128528;</span><br>
+                                <span> '
+                                    . get_string("notif_emoji_neutral","block_coursefeedback") . '
+                                </span>  
+                            </div>
+                            <div class="col btn btn-secondary btn-sm mx-2 rounded cfb-fbemoji">
+                                <span style="font-size: 1.5rem">&#128533;</span><br>
+                                <span> '
+                                    . get_string("notif_emoji_bad","block_coursefeedback") . '
+                                </span>
+                            </div>
+                            <div class="col btn btn-secondary btn-sm mx-2 rounded cfb-fbemoji">
+                                <span style="font-size: 1.5rem">&#128544;</span><br>
+                                <span> '
+                                    . get_string("notif_emoji_superbad","block_coursefeedback") . '
+                                </span>
+                            </div>
+                        </div>
+                    </div> 
+                </div>
+                <p>'. get_string("notif_pleaseclick", "block_coursefeedback") . ' '
+                    .$this->render_moreinfo_link(array("feedback"=>$feedback->id, "course"=>$this->page->course->id )) .' 
+                </p>
+            </div>';
+        return $message;
+    }
+    /**
+     * @param object $feedback
+     * @param int $courseid
+     * @return string
+     */
+    public function render_notif_message_teacher($feedback, $courseid) {
+        $message = get_string("notif_feedbackactive", "block_coursefeedback");
+        $message .=  get_string("notif_deactivate_howto", "block_coursefeedback");
+        $message .= ' | '.$this->render_moreinfo_link(array("feedback"=>$feedback->id, "course"=>$courseid ));
+        $message .= ' | ' . $this->render_results_link($courseid, $feedback->id);
+        return $message;
+    }
 }

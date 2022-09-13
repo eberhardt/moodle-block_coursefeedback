@@ -50,4 +50,9 @@ abstract class coursefeedbackform extends moodleform
 
 		parent::__construct($action);
 	}
+
+    // Override the parents set_data() function
+    function set_data($defaults) {
+	    parent::set_data($defaults);
+    }
 }

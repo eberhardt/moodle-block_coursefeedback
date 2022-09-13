@@ -19,7 +19,7 @@
  *
  * @package    block
  * @subpackage coursefeedback
- * @copyright  2011-2014 onwards Jan Eberhardt (@ innoCampus, TU Berlin)
+ * @copyright  2011-2014 onwards Jan Eberhardt / Felix Di Lenarda (@ innoCampus, TU Berlin)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -43,53 +43,90 @@ class block_coursefeedback extends block_base {
 	 */
 	public function get_content()
 	{
-		global $CFG;
-
+		global $CFG, $DB, $USER;
 		// Don't reload block content!
 		if ($this->content !== null) {
+            mtrace('0');
 			return $this->content;
 		}
-
 		$this->content = new stdClass;
 		$context = context_course::instance($this->page->course->id);
 		$config = get_config("block_coursefeedback");
-		if (!isset($config->active_feedback) || $config->active_feedback == 0)
-			$this->content->text = get_string("page_html_nofeedbackactive", "block_coursefeedback");
-		else if (block_coursefeedback_questions_exist())
-		{
-			$renderer = $this->page->get_renderer("block_coursefeedback");
-			$list = array();
-			if (has_capability("block/coursefeedback:managefeedbacks", $context)) {
-				$list[] = $renderer->render_manage_link();
-			}
-			if (has_capability("block/coursefeedback:evaluate", $context)) {
-				$list[] = $renderer->render_view_link($this->page->course->id);
-			}
-			if (has_capability("block/coursefeedback:viewanswers", $context)) {
-				$list[] = $renderer->render_results_link($this->page->course->id);
-			}
-			if (empty($list)) {
-				// Show message, if no links are available.
-				$this->content->text = get_string("page_html_nolinks", "block_coursefeedback");
-			}
-			else {
-				$this->content->text = html_writer::alist($list, array("style" => "list-style:none"));
+        $renderer = $this->page->get_renderer("block_coursefeedback");
+        $feedback = $DB->get_record("block_coursefeedback", array("id" => $config->active_feedback));
+        $list = array();
+        // TODO remove mtraces after testing
+        mtrace('1');
+        // Check if there is an active FB
+        // Check if the feedback should be active in this course depending on the startdate (since_coursestart) setting.
+        if (!isset($config->active_feedback) || $config->active_feedback == 0 || !block_coursefeedbck_coursestartcheck_good($config, $this->page->course->id)) {
+            // Keine aktive Umfrage aktiv Block mit Administrationslink nur anzeigen wenn das Recht zum Bearbeiten besteht
+            mtrace('2');
+        }
+        else if (!block_coursefeedback_period_is_active()){
+		    // Feedbackperiod is over check if answer exist -> delete uids and activate a copy of the current feedback for the next period.
+            mtrace('3');
+            if (block_coursefeedback_answers_exist($feedback->id)) {
+                $newid = block_coursefeedback_copy_feedback($feedback->id, $feedback->name, $feedback->heading, $feedback->infotext);
+                if ($newid) {
+                    block_coursefeedback_set_active($newid);
+                }
+            }
+        }
+        else if (block_coursefeedback_questions_exist()) {
+		    // Feedbackperiod is active and Feedback with questions is active.
+            mtrace('4');
+            if (has_capability("block/coursefeedback:viewanswers", $context)) {
+                $message = $renderer->render_notif_message_teacher($feedback, $this->page->course->id);
+                \core\notification::add($message,\core\output\notification::NOTIFY_INFO);
+            }
+            if ((has_capability("block/coursefeedback:evaluate", $context)
+                    && !has_capability("block/coursefeedback:viewanswers", $context))
+                    || has_capability("block/coursefeedback:managefeedbacks", $context)) {
+			    // A feedback is currently active.
+                if (null !== ($openquestions = block_coursefeedback_get_open_question())) {
+                    // There are unanswered questions (for this course and this user) in the currently active feedback.
+                    $message = $renderer->render_notif_message_fb($feedback, $openquestions);
+                    \core\notification::add($message,\core\output\notification::NOTIFY_INFO);
+                    $args = array(
+                        $this->page->course->id,
+                        $feedback->id,
+                        $openquestions['currentopenqstn']->questionid,
+                        $openquestions['questionsum']
+                    );
+                    $this->page->requires->js_call_amd('block_coursefeedback/notif', 'initialise', $args);
+                }
 			}
 		}
 		else {
-			$this->content->text = get_string("page_html_noquestions", "block_coursefeedback");
+            mtrace('5');
+            $this->content->text = get_string("page_html_noquestions", "block_coursefeedback");
 		}
-		$rating = block_coursefeedback_get_course_rating($this->page->course->id, $config->ratingtreshold);
-		if ($rating >= $config->ratingtreshold) {
-			$this->content->text .= $renderer->render_rating($rating);
-		}
-		$this->content->footer = "";
 
+        if (has_capability("block/coursefeedback:managefeedbacks", $context)) {
+            $list[] = $renderer->render_manage_link();
+            $list[] = $renderer->render_ranking_link();
+        }
+        if (has_capability("block/coursefeedback:viewanswers", $context)) {
+            if (!empty($results = $renderer->render_result_links($this->page->course->id))) {
+                $list[] = get_string("page_link_viewresults", "block_coursefeedback").':';
+                $list = array_merge($list, $results);
+            }
+        }
+        if (empty($list)) {
+        // Don't show the Block
+        $this->content->text = null;
+        }
+        else {
+            $this->content->text = html_writer::alist($list, array("style" => "list-style:none"));
+        }
+		$this->content->footer = "";
 		return $this->content;
 	}
 
 	/**
 	 * (non-PHPdoc)
+     * Tell Moodle that the block has a global configuration settings form
 	 * @see block_base::has_config()
 	 */
 	public function has_config()

@@ -13,3 +13,10 @@ Make it sticky
 
 Since version 1.0.6. there is an option in the plugin settings, to create a global sticky instance.
 It will be shown in all course main pages.
+
+Upgrade to v2
+==============
+
+All existings blocks are deleted because we want one "system context"-Bblock which we display in all Courses.
+We are not allowing single "course-context" blocks because ths could couse doublingissues.
+After the update it is necessary to 
