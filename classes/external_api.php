@@ -93,34 +93,47 @@ class external_api extends \external_api {
      */
     public static function answer_question_and_get_new($courseid, $feedback, $feedbackid,  $questionid) {
         global $DB, $USER;
-        $context = context_course::instance($courseid);
+        
+        // Validate parameter
+        $params = self::validate_parameters(self::answer_question_and_get_new_parameters(),
+            array(
+                'courseid' => $courseid,
+                'feedback' => $feedback,
+                'feedbackid' => $feedbackid,
+                'questionid' => $questionid
+            )
+        );
+
+        // Security checks
+        $context = context_course::instance($params['courseid']);
         self::validate_context($context);
+        require_capability('block/coursefeedback:evaluate', $context);
+
         $result = array(
             'saved' => false
         );
-        if (isset($feedback) && isset($feedbackid) && isset($questionid)) {
 
-            // Answer received -> save in DB.
-            $record = new stdClass();
-            $record->course = $courseid;
-            $record->coursefeedbackid = $feedbackid;
-            $record->questionid = $questionid;
-            $record->answer = $feedback;
-            $record->timemodified = time();
+        // Answer received -> save in DB.
+        $record = new stdClass();
+        $record->course = $params['courseid'];
+        $record->coursefeedbackid = $params['feedbackid'];
+        $record->questionid = $params['questionid'];
+        $record->answer = $params['feedback'];
+        $record->timemodified = time();
 
-            $uidtoans = new stdClass();
-            $uidtoans->userid = $USER->id;
-            $uidtoans->course = $courseid;
-            $uidtoans->coursefeedbackid = $feedbackid;
-            $uidtoans->questionid = $questionid;
+        $uidtoans = new stdClass();
+        $uidtoans->userid = $USER->id;
+        $uidtoans->course = $params['courseid'];
+        $uidtoans->coursefeedbackid = $params['feedbackid'];
+        $uidtoans->questionid = $params['questionid'];
 
-            $dbtrans = $DB->start_delegated_transaction();
-            if ($DB->insert_record("block_coursefeedback_answers", $record, false, false) &&
-                $DB->insert_record("block_coursefeedback_uidansw", $uidtoans, false, false)) {
-                $result['saved'] = true;
-            }
-            $dbtrans->allow_commit();
+        $dbtrans = $DB->start_delegated_transaction();
+        if ($DB->insert_record("block_coursefeedback_answers", $record, false, false) &&
+            $DB->insert_record("block_coursefeedback_uidansw", $uidtoans, false, false)) {
+            $result['saved'] = true;
         }
+        $dbtrans->allow_commit();
+
 
         // Check if there are questions left and return the resulting infos.
         if (null !== ($openquestions = block_coursefeedback_get_open_question())) {
@@ -206,10 +219,19 @@ class external_api extends \external_api {
     //TODO das Anzeigen der Rankings in der Weboberfläche ist nicht fertig implementiert -> CSV Download nutzen
     //TODO noch die frage übergeben und nur die fragen der jeweiligen sprache holen
     public static function get_feedback_questions($feedbackid) {
+
+        // Validate parameter
+        $params = self::validate_parameters(self::get_feedback_questions_parameters(),
+            array( 'feedbackid' => $feedbackid )
+        );
+
+        // Security checks
         $context = context_system::instance();
         self::validate_context($context);
+        require_capability('block/coursefeedback:managefeedbacks', $context);
+
         $currentlang = current_language();
-        $questions = block_coursefeedback_get_questions_by_language($feedbackid, $currentlang, "questionid",
+        $questions = block_coursefeedback_get_questions_by_language($params['feedbackid'], $currentlang, "questionid",
             "id,questionid,question,coursefeedbackid,language" );
         $result = ['questions' => array()];
         foreach($questions as $question) {
@@ -287,14 +309,29 @@ class external_api extends \external_api {
      */
     //TODO das Anzeigen der Rankings in der Weboberfläche ist nicht fertig implementiert -> CSV Download nutzen
     public static function get_ranking_for_question($questionid, $answerlimit, $showperpage, $page) {
-        global $DB, $PAGE;
+        global $DB;
+
+        // Validate parameter
+        $params = self::validate_parameters(self::get_ranking_for_question_parameters(),
+            array(
+                'id' => $questionid,
+                'answerlimit' => $answerlimit,
+                'showperpage' => $showperpage,
+                'page' => $page
+            )
+        );
+
+        // Security checks
         $context = context_system::instance();
         self::validate_context($context);
+        require_capability('block/coursefeedback:managefeedbacks', $context);
+
         // Hole die frage um feedbackid und questionid zu haben
-        $question = $DB->get_record('block_coursefeedback_questns', array('id' => $questionid));
+        $question = $DB->get_record('block_coursefeedback_questns', array('id' => $params['questionid']));
 
         // TODO hole alle kurse mit mehr antworten als answerlimit
-        $courses = block_coursefeedback_get_courserankings($question->questionid, $question->coursefeedbackid, $answerlimit, $showperpage, $page);
+        $courses = block_coursefeedback_get_courserankings($question->questionid, $question->coursefeedbackid,
+            $params['answerlimit'], $params['showperpage'], $params['page']);
         $result = ['ranking' => $courses];
         return $result;
     }
