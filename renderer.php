@@ -102,46 +102,48 @@ class block_coursefeedback_renderer extends plugin_renderer_base {
                             </div>
                         </div>
                     </div>
-                    <div class="invisible container cfb-button-containaer" >               
-                        <div class="row" >
-                            <div class="col btn btn-secondary btn-sm mx-2 rounded cfb-fbemoji" >
-                                <span style="font-size: 1.5rem;">&#128515;</span><br>
-                                <span>'
-                                    . get_string("notif_emoji_super","block_coursefeedback") . '
-                                </span>
-                            </div>
-                            <div class="col btn btn-secondary btn-sm mx-2 rounded cfb-fbemoji">
-                                <span style="font-size: 1.5rem">&#128522;</span><br>
-                                <span> '
-                                    . get_string("notif_emoji_good","block_coursefeedback") . '
-                                </span>
-                            </div>
-                            <div class="col btn btn-secondary btn-sm mx-2 rounded cfb-fbemoji" style="border-radius: 8px">
-                                <span style="font-size: 1.5rem">&#128578;</span><br>
-                                <span> '
-                                    . get_string("notif_emoji_ok","block_coursefeedback") . '
-                                </span>                        
-                            </div>
-                            <div class="col btn btn-secondary btn-sm mx-2 rounded cfb-fbemoji">
-                                <span style="font-size: 1.5rem">&#128528;</span><br>
-                                <span> '
-                                    . get_string("notif_emoji_neutral","block_coursefeedback") . '
-                                </span>  
-                            </div>
-                            <div class="col btn btn-secondary btn-sm mx-2 rounded cfb-fbemoji">
-                                <span style="font-size: 1.5rem">&#128533;</span><br>
-                                <span> '
-                                    . get_string("notif_emoji_bad","block_coursefeedback") . '
-                                </span>
-                            </div>
-                            <div class="col btn btn-secondary btn-sm mx-2 rounded cfb-fbemoji">
-                                <span style="font-size: 1.5rem">&#128544;</span><br>
-                                <span> '
-                                    . get_string("notif_emoji_superbad","block_coursefeedback") . '
-                                </span>
+                    <div class="block_coursefeedback">
+                        <div class="invisible container-fluid pl-sm-1 pl-0 cfb-button-containaer" >   
+                            <div class="row flex-nowrap" >
+                                <div class="col btn btn-secondary btn-sm mx-xl-2  mx-1 rounded cfb-fbemoji" >
+                                    <span style="font-size: 1.5rem;">&#128515;</span><br>
+                                    <span class="onlydesktop text-nowrap">'
+                                        . get_string("notif_emoji_super","block_coursefeedback") . '
+                                    </span>
+                                </div>
+                                <div class="col btn btn-secondary btn-sm mx-xl-2  mx-1 rounded cfb-fbemoji">
+                                    <span style="font-size: 1.5rem">&#128522;</span><br>
+                                    <span class="onlydesktop"> '
+                                        . get_string("notif_emoji_good","block_coursefeedback") . '
+                                    </span>
+                                </div>
+                                <div class="col btn btn-secondary btn-sm mx-xl-2  mx-1 rounded cfb-fbemoji" style="border-radius: 8px">
+                                    <span style="font-size: 1.5rem">&#128578;</span><br>
+                                    <span class="onlydesktop"> '
+                                        . get_string("notif_emoji_ok","block_coursefeedback") . '
+                                    </span>                        
+                                </div>
+                                <div class="col btn btn-secondary btn-sm mx-xl-2  mx-1 rounded cfb-fbemoji">
+                                    <span style="font-size: 1.5rem">&#128528;</span><br>
+                                    <span class="onlydesktop"> '
+                                        . get_string("notif_emoji_neutral","block_coursefeedback") . '
+                                    </span>  
+                                </div>
+                                <div class="col btn btn-secondary btn-sm mx-xl-2  mx-1 rounded cfb-fbemoji">
+                                    <span style="font-size: 1.5rem">&#128533;</span><br>
+                                    <span class="onlydesktop"> '
+                                        . get_string("notif_emoji_bad","block_coursefeedback") . '
+                                    </span>
+                                </div>
+                                <div class="col btn btn-secondary btn-sm mx-xl-2  mx-1 rounded cfb-fbemoji flex-shrink">
+                                    <span style="font-size: 1.5rem">&#128544;</span><br>
+                                    <span class="onlydesktop"> '
+                                        . get_string("notif_emoji_superbad","block_coursefeedback") . '
+                                    </span>
+                                </div>
                             </div>
                         </div>
-                    </div> 
+                    </div>
                 </div>
                 <p>'. get_string("notif_pleaseclick", "block_coursefeedback") . ' '
                     .$this->render_moreinfo_link(array("feedback"=>$feedback->id, "course"=>$this->page->course->id )) .' 
