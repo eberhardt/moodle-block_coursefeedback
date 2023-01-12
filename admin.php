@@ -112,7 +112,6 @@ if (isset($form) && get_parent_class($form) === "coursefeedbackform" && $form->i
                         }
 					} else {
 					    // Creating new fedback.
-					    // File_save_draft_area_files(...) nicht notwendig da $editoroptions keine files erlaubt
 						switch (block_coursefeedback_insert_feedback($data->name, $data->heading, $data->infotext['text']))
 						{
 							case -1:

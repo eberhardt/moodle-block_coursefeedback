@@ -23,6 +23,7 @@
 
 import Ajax from 'core/ajax';
 import jQuery from 'jquery';
+import * as Str from 'core/str';
 
 /**
  * Used for the ranking page
@@ -40,11 +41,15 @@ export const init = () => {
             // Populate question options.
             window.console.debug("AJAX FEEDBACK DONE");
             jQuery('#id_question').html('');
-            jQuery('<option/>').val('-1').html('Bitte wählen').appendTo('#id_question');
-            data.questions.forEach(function(quest) {
-                window.console.debug(quest);
-                jQuery('<option/>').val(quest.id).html(quest.question).appendTo('#id_question');
+            let choosestr = Str.get_string('form_option_choose', 'block_coursefeedback');
+            choosestr.done(function (string) {
+                jQuery('<option/>').val('-1').html(string).appendTo('#id_question');
+                data.questions.forEach(function(quest) {
+                    window.console.debug(quest);
+                    jQuery('<option/>').val(quest.id).html(quest.question).appendTo('#id_question');
+                });
             });
+
             return;
         }).fail(function (ex) {
             window.console.debug("ajax fAIL");

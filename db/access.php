@@ -73,7 +73,7 @@ $capabilities = array(
 
 		"captype" => "write",
 		"contextlevel" => CONTEXT_BLOCK,
-		"archtypes" => array(
+		"archetypes" => array(
 			"manager"        => CAP_PROHIBIT,
 			"editingteacher" => CAP_PROHIBIT
 		) // Only allow to add the block in context_system so it is shown in all courses exactly once
@@ -83,7 +83,7 @@ $capabilities = array(
 
 		"captype" => "write",
 		"contextlevel" => CONTEXT_SYSTEM,
-		"archtypes" => array(
+		"archetypes" => array(
 			"manager" => CAP_ALLOW,
             "editingteacher" => CAP_PROHIBIT,
 			"user" => CAP_PROHIBIT
