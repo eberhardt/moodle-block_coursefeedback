@@ -21,7 +21,7 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-import Ajax from 'core/ajax'; //"../../../../lib/amd/src/ajax";
+import Ajax from 'core/ajax';
 import * as Str from 'core/str';
 
 // Initiate the needed  global vars through an ajax call.
