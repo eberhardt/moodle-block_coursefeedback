@@ -180,15 +180,15 @@ class exportformat_csv extends exportformat
  */
 class rankingexport
 {
-    protected $feedbackid  = null;
+    protected $feedback  = null;
     protected $questionid = null;
     private $content     = "";
 
     public function __construct($feedback = null, $question = null) {
         global $DB;
 
-        if($DB->record_exists("block_coursefeedback", array("id" => $feedback))) {
-            $this->feedbackid = $feedback;
+        if($fb = $DB->get_record("block_coursefeedback", array("id" => $feedback))) {
+            $this->feedback = $fb;
             $this->questionid = $question;
         }
         else {
@@ -204,10 +204,10 @@ class rankingexport
         $newline   = "\n";
 
         $clang = current_language();
-        $this->content .= $DB->get_field("block_coursefeedback", "name",  array("id" => $this->feedbackid)) . $newline;
-        $this->content .= 'Feedbackid: ' . $this->feedbackid . $newline;
+        $this->content .= $this->feedback->name . $newline;
+        $this->content .= 'Feedbackid: ' . $this->feedback->id . $newline;
 
-        $qus = block_coursefeedback_get_questions_by_language($this->feedbackid, $clang);
+        $qus = block_coursefeedback_get_questions_by_language($this->feedback->id, $clang);
         $questions = null;
 
         if ($this->questionid) {
@@ -239,7 +239,7 @@ class rankingexport
             // Get courseids and the amount of answers in this course for the current question.
             $params = array(
                 'questionid' => $question->questionid,
-                'feedbackid' => $this->feedbackid,
+                'feedbackid' => $this->feedback->id,
                 'answerlimit' => 0,
             );
             $sql = "SELECT course as courseid, count(*) FROM {block_coursefeedback_answers}
@@ -283,7 +283,7 @@ class rankingexport
 
                 // Get amount of answers (for each answerpossibility) for the current question.
                 $params = array(
-                    "fid" => $this->feedbackid,
+                    "fid" => $this->feedback->id,
                     "course" => $course->courseid,
                     "qid" => $question->questionid
                 );
