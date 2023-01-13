@@ -165,6 +165,20 @@ function xmldb_block_coursefeedback_upgrade($oldversion = 0) {
         upgrade_block_savepoint(true, 2022120800, 'coursefeedback');
     }
 
+    if ($oldversion < 2023011400) {
+        // Add 'infotext' field to the 'block_coursefeedback' table
+
+        $table = new xmldb_table('block_coursefeedback');
+        $field = new xmldb_field('infotextformat', XMLDB_TYPE_INTEGER, 2);
+
+        // Conditionally launch add field.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        upgrade_block_savepoint(true, 2023011400, 'coursefeedback');
+    }
+
     return true;
 }
 

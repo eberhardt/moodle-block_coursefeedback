@@ -50,8 +50,7 @@ if (!empty($download))
 	if ($export->init_format($download))
 	{
 		$filename = get_string("download_html_filename", "block_coursefeedback")
-		          . date("_Y-m-d-H-i")
-		          . ".csv";
+            . date("_Y-m-d-H-i") . ".csv";
 		$export->create_file($lang);
 		header("Content-Type: text/csv");
 		header("Content-Disposition: attachment; filename=" . $filename);
@@ -94,9 +93,9 @@ if ($questions) {
 		$c11->colspan = 9;
 		$c11->style   = "padding-bottom:1em;";
 		$c11->text    = html_writer::tag("span",
-		                                 get_string("form_header_question", "block_coursefeedback", $question->questionid) . ": ",
-		                                 array("style" => "font-weight: bold; font-size: 1.5rem"))
-		              . html_writer::tag("span", $question->question, array("style" => "font-size: 1.5rem"));
+            get_string("form_header_question", "block_coursefeedback",
+            $question->questionid) . ": ", array("style" => "font-weight: bold; font-size: 1.5rem"));
+        $c11->text .= html_writer::tag("span", format_string($question->question), array("style" => "font-size: 1.5rem"));
 		$table->data[$j++]->cells = array($c11);
 		$table->data[$j] = new html_table_row();
 		$table->data[$j]->attributes = array("class" => "coursefeedback_table_sdescrow");
@@ -174,18 +173,18 @@ if ($questions) {
 	if ($lang !== null)
 		$params["lang"] = $lang;
 	$link = html_writer::link(new moodle_url("/blocks/coursefeedback/view.php", $params),
-	                          get_string("page_link_download", "block_coursefeedback", "CSV"));
+        get_string("page_link_download", "block_coursefeedback", "CSV"));
 }
 else if ($feedbackid > 0)
 	$html = get_string("page_html_noquestions", "block_coursefeedback");
 else
 	redirect(new moodle_url("/course/view.php", array("id" => $course->id)),
-	         get_string("page_html_nofeedbackactive", "block_coursefeedback"));
+        get_string("page_html_nofeedbackactive", "block_coursefeedback"));
 
 
 // Start output.
 echo $OUTPUT->header();
-echo $OUTPUT->heading('Feedback: '.$feedback->name);
+echo $OUTPUT->heading(get_string("pluginname", "block_coursefeedback"). ": " . format_string($feedback->name));
 
 if ($errormsg !== "")
 {

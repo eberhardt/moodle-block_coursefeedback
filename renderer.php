@@ -86,13 +86,13 @@ class block_coursefeedback_renderer extends plugin_renderer_base {
         $feedbackheading = $feedback->heading;
         $message = '
             <div class="cfb-notification-container">
-                <b>' . $feedbackheading . ' </b>
+                <b>' . format_string($feedbackheading) . ' </b>
                 <p>
                     <span class="cfb-question-info">'
                         . get_string("notif_question","block_coursefeedback")
                         . $openquestions['currentopenqstn']->questionid . '/' . $openquestions['questionsum'].': 
                     </span>
-                    <b class="cfb-question">' . $openquestions['currentopenqstn']->question .'</b>
+                    <b class="cfb-question">' . format_string($openquestions['currentopenqstn']->question) .'</b>
                 </p>
                 <div class="position-relative cfb-loadingblock"> 
                     <div class="overlay-icon-container cfb-overlay-icon">

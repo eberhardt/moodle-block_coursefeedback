@@ -67,7 +67,8 @@ class block_coursefeedback extends block_base {
 		    // Feedbackperiod is over check if answer exist -> delete uids and activate a copy of the current feedback for the next period.
             mtrace('3');
             if (block_coursefeedback_answers_exist($feedback->id)) {
-                $newid = block_coursefeedback_copy_feedback($feedback->id, $feedback->name, $feedback->heading, $feedback->infotext);
+                $newid = block_coursefeedback_copy_feedback($feedback->id, $feedback->name, $feedback->heading,
+                    $feedback->infotext, $feedback->infotextformat);
                 if ($newid) {
                     block_coursefeedback_set_active($newid);
                 }

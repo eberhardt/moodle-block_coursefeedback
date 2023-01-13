@@ -75,7 +75,7 @@ if ($config->since_coursestart_enabled) {
     // Only show if "since_coursestart" setting is enabled.
     $infotext .= html_writer::tag("p", get_string('infopage_html_coursestartcountd','block_coursefeedback', (ceil($config->since_coursestart/86400))));
 }
-$infotext .= $DB->get_field('block_coursefeedback', 'infotext', array('id'=>$feedbackid));
+$infotext .= format_text($feedback->infotext, $feedback->infotextformat);
 echo $OUTPUT->header();
 echo $OUTPUT->heading(get_string("infopage_headline_feedbackinfo", "block_coursefeedback").': '.$feedback->name);
 // file_rewrite_pluginfile_urls(...) nicht notwendig da $editoroptions keine files erlaubt hat;

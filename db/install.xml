@@ -11,6 +11,7 @@
 		<FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" DEFAULT="0" PREVIOUS="name" NEXT="heading"/>
 	  	<FIELD NAME="heading" TYPE="text" LENGTH="small" NOTNULL="false" SEQUENCE="false" PREVIOUS="timemodified" NEXT="infotext"/>
 	  	<FIELD NAME="infotext" TYPE="text" LENGTH="medium" NOTNULL="false" SEQUENCE="false" PREVIOUS="heading" />
+	  	<FIELD NAME="infotextformat" TYPE="int" LENGTH="1" NOTNULL="false" SEQUENCE="false" DEFAULT="1" COMMENT="Infotext format"/>
 	  </FIELDS>
 	  <KEYS>
 		<KEY NAME="primary" TYPE="primary" FIELDS="id"/>
@@ -38,7 +39,7 @@
 		<FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="course"/>
 		<FIELD NAME="course" TYPE="int" LENGTH="20" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="id" NEXT="coursefeedbackid"/>
 		<FIELD NAME="coursefeedbackid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="course" NEXT="questionid"/>
-		<FIELD NAME="questionid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="coursefeedbackid" NEXT="answer"/>
+			<FIELD NAME="questionid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="coursefeedbackid" NEXT="answer"/>
 		<FIELD NAME="answer" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="questionid" NEXT="timemodified"/>
 		<FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" DEFAULT="0" PREVIOUS="answer"/>
 	  </FIELDS>
