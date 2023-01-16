@@ -108,12 +108,36 @@ class external_api extends \external_api {
         $context = context_course::instance($params['courseid']);
         self::validate_context($context);
         require_capability('block/coursefeedback:evaluate', $context);
+        $config = get_config("block_coursefeedback");
 
+        // Check if FB and question exist
+        if (!$DB->record_exists("block_coursefeedback_questns",
+            ['questionid' => $params['questionid'], 'coursefeedbackid' => $params['feedbackid']])) {
+            throw new \moodle_exception('Feedback or question does not exist', 'block_coursefeedback');
+        }
+
+        // Check if answer exist already
+        if ($DB->record_exists("block_coursefeedback_uidansw",
+            [
+                "userid" => $USER->id,
+                "course" => $params['courseid'],
+                "questionid" => $params['questionid'],
+                "coursefeedbackid" => $params['feedbackid']
+            ])) {
+            throw new \moodle_exception('Answer for this question already exist', 'block_coursefeedback');
+        }
+
+        // Check if FB active and period is running and coursestart is ok
+        if ($config->active_feedback != $params['feedbackid']
+            || !block_coursefeedbck_coursestartcheck_good($config, $params['courseid'])
+            || !block_coursefeedback_period_is_active()) {
+            throw new \moodle_exception('Given feedback not active at the monent', 'block_coursefeedback');
+        }
+
+        // Answer received -> save in DB.
         $result = array(
             'saved' => false
         );
-
-        // Answer received -> save in DB.
         $record = new stdClass();
         $record->course = $params['courseid'];
         $record->coursefeedbackid = $params['feedbackid'];
