@@ -166,7 +166,7 @@ function xmldb_block_coursefeedback_upgrade($oldversion = 0) {
     }
 
     if ($oldversion < 2023011400) {
-        // Add 'infotext' field to the 'block_coursefeedback' table
+        // Add 'infotextformat' field to the 'block_coursefeedback' table
 
         $table = new xmldb_table('block_coursefeedback');
         $field = new xmldb_field('infotextformat', XMLDB_TYPE_INTEGER, 2);
