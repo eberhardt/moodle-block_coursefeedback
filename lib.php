@@ -1230,3 +1230,22 @@ function block_coursefeedbck_coursestartcheck_good($config, $courseid) {
     }
     return true;
 }
+
+/**
+ * Return the all feedbacks with answers for this course
+ *
+ * @param int $courseid
+ * @return array
+ */
+function block_coursefeedbck_get_fbsfor_course($courseid)
+{
+    global $DB;
+    $results = array();
+    $sql = "SELECT DISTINCT cf.id, cf.name, ans.course
+                FROM {block_coursefeedback_answers} ans
+                JOIN {block_coursefeedback} cf ON ans.coursefeedbackid = cf.id
+                WHERE ans.course = ?";
+    $answerredfbs = $DB->get_records_sql($sql, array($courseid));
+
+    return $answerredfbs;
+}

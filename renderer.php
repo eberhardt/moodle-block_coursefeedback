@@ -27,37 +27,33 @@ class block_coursefeedback_renderer extends plugin_renderer_base {
 
 	/**
 	 * @return string
-	 */
-	public function render_manage_link() {
-		return html_writer::link(new moodle_url("/admin/settings.php?section=blocksettingcoursefeedback"),
-				                 get_string("page_link_settings", "block_coursefeedback"));
-	}
+     */
+    public function render_manage_link()
+    {
+        return html_writer::link(new moodle_url("/admin/settings.php?section=blocksettingcoursefeedback"),
+            get_string("page_link_settings", "block_coursefeedback"));
+    }
 
-	/**
-	 * @param number $courseid
+    /**
+     * @param number $courseid
      * @param number $feedbackid
-	 * @return string
-	 */
-	public function render_results_link($courseid, $feedbackid) {
-		return html_writer::link(new moodle_url("/blocks/coursefeedback/view.php", array("course" => $courseid, "feedback" => $feedbackid)),
-				                 get_string("page_link_viewresults", "block_coursefeedback"));
-	}
+     * @return string
+     */
+    public function render_results_link($courseid, $feedbackid)
+    {
+        return html_writer::link(new moodle_url("/blocks/coursefeedback/view.php", array("course" => $courseid, "feedback" => $feedbackid)),
+            get_string("page_link_viewresults", "block_coursefeedback"));
+    }
 
     /**
      * @param number $courseid
      * @return array
      */
-    public function render_result_links($courseid) {
-        global $DB;
-        $results = array();
-        $sql = "SELECT DISTINCT ans.coursefeedbackid
-                FROM {block_coursefeedback_answers} ans
-                WHERE ans.course = ?";
-        $oldfbs = $DB->get_records_sql($sql, array($courseid));
-        foreach ($oldfbs as $oldfb) {
-            $feedback = $DB->get_record("block_coursefeedback", array("id" => $oldfb->coursefeedbackid));
-            $results[] = html_writer::link(new moodle_url("/blocks/coursefeedback/view.php", array("course" => $courseid, "feedback" => $feedback->id)),
-                $feedback->name);
+    public function render_result_links($answerredfbs)
+    {
+        foreach ($answerredfbs as $feedback) {
+            $results[] = html_writer::link(new moodle_url("/blocks/coursefeedback/view.php",
+                ["course" => $feedback->course, "feedback" => $feedback->id]), $feedback->name);
         }
         return $results;
     }
@@ -65,7 +61,8 @@ class block_coursefeedback_renderer extends plugin_renderer_base {
     /**
      * @return string
      */
-    public function render_ranking_link() {
+    public function render_ranking_link()
+    {
         return html_writer::link(new moodle_url("/blocks/coursefeedback/ranking.php"),
             get_string("page_link_rankings", "block_coursefeedback"));
     }
@@ -73,7 +70,8 @@ class block_coursefeedback_renderer extends plugin_renderer_base {
     /**
      * @return string
      */
-    public function render_moreinfo_link($params) {
+    public function render_moreinfo_link($params)
+    {
         return html_writer::link(new moodle_url("/blocks/coursefeedback/feedbackinfo.php", $params),
             get_string("infopage_link_feedbackinfo", "block_coursefeedback"));
     }

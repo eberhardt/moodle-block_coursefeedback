@@ -109,8 +109,9 @@ class block_coursefeedback extends block_base {
             $list[] = $renderer->render_ranking_link();
         }
         if (has_capability("block/coursefeedback:viewanswers", $context)) {
-            if (!empty($results = $renderer->render_result_links($this->page->course->id))) {
-                $list[] = get_string("page_link_viewresults", "block_coursefeedback").':';
+            $fbsforcourse = block_coursefeedbck_get_fbsfor_course($this->page->course->id);
+            if (!empty($results = $renderer->render_result_links($fbsforcourse))) {
+                $list[] = get_string("page_link_viewresults", "block_coursefeedback") . ':';
                 $list = array_merge($list, $results);
             }
         }
