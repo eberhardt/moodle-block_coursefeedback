@@ -90,13 +90,6 @@ const sendandreceive_feedback = (function() {
             sendingactive = true;
         }
 
-        window.console.debug('sendandreceive_feedback CALLED');
-        window.console.debug('COURSEID, FEEDBACKID, QUESTIONID, ANSWER');
-        window.console.debug(courseid);
-        window.console.debug(feedbackid);
-        window.console.debug(questionid);
-        window.console.debug(feedback);
-
         // Get needed elements/nodes.
         let notifikations = document.getElementById("user-notifications");
         let feedback_notif = notifikations.getElementsByClassName("cfb-notification-container")[0];
@@ -118,7 +111,6 @@ const sendandreceive_feedback = (function() {
             }
         }]);
         promises[0].done(function (data) {
-            window.console.debug("AJAX submitting DONE");
             // Put new notification content and fade in after fadingout-promise resolved.
             fopromise.then(()=> {
                 if (data.nextquestion === null) {
@@ -140,10 +132,8 @@ const sendandreceive_feedback = (function() {
                     });
                 }
             });
-        }).fail(function () {
-            window.console.debug("Submitting answer FAIL");
-            //window.console.debug(ex);
-            //TODO exception notification or error event?
+        }).fail(function (ex) {
+            window.console.error(ex);
         });
     };
 })();
@@ -175,11 +165,9 @@ export const initialise = (cid, fbid, quid, qusum) => {
     emojis.map((emoji) => {
         let answer = emojis.indexOf(emoji)+1;
         emoji.onclick = () => {
-            window.console.debug('EMOJI clicked '.concat(answer));
             sendandreceive_feedback(answer, courseid, feedbackid, questionid, questionsum);
         };
     });
-    window.console.debug("EMOJIS should listen now");
 
     // Bootstrap 4 does not have opacity classes, inline styles are filtered out for some reason.
     // Therefore we use invisible class and then switch to opacity to fade in.
