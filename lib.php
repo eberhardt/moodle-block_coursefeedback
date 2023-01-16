@@ -583,7 +583,6 @@ function block_coursefeedback_get_questions_by_language($feedbackid,
         $languages[] = $CFG->lang;
         $languages[] = $fbdefaultlang;
 	}
-	$languages[] = get_config("block_coursefeedback", "active_feedback"); // Ensures, that intersection isn"t empty.
 
 	$fblanguages = block_coursefeedback_get_combined_languages($feedbackid);
     $questions = false;
