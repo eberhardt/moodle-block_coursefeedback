@@ -42,8 +42,8 @@ $settings->add(new admin_setting_configselect("block_coursefeedback/default_lang
 $setting = new admin_setting_configduration("block_coursefeedback/since_coursestart",
     get_string("adminpage_html_fbactiveforcoursesa", "block_coursefeedback"),
     get_string("adminpage_html_fbactiveforcoursesb", "block_coursefeedback"),
-    false);
-$setting->set_enabled_flag_options(admin_setting_flag::ENABLED, true);
+    0);
+$setting->set_enabled_flag_options(admin_setting_flag::ENABLED, false);
 $settings->add($setting);
 
 $settings->add(new admin_setting_configtextarea_time_period("block_coursefeedback/periods_feedback",
