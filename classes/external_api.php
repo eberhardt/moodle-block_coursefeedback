@@ -92,8 +92,8 @@ class external_api extends \external_api {
      * @returns array The next questiondetails
      */
     public static function answer_question_and_get_new($courseid, $feedback, $feedbackid,  $questionid) {
-        global $DB, $USER;
-        
+        global $DB, $USER, $COURSE;
+
         // Validate parameter
         $params = self::validate_parameters(self::answer_question_and_get_new_parameters(),
             array(
@@ -132,6 +132,11 @@ class external_api extends \external_api {
             || !block_coursefeedbck_coursestartcheck_good($config, $params['courseid'])
             || !block_coursefeedback_period_is_active()) {
             throw new \moodle_exception('Given feedback not active at the monent', 'block_coursefeedback');
+        }
+
+        // Check if answer matches the course
+        if ($COURSE->id != $params['courseid']) {
+            throw new \moodle_exception('Feedback for wrong course given', 'block_coursefeedback');
         }
 
         // Answer received -> save in DB.

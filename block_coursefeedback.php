@@ -84,7 +84,6 @@ class block_coursefeedback extends block_base {
                     // There are unanswered questions (for this course and this user) in the currently active feedback.
                     $message = $renderer->render_notif_message($feedback, $openquestions);
                     \core\notification::add($message, \core\output\notification::NOTIFY_INFO);
-
                     $args = array(
                         $this->page->course->id,
                         $feedback->id,
