@@ -28,24 +28,41 @@ require_once(__DIR__ . "/lib.php");
 
 class block_coursefeedback extends block_base {
 
-	/**
-	 * Initializes the block.
-	 */
-	public function init()
-	{
-		$this->title = get_string("pluginname", "block_coursefeedback");
-		$this->content_type = BLOCK_TYPE_TEXT;
-	}
+    /**
+     * Initializes the block.
+     */
+    public function init()
+    {
+        $this->title = get_string("pluginname", "block_coursefeedback");
+        $this->content_type = BLOCK_TYPE_TEXT;
+    }
 
-	/**
-	 * (non-PHPdoc)
-	 * @see block_base::get_content()
-	 */
-	public function get_content()
-	{
-		global $CFG, $DB, $USER;
-		// Don't reload block content!
-		if ($this->content !== null) {
+    /**
+     * Locations where block can be displayed.
+     *
+     * @return array
+     */
+    public function applicable_formats()
+    {
+        // Only allow on site index (see README for further information)
+        return [
+            'admin' => false,
+            'site-index' => true,
+            'course-view' => false,
+            'mod' => false,
+            'my' => false
+        ];
+    }
+
+    /**
+     * (non-PHPdoc)
+     * @see block_base::get_content()
+     */
+    public function get_content()
+    {
+        global $CFG, $DB, $USER;
+        // Don't reload block content!
+        if ($this->content !== null) {
 			return $this->content;
 		}
 		$this->content = new stdClass;

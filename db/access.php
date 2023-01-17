@@ -74,9 +74,9 @@ $capabilities = array(
 		"captype" => "write",
 		"contextlevel" => CONTEXT_BLOCK,
 		"archetypes" => array(
-			"manager"        => CAP_PROHIBIT,
-			"editingteacher" => CAP_PROHIBIT
-		) // Only allow to add the block in context_system so it is shown in all courses exactly once
+            "manager" => CAP_ALLOW,
+            "editingteacher" => CAP_PROHIBIT
+        ) // Only allow to add the block in context_system so it is shown in all courses exactly once
 	),
 
 	"block/coursefeedback:myaddinstance" => array(
@@ -84,10 +84,10 @@ $capabilities = array(
 		"captype" => "write",
 		"contextlevel" => CONTEXT_SYSTEM,
 		"archetypes" => array(
-			"manager" => CAP_ALLOW,
+            "manager" => CAP_PROHIBIT,
             "editingteacher" => CAP_PROHIBIT,
-			"user" => CAP_PROHIBIT
-		)
+            "user" => CAP_PROHIBIT
+        )
 	),
 );
 

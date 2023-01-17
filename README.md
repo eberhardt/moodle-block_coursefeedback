@@ -17,13 +17,13 @@ It will be shown in all course main pages.
 Upgrade to v2
 ==============
 
-All existings blocks are deleted because we want one "system context"-Bblock which we display in all Courses.
-We are not allowing single "course-context" blocks because this could cause doublingissues.
+All existing blocks are deleted because we want one "system context"-block which we display in all Courses.
+We are not allowing single "course-context" blocks because this could cause duplicate issue.
 After the update it is necessary to add "system context" Block:
-  1.  First, start on the frontpage of your Moodle site. Make sure that editing is turned on, and click "+ Add a block".
+  1.  First, start on the frontpage of your Moodle site ("All courses"). Make sure that editing is turned on, and click "+ Add a block".
   2.  Once the block has been added to the page, click the settings icon, and click "Configure". 
-  3.  On the block settings page, under "Where this block appears", select "Show throughout the entire site".
+  3.  On the block settings page, under "Where this block appears", select "Display throughout the entire site".
   4.  Next, open up one of the existing courses on your Moodle site (it doesn't matter which course).
   5.  Now, click the block settings icon on the block again, and click "Configure".
-  6.  Under "Where this block appears", change the setting to "course-view-*.
+  6.  Under "Where this block appears", change the setting to "Any type of course main page"
 (instruction source: https://createdbycocoon.com/knowledge/adding-block-all-courses-moodle)

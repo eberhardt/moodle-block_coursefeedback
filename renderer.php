@@ -51,6 +51,7 @@ class block_coursefeedback_renderer extends plugin_renderer_base {
      */
     public function render_result_links($answerredfbs)
     {
+        $results = [];
         foreach ($answerredfbs as $feedback) {
             $results[] = html_writer::link(new moodle_url("/blocks/coursefeedback/view.php",
                 ["course" => $feedback->course, "feedback" => $feedback->id]), format_string($feedback->name));
