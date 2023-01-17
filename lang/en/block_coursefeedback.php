@@ -35,7 +35,7 @@ $string['notif_emoji_ok']                  = 'satisfactory';
 $string['notif_emoji_neutral']             = 'sufficient';
 $string['notif_emoji_bad']                 = 'deficient';
 $string['notif_emoji_superbad']            = 'insufficient';
-$string['notif_thankyou']                  = 'Thank you for your feedback :D';
+$string['notif_thankyou']                  = 'Thank you for your feedback &#128522;';
 $string['notif_deactivate_howto']          = 'You can deactivate the feedback by chosing "Hide course feedback block" in the blocksettings.';
 $string['notif_feedbackactive']        = 'Currently a userfeedbackpoll of the "Course feedback" block is active. ';
 
