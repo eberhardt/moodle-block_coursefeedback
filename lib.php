@@ -590,9 +590,8 @@ function block_coursefeedback_get_questions_by_language($feedbackid,
 		                              $sort,
 		                              $fields);
 	} elseif( $fblanguages ) {
-        $langs = block_coursefeedback_get_implemented_languages($feedbackid);
         $questions = $DB->get_records("block_coursefeedback_questns",
-            array("coursefeedbackid" => $feedbackid, "language" => $langs[0]),
+            array("coursefeedbackid" => $feedbackid, "language" => $fblanguages[0]),
             $sort,
             $fields);
     }
