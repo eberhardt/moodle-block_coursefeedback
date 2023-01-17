@@ -51,18 +51,16 @@ if ($action == "download")
 
     $lang = current_language();
     $export = new rankingexport($feedbackid, $qufbid);
-    if (true) //$export->init_format($download))
-    {
-        $filename = "RANKING" //get_string("download_html_filename", "block_coursefeedback")
-            . date("_Y-m-d-H-i")
-            . ".csv";
-        $export->create_file($lang);
-        header("Content-Type: text/csv");
-        header("Content-Disposition: attachment; filename=" . $filename);
-        echo $export->get_content();
-        exit(0);
-    }
-    else $errormsg = "wrong format";
+
+    // TODO use /lib/csvlib.class
+    $filename = "RANKING" //get_string("download_html_filename", "block_coursefeedback")
+        . date("_Y-m-d-H-i")
+        . ".csv";
+    $export->create_file($lang);
+    header("Content-Type: text/csv");
+    header("Content-Disposition: attachment; filename=" . $filename);
+    echo $export->get_content();
+    exit(0);
 }
 
 $config = get_config("block_coursefeedback");
