@@ -356,7 +356,8 @@ class external_api extends \external_api {
         require_capability('block/coursefeedback:managefeedbacks', $context);
 
         // Hole die frage um feedbackid und questionid zu haben
-        $question = $DB->get_record('block_coursefeedback_questns', array('id' => $params['id']));
+        $question = $DB->get_record('block_coursefeedback_questns',
+            array('id' => $params['id']), '*', MUST_EXIST);
 
         // TODO hole alle kurse mit mehr antworten als answerlimit
         $courses = block_coursefeedback_get_courserankings($question->questionid, $question->coursefeedbackid,
