@@ -53,7 +53,7 @@ if ($action == "download")
     $export = new rankingexport($feedbackid, $qufbid);
 
     // TODO use /lib/csvlib.class
-    $filename = "RANKING" //get_string("download_html_filename", "block_coursefeedback")
+    $filename = get_string("download_html_filename", "block_coursefeedback")
         . date("_Y-m-d-H-i")
         . ".csv";
     $export->create_file($lang);
@@ -80,11 +80,10 @@ $form = new f_ranking_form();
 echo html_writer::div($form->render(), '', ['id' => 'formcontainer']);
 $table = new html_table();
 $table->id = "coursefeedback_table";
-// TODO STRINGS
 $table->head = array(
-    "COURSEID",
-    "FEEDBACKANTWORTEN",
-    "DURCHSCHNITT",
+    get_string("course"),
+    get_string("table_html_votes", "block_coursefeedback"),
+    get_string("table_html_average", "block_coursefeedback"),
 );
 $table->data = array();
 echo html_writer::table($table);
