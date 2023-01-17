@@ -96,16 +96,16 @@ function block_coursefeedback_insert_feedback($feedbackname, $heading = null, $i
 
 	if (strpos($feedbackname, ";") === false)
 	{
-		$record = new stdClass();
-		$record->name = block_coursefeedback_clean_sql($feedbackname);
+        $record = new stdClass();
+        $record->name = $feedbackname;
         $record->timemodified = time();
-        $record->heading = block_coursefeedback_clean_sql($heading);
+        $record->heading = $heading;
         $record->infotext = $infotext;
         $record->infotextformat = $infotextformat;
 
 
         return $DB->insert_record("block_coursefeedback", $record, $returnid);
-	}
+    }
 	else return -1;
 }
 
@@ -125,16 +125,15 @@ function block_coursefeedback_edit_feedback($feedbackid, $feedbackname, $heading
 	if (strpos($feedbackname, ";"))
 		return -1;
 
-	if ($record = $DB->get_record("block_coursefeedback", array("id" => $feedbackid)))
-	{
-		$record->name = block_coursefeedback_clean_sql($feedbackname);
-		$record->timemodified = time();
-        $record->heading = block_coursefeedback_clean_sql($heading);
+	if ($record = $DB->get_record("block_coursefeedback", array("id" => $feedbackid))) {
+        $record->name = $feedbackname;
+        $record->timemodified = time();
+        $record->heading = $heading;
         $record->infotext = $infotext;
         $record->infotextformat = $infotextformat;
 
         return clean_param($DB->update_record("block_coursefeedback", $record), PARAM_BOOL);
-	}
+    }
 	else return false;
 }
 
@@ -214,16 +213,16 @@ function block_coursefeedback_insert_question($question, $feedbackid, $questioni
 	{
 		$languages 	= block_coursefeedback_get_implemented_languages($feedbackid, $questionid, true, true);
 		if ($languages && in_array($language, $languages)) // cCeck if language already exists.
-		{
+        {
 
-			$record = new stdClass();
-			$record->question = block_coursefeedback_clean_sql($question);
-			$record->coursefeedbackid = $feedbackid;
-			$record->questionid = $questionid;
-			$record->language = $language;
-			$record->timemodified = time();
-			return $DB->insert_record("block_coursefeedback_questns", $record);
-		}
+            $record = new stdClass();
+            $record->question = $question;
+            $record->coursefeedbackid = $feedbackid;
+            $record->questionid = $questionid;
+            $record->language = $language;
+            $record->timemodified = time();
+            return $DB->insert_record("block_coursefeedback_questns", $record);
+        }
 	}
 
 	return false;
@@ -308,15 +307,14 @@ function block_coursefeedback_update_question($feedbackid, $questionid, $questio
 	$feedbackid = intval($feedbackid);
 	$questionid = intval($questionid);
 
-	if (in_array($language, block_coursefeedback_get_implemented_languages($feedbackid, $questionid)))
-	{
-		$record = $DB->get_record("block_coursefeedback_questns", array("coursefeedbackid" => $feedbackid,
-		                                                                "questionid" => $questionid,
-		                                                                "language" => $language));
-		$record->question = block_coursefeedback_clean_sql($question);
-		$record->timemodified = time();
-		return clean_param($DB->update_record("block_coursefeedback_questns", $record), PARAM_BOOL);
-	}
+	if (in_array($language, block_coursefeedback_get_implemented_languages($feedbackid, $questionid))) {
+        $record = $DB->get_record("block_coursefeedback_questns", array("coursefeedbackid" => $feedbackid,
+            "questionid" => $questionid,
+            "language" => $language));
+        $record->question = $question;
+        $record->timemodified = time();
+        return clean_param($DB->update_record("block_coursefeedback_questns", $record), PARAM_BOOL);
+    }
 
 	return false;
 }
@@ -986,19 +984,6 @@ function block_coursefeedback_validate($feedbackid, $returnerrors = false)
 		return $notifications;
 	else
 		return empty($notifications);
-}
-
-/**
- * Clears string for database import
- *
- * @param string $text
- * @return string
- */
-function block_coursefeedback_clean_sql($text)
-{
-	$text = clean_param($text, PARAM_NOTAGS);
-
-	return $text;
 }
 
 function format($string)

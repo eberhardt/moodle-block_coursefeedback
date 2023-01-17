@@ -61,7 +61,7 @@ class f_ranking_form extends moodleform {
             foreach($feedbacks as $feedback)
             {
                 if(block_coursefeedback_questions_exist($feedback->id))
-                    $options[$feedback->id] = format_text(stripslashes($feedback->name), FORMAT_HTML);;
+                    $options[$feedback->id] = format_string($feedback->name);
             }
             ksort($options);
         }

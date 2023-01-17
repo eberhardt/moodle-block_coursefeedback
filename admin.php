@@ -434,27 +434,25 @@ if ($action === "view")
 				$languages = block_coursefeedback_get_combined_languages($feedback->id, false);
 				if (!empty($languages))
 				{
-					$langtext = join(", ", $languages);
-					$q = $DB->count_records_select("block_coursefeedback_questns",
-					                               "coursefeedbackid = :fid AND language = :curlang GROUP BY language",
-					                               array("fid" => $feedback->id, "curlang" => current(array_keys($languages))));
-				}
-				else
-				{
-					$langtext = "&nbsp;";
-					$q = 0;
-				}
-				$feedback->name = format($feedback->name);
-                $feedback->timemodified = date('d.m.Y', $feedback->timemodified );
-				$url1 = block_coursefeedback_adminurl("feedback", "new", $feedback->id);
-				$url2 = block_coursefeedback_adminurl("feedback", "edit", $feedback->id);
-				$url3 = block_coursefeedback_adminurl("questions", "view", $feedback->id);
-				$url4 = block_coursefeedback_adminurl("feedback", "delete", $feedback->id);
-				$text1 = html_writer::link($url1, get_string("duplicate")) . "<br/>"
-				       . html_writer::link($url2, get_string("edit")) . "<br/>"
-				       . html_writer::link($url3, get_string("page_link_showlistofquestions", "block_coursefeedback")) . "<br/>"
-				       . html_writer::link($url4, get_string("delete"));
-				$text2 = ($active == $feedback->id) ? "X" : block_coursefeedback_create_activate_button($feedback->id) . "<br/>";
+                    $langtext = join(", ", $languages);
+                    $q = $DB->count_records_select("block_coursefeedback_questns",
+                        "coursefeedbackid = :fid AND language = :curlang GROUP BY language",
+                        array("fid" => $feedback->id, "curlang" => current(array_keys($languages))));
+                } else {
+                    $langtext = "&nbsp;";
+                    $q = 0;
+                }
+                $feedback->name = format_string($feedback->name);
+                $feedback->timemodified = date('d.m.Y', $feedback->timemodified);
+                $url1 = block_coursefeedback_adminurl("feedback", "new", $feedback->id);
+                $url2 = block_coursefeedback_adminurl("feedback", "edit", $feedback->id);
+                $url3 = block_coursefeedback_adminurl("questions", "view", $feedback->id);
+                $url4 = block_coursefeedback_adminurl("feedback", "delete", $feedback->id);
+                $text1 = html_writer::link($url1, get_string("duplicate")) . "<br/>"
+                    . html_writer::link($url2, get_string("edit")) . "<br/>"
+                    . html_writer::link($url3, get_string("page_link_showlistofquestions", "block_coursefeedback")) . "<br/>"
+                    . html_writer::link($url4, get_string("delete"));
+                $text2 = ($active == $feedback->id) ? "X" : block_coursefeedback_create_activate_button($feedback->id) . "<br/>";
 				$table->data[] 	= array($feedback->id, $feedback->name, $feedback->timemodified, $text1, $langtext, $q, $text2);
 			}
 		}
@@ -496,19 +494,15 @@ if ($action === "view")
 					                              "question",
 					                              array("coursefeedbackid" => $fid,
 					                                    "questionid" => $questionid,
-					                                    "language" => $language)))
-					{
-						$question = format($question);
-						$listing .= "<div>";
-						if (strlen($question) > 50 && $p = strpos($question, " ", 50))
-						{
-							$listing .= str_replace(" ", "&nbsp;", substr($question, 0, $p) . "&nbsp;[...]");
-						}
-						else
-						{
-							$listing .= str_replace(" ", "&nbsp;", $question);
-						}
-						$listing .= "</div>\n";
+					                                    "language" => $language))) {
+                        $question = format_string($question);
+                        $listing .= "<div>";
+                        if (strlen($question) > 50 && $p = strpos($question, " ", 50)) {
+                            $listing .= str_replace(" ", "&nbsp;", substr($question, 0, $p) . "&nbsp;[...]");
+                        } else {
+                            $listing .= str_replace(" ", "&nbsp;", $question);
+                        }
+                        $listing .= "</div>\n";
 						$languages .= html_writer::tag("span", $language, array("style" => "padding:0px;")) ."<br/>\n";
 						$url1 = block_coursefeedback_adminurl("question",
 						                                      "edit",
