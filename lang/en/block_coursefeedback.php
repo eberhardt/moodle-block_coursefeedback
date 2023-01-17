@@ -80,7 +80,7 @@ $string['table_html_nofeedback']           = 'No survey';
 $string['table_html_undefinedlang']        = 'Translation missing. Language \'{$a}\' unavailable.'; // 50 chars max
 
 /* Forms */
-$string['form_notif_heading']              = 'Notifikationsüberschrift';
+$string['form_notif_heading']              = 'Notification heading';
 $string['form_copyof']                     = 'Copy';
 $string['form_feedback_infotext']          = 'Feedback Infotext';
 $string['form_feedback_infotext_help']     = 'This text is used as userinformation about the feedback, it should contain a headline and all necessary information in all required languages';
