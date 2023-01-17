@@ -75,89 +75,34 @@ class block_coursefeedback_renderer extends plugin_renderer_base {
         return html_writer::link(new moodle_url("/blocks/coursefeedback/feedbackinfo.php", $params),
             get_string("infopage_link_feedbackinfo", "block_coursefeedback"));
     }
+
     /**
      * @param object $feedback
      * @param array $openquestions
      * @return string
      */
-    public function render_notif_message_fb($feedback, $openquestions) {
-        $feedbackheading = $feedback->heading;
-        $message = '
-            <div class="cfb-notification-container">
-                <b>' . format_string($feedbackheading) . ' </b>
-                <p>
-                    <span class="cfb-question-info">'
-                        . get_string("notif_question","block_coursefeedback")
-                        . $openquestions['currentopenqstn']->questionid . '/' . $openquestions['questionsum'].': 
-                    </span>
-                    <b class="cfb-question">' . format_string($openquestions['currentopenqstn']->question) .'</b>
-                </p>
-                <div class="position-relative cfb-loadingblock"> 
-                    <div class="overlay-icon-container cfb-overlay-icon">
-                        <div class="loading-icon">
-                            <div class="spinner-border overlay" role="status">
-                                <span class="sr-only">Loading...</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="block_coursefeedback">
-                        <div class="invisible container-fluid pl-sm-1 pl-0 cfb-button-containaer" >   
-                            <div class="row flex-nowrap" >
-                                <div class="col btn btn-secondary btn-sm mx-xl-2  mx-1 rounded cfb-fbemoji" >
-                                    <span style="font-size: 1.5rem;">&#128515;</span><br>
-                                    <span class="onlydesktop text-nowrap">'
-                                        . get_string("notif_emoji_super","block_coursefeedback") . '
-                                    </span>
-                                </div>
-                                <div class="col btn btn-secondary btn-sm mx-xl-2  mx-1 rounded cfb-fbemoji">
-                                    <span style="font-size: 1.5rem">&#128522;</span><br>
-                                    <span class="onlydesktop"> '
-                                        . get_string("notif_emoji_good","block_coursefeedback") . '
-                                    </span>
-                                </div>
-                                <div class="col btn btn-secondary btn-sm mx-xl-2  mx-1 rounded cfb-fbemoji" style="border-radius: 8px">
-                                    <span style="font-size: 1.5rem">&#128578;</span><br>
-                                    <span class="onlydesktop"> '
-                                        . get_string("notif_emoji_ok","block_coursefeedback") . '
-                                    </span>                        
-                                </div>
-                                <div class="col btn btn-secondary btn-sm mx-xl-2  mx-1 rounded cfb-fbemoji">
-                                    <span style="font-size: 1.5rem">&#128528;</span><br>
-                                    <span class="onlydesktop"> '
-                                        . get_string("notif_emoji_neutral","block_coursefeedback") . '
-                                    </span>  
-                                </div>
-                                <div class="col btn btn-secondary btn-sm mx-xl-2  mx-1 rounded cfb-fbemoji">
-                                    <span style="font-size: 1.5rem">&#128533;</span><br>
-                                    <span class="onlydesktop"> '
-                                        . get_string("notif_emoji_bad","block_coursefeedback") . '
-                                    </span>
-                                </div>
-                                <div class="col btn btn-secondary btn-sm mx-xl-2  mx-1 rounded cfb-fbemoji flex-shrink">
-                                    <span style="font-size: 1.5rem">&#128544;</span><br>
-                                    <span class="onlydesktop"> '
-                                        . get_string("notif_emoji_superbad","block_coursefeedback") . '
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <p>'. get_string("notif_pleaseclick", "block_coursefeedback") . ' '
-                    .$this->render_moreinfo_link(array("feedback"=>$feedback->id, "course"=>$this->page->course->id )) .' 
-                </p>
-            </div>';
-        return $message;
+    public function render_notif_message($feedback, $openquestions)
+    {
+        // TODO do we need the export for template function here?
+        $data = [
+            'fbheading' => $feedback->heading,
+            'qid' => $openquestions['currentopenqstn']->questionid,
+            'qsum' => $openquestions['questionsum'],
+            'qtext' => $openquestions['currentopenqstn']->question
+        ];
+        return parent::render_from_template('block_coursefeedback/questionnotif', $data);
     }
+
     /**
      * @param object $feedback
      * @param int $courseid
      * @return string
      */
-    public function render_notif_message_teacher($feedback, $courseid) {
+    public function render_notif_message_teacher($feedback, $courseid)
+    {
         $message = get_string("notif_feedbackactive", "block_coursefeedback");
-        $message .=  get_string("notif_deactivate_howto", "block_coursefeedback");
-        $message .= ' | '.$this->render_moreinfo_link(array("feedback"=>$feedback->id, "course"=>$courseid ));
+        $message .= get_string("notif_deactivate_howto", "block_coursefeedback");
+        $message .= ' | ' . $this->render_moreinfo_link(array("feedback" => $feedback->id, "course" => $courseid));
         $message .= ' | ' . $this->render_results_link($courseid, $feedback->id);
         return $message;
     }

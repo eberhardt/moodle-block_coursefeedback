@@ -46,7 +46,6 @@ class block_coursefeedback extends block_base {
 		global $CFG, $DB, $USER;
 		// Don't reload block content!
 		if ($this->content !== null) {
-            mtrace('0');
 			return $this->content;
 		}
 		$this->content = new stdClass;
@@ -56,16 +55,13 @@ class block_coursefeedback extends block_base {
         $feedback = $DB->get_record("block_coursefeedback", array("id" => $config->active_feedback));
         $list = array();
         // TODO remove mtraces after testing
-        mtrace('1');
         // Check if there is an active FB
         // Check if the feedback should be active in this course depending on the startdate (since_coursestart) setting.
         if (!isset($config->active_feedback) || $config->active_feedback == 0 || !block_coursefeedbck_coursestartcheck_good($config, $this->page->course->id)) {
-            // Keine aktive Umfrage aktiv Block mit Administrationslink nur anzeigen wenn das Recht zum Bearbeiten besteht
-            mtrace('2');
+            // No active FB at the moment -> do nothing
         }
         else if (!block_coursefeedback_period_is_active()){
 		    // Feedbackperiod is over check if answer exist -> delete uids and activate a copy of the current feedback for the next period.
-            mtrace('3');
             if (block_coursefeedback_answers_exist($feedback->id)) {
                 $newid = block_coursefeedback_copy_feedback($feedback->id, $feedback->name, $feedback->heading,
                     $feedback->infotext, $feedback->infotextformat);
@@ -76,7 +72,6 @@ class block_coursefeedback extends block_base {
         }
         else if (block_coursefeedback_questions_exist()) {
 		    // Feedbackperiod is active and Feedback with questions is active.
-            mtrace('4');
             if (has_capability("block/coursefeedback:viewanswers", $context)) {
                 $message = $renderer->render_notif_message_teacher($feedback, $this->page->course->id);
                 \core\notification::add($message,\core\output\notification::NOTIFY_INFO);
@@ -87,8 +82,9 @@ class block_coursefeedback extends block_base {
 			    // A feedback is currently active.
                 if (null !== ($openquestions = block_coursefeedback_get_open_question())) {
                     // There are unanswered questions (for this course and this user) in the currently active feedback.
-                    $message = $renderer->render_notif_message_fb($feedback, $openquestions);
-                    \core\notification::add($message,\core\output\notification::NOTIFY_INFO);
+                    $message = $renderer->render_notif_message($feedback, $openquestions);
+                    \core\notification::add($message, \core\output\notification::NOTIFY_INFO);
+
                     $args = array(
                         $this->page->course->id,
                         $feedback->id,
@@ -100,7 +96,6 @@ class block_coursefeedback extends block_base {
 			}
 		}
 		else {
-            mtrace('5');
             $this->content->text = get_string("page_html_noquestions", "block_coursefeedback");
 		}
 
