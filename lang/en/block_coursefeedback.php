@@ -24,7 +24,7 @@ $string['adminpage_html_notinstalled']     = '\'{$a}\' (not installed)';
 $string['infopage_html_coursestartcountd'] = 'Feedback is active if  not more time than {$a} days since coursestart has past.';
 $string['infopage_headline_feedbackinfo']      = 'Feedbackinfo';
 $string['infopage_html_activeperiods']         = 'This feedback is active in the following timeperiods: ';
-$string['infopage_link_feedbackinfo']                = '(more infos)';
+$string['infopage_link_feedbackinfo']                = 'More information';
 
 /* Notification */
 $string['notif_question']                  = 'Question ';
