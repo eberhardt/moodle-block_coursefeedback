@@ -77,7 +77,6 @@ if ($config->since_coursestart_enabled) {
 $infotext .= format_text($feedback->infotext, $feedback->infotextformat);
 echo $OUTPUT->header();
 echo $OUTPUT->heading(get_string("infopage_headline_feedbackinfo", "block_coursefeedback").': '.$feedback->name);
-// file_rewrite_pluginfile_urls(...) nicht notwendig da $editoroptions keine files erlaubt hat;
 echo $OUTPUT->box($infotext);
 echo $OUTPUT->footer();
 
