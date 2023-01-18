@@ -28,7 +28,7 @@ $string['infopage_link_feedbackinfo']         = 'Weitere Informationen';
 
 /* Notification */
 $string['notif_question']                  = 'Frage ';
-$string['notif_pleaseclick']               = 'Bitte klicken Sie auf einen der Emojis. Die Antwort wird anonym gespeichert.';
+$string['notif_pleaseclick']               = 'Bitte wählen Sie einen der Emojis. Ihre Antwort wird anonym gespeichert.';
 $string['notif_emoji_super']               = 'sehr gut';
 $string['notif_emoji_good']                = 'gut';
 $string['notif_emoji_ok']                  = 'befriedigend';
