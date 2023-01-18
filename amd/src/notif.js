@@ -44,7 +44,7 @@ function fadeOut(element) {
             opacity = 0;
         }
         let fadingout = setInterval(function () {
-            if (opacity < 0) {
+            if (opacity <= 0) {
                 clearInterval(fadingout);
                 resolve();
             } else {
