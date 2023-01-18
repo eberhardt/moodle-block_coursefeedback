@@ -82,7 +82,7 @@ $string['table_html_undefinedlang']        = 'Translation missing. Language \'{$
 /* Forms */
 $string['form_notif_heading']              = 'Notification heading';
 $string['form_copyof']                     = 'Copy';
-$string['form_feedback_infotext']          = 'Feedback Infotext';
+$string['form_feedback_infotext']          = 'Feedback info text';
 $string['form_feedback_infotext_help']     = 'This text is used as userinformation about the feedback, it should contain a headline and all necessary information in all required languages';
 $string['form_header_newfeedback']         = 'New survey';
 $string['form_header_editfeedback']        = 'Edit survey';
