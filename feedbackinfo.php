@@ -45,7 +45,6 @@ $feedback = $DB->get_record("block_coursefeedback", array("id" => $feedbackid));
 
 // Only show site if the given feedback is also active right now.
 $period = block_coursefeedback_period_is_active();
-var_dump($period);
 if ($config->active_feedback != $feedbackid && $period) {
     redirect(new moodle_url($CFG->wwwroot));
 }

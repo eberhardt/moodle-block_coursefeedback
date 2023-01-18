@@ -71,7 +71,6 @@ class block_coursefeedback extends block_base {
         $renderer = $this->page->get_renderer("block_coursefeedback");
         $feedback = $DB->get_record("block_coursefeedback", array("id" => $config->active_feedback));
         $list = array();
-        // TODO remove mtraces after testing
         // Check if there is an active FB
         // Check if the feedback should be active in this course depending on the startdate (since_coursestart) setting.
         if (!isset($config->active_feedback) || $config->active_feedback == 0 || !block_coursefeedbck_coursestartcheck_good($config, $this->page->course->id)) {

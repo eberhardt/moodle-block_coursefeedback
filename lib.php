@@ -1051,16 +1051,16 @@ function block_coursefeedback_period_is_active() {
         foreach ($periods as $period) {
 
             if ($period['begin'] <= $period['end']) {
-                // Zeitraum geht nicht über jahreswechsel -> Anzeigen wenn begin <= now <= end
+                // Period definition is not crossing the turn of the year -> show if begin <= now <= end
                 if ($period['begin'] < $currenttime && $currenttime < $period['end']) {
-                    //echo "<br>kein JW Zeitraum periode läuft<br>";
+                    // Period is active right now
                     return $period;
                 }
             }
             else {
-                // Zeitraum geht über Jahres wechsel
+                // Period definition crosses the turn of the year
                 if ($period['begin'] < $currenttime || $currenttime < $period['end']) {
-                    //echo "<br> JW Zeitraum periode läuft<br>";
+                    // Period is active right now
                     return $period;
                 }
             }
@@ -1068,9 +1068,7 @@ function block_coursefeedback_period_is_active() {
         return false;
     }
     else {
-        // Zeitraum nicht gewählt -> Umfrage immer live wenn aktiviert";
-        //echo "<br>   Zeitraum nicht gewählt -> Umfrage immer live wenn aktiviert<br>";
-
+        // Period not defined -> Active-feedback is always live
         return true;
     }
 }
@@ -1105,7 +1103,6 @@ function block_coursefeedback_parse_dates($datesraw) {
         };
         return $result;
     } catch (\moodle_exception $e) {
-        var_dump($e);
         return false;
     }
 
@@ -1204,7 +1201,6 @@ function block_coursefeedback_get_courserankings($questionid, $coursefeedbackid,
 function block_coursefeedbck_coursestartcheck_good($config, $courseid) {
     // if setting not activated don't check for coursestart
     if ($config->since_coursestart_enabled) {
-        mtrace('enabled');
         $course = get_course($courseid);
         $startdate = $course->startdate;
         $timepassed = (time() - $startdate);

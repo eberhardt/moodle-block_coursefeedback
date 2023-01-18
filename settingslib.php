@@ -51,7 +51,6 @@ class admin_setting_configtextarea_time_period extends admin_setting_configtexta
             };
             return true;
         } catch (\moodle_exception $e) {
-            var_dump($e);
             return false;
         }
 
