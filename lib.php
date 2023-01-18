@@ -954,10 +954,7 @@ function  block_coursefeedback_questions_exist($feedbackid = COURSEFEEDBACK_DEFA
  */
 function block_coursefeedback_answers_exist($feedbackid) {
     global $DB;
-    if ($DB->record_exists("block_coursefeedback_answers", array("coursefeedbackid" => $feedbackid))) {
-        return true;
-    }
-    return false;
+    return $DB->record_exists("block_coursefeedback_answers", ["coursefeedbackid" => $feedbackid]);
 }
 
 /**
