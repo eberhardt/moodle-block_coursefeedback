@@ -44,7 +44,7 @@ class f_ranking_form extends moodleform {
         $mform->addElement('select', 'feedback', get_string("form_select_feedback", "block_coursefeedback"),  $this->get_possible_feedbacks() );
         $mform->addElement('button', 'downloadfb', get_string("form_button_downloadfb", "block_coursefeedback"));
         $mform->hideIf('downloadfb', 'feedback', 'eq', -1);
-        $options[-1] = get_string("form_option_choose", "block_coursefeedback");
+        $options = [-1 => get_string("form_option_choose", "block_coursefeedback")];
         $mform->addElement('select', 'question', get_string("form_select_question", "block_coursefeedback"), $options);
         $mform->addElement('button', 'downloadqu', get_string("form_button_downloadqu", "block_coursefeedback"));
         $mform->hideIf('downloadqu', 'question', 'eq', -1);
