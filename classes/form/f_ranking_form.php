@@ -48,7 +48,6 @@ class f_ranking_form extends moodleform {
         $mform->addElement('select', 'question', get_string("form_select_question", "block_coursefeedback"), $options);
         $mform->addElement('button', 'downloadqu', get_string("form_button_downloadqu", "block_coursefeedback"));
         $mform->hideIf('downloadqu', 'question', 'eq', -1);
-        //$mform->disabledIf('setlimit', 'limitanswers', 'neq', 1);
     }
 
     protected function get_possible_feedbacks() {
