@@ -97,26 +97,6 @@ function xmldb_block_coursefeedback_upgrade($oldversion = 0) {
         upgrade_block_savepoint(true, 2022102401, 'coursefeedback');
     }
 
-    if ($oldversion < 2022110803) {
-
-        // Beim Upgrade auf neue Version alle Kursfeedbackblockinstanzen löschen
-        // da in zukunft nur noch ein "systemblock" auf allen Kursseiten angezeigt werden kann.
-        // Trainer*innen wurde das Recht Kursfeedbackblöcke einzubinden bzw. zu löschen entzogen.
-        // Die Capability addinstance ist jetzt generell verboten.
-        // Wir wollen damit sicherstellen, dass es in keinem Kurs den Block Zwiemal geben kann.
-        // Kursdefault Blöcke können entweder über die config.php gesteuert werden
-        // Oder einen Block auf Systemebene ("All courses" page) anlegen ->"Show on entire Site"
-        // und dann in den Courseblocksettings -> "Show on "Any type of Course Mainpage".
-
-        // Delete all block_instances
-        $blockinstances =  $DB->get_records('block_instances', ['blockname' => 'coursefeedback']);
-        foreach ($blockinstances as $block) {
-            blocks_delete_instance($block);
-        }
-
-        upgrade_block_savepoint(true, 2022110803, 'coursefeedback');
-    }
-
     if ($oldversion < 2022120200) {
 
         $anstable = new xmldb_table('block_coursefeedback_answers');
@@ -179,6 +159,33 @@ function xmldb_block_coursefeedback_upgrade($oldversion = 0) {
         upgrade_block_savepoint(true, 2023011400, 'coursefeedback');
     }
 
+    if ($oldversion < 2023011800) {
+
+        // For the upgrade to Version 2 we delete all instances of the coursefeedback block.
+        // Since Version 2 we only allow one "context system" block which is displayed on all courses.
+        // Only mangers are allowed now to add or delete the block.
+        // We want exactly one block in each course.
+        // To make things as easy as possible
+        // we automatically add the block when upgradind to version 2 or installing the block.
+        // There is a manual way to add the block  which is described in the REAMDE file.
+        // Since we are adding the block automatically,
+        // manually adding the block is only needed if the block was manually deleted before for some reason.
+
+        // Delete all block_instances
+        $blockinstances = $DB->get_records('block_instances', ['blockname' => 'coursefeedback']);
+        foreach ($blockinstances as $block) {
+            blocks_delete_instance($block);
+        }
+
+        // Add the wanted block
+        $page = new moodle_page();
+        $systemcontext = context_system::instance();
+        $page->set_context($systemcontext);
+        $page->blocks->add_region(BLOCK_POS_RIGHT);
+        $page->blocks->add_block('coursefeedback', BLOCK_POS_RIGHT, 0, true, 'course-view-*');
+
+        upgrade_block_savepoint(true, 2023011800, 'coursefeedback');
+    }
     return true;
 }
 
