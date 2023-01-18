@@ -67,7 +67,7 @@ function fadeIn(element) {
         opacity = 0;
     }
     let fadingin = setInterval(function () {
-        if (opacity > 1) {
+        if (opacity >= 1) {
             clearInterval(fadingin);
         } else {
             opacity = opacity + 0.1;
