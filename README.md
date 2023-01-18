@@ -24,7 +24,7 @@ To make things as easy as possible we automatically add the block when upgradind
 Since we are adding the block automatically, manually adding the block is only needed if the block was manually deleted before for some reason.
 
 Here is how you would add the block manually:   
-  1.  First, start on the frontpage of your Moodle site ("All courses"). Make sure that editing is turned on, and click "+ Add a block".
+  1.  First, start on the frontpage of your Moodle site ("Home"). Make sure that editing is turned on, and click "+ Add a block".
   2.  Once the block has been added to the page, click the settings icon, and click "Configure". 
   3.  On the block settings page, under "Where this block appears", select "Display throughout the entire site".
   4.  Next, open up one of the existing courses on your Moodle site (it doesn't matter which course).
