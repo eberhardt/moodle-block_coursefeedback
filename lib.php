@@ -1224,7 +1224,6 @@ function block_coursefeedbck_coursestartcheck_good($config, $courseid) {
 function block_coursefeedbck_get_fbsfor_course($courseid)
 {
     global $DB;
-    $results = array();
     $sql = "SELECT DISTINCT cf.id, cf.name, ans.course
                 FROM {block_coursefeedback_answers} ans
                 JOIN {block_coursefeedback} cf ON ans.coursefeedbackid = cf.id

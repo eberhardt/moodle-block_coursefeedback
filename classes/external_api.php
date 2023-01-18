@@ -134,9 +134,22 @@ class external_api extends \external_api {
             throw new \moodle_exception('Given feedback not active at the monent', 'block_coursefeedback');
         }
 
-        // Check if answer matches the course
-        if ($COURSE->id != $params['courseid']) {
-            throw new \moodle_exception('Feedback for wrong course given', 'block_coursefeedback');
+        // Check if more than one coursefeedback blocks exist in the course or block is hidden
+        $sql = "SELECT bp.visible
+            FROM {block_positions} bp
+            JOIN {block_instances} bi ON bp.blockinstanceid = bi.id
+            WHERE bp.contextid = :contextid AND bi.blockname = :blockname";
+        $sqlparams = [
+            'contextid' => $context->id,
+            'blockname' => 'coursefeedback'
+        ];
+        $blocks = $DB->get_records_sql($sql, $sqlparams);
+        if (count($blocks) > 1) {
+            throw new \moodle_exception('More than one coursefeedbackblock in the course', 'block_coursefeedback');
+        } elseif (count($blocks) == 1) {
+            if (array_pop($blocks)->visible != 1) {
+                throw new \moodle_exception('Coursefeedback block in this course is hidden', 'block_coursefeedback');
+            }
         }
 
         // Answer received -> save in DB.
