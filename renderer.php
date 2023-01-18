@@ -108,8 +108,8 @@ class block_coursefeedback_renderer extends plugin_renderer_base {
     public function render_notif_message_teacher($feedback, $courseid)
     {
         $message = get_string("notif_feedbackactive", "block_coursefeedback");
-        $message .= get_string("notif_deactivate_howto", "block_coursefeedback");
-        $message .= ' | ' . $this->render_moreinfo_link(array("feedback" => $feedback->id, "course" => $courseid));
+        $message .= ' ' . get_string("notif_deactivate_howto", "block_coursefeedback");
+        $message .= ' ' . $this->render_moreinfo_link(array("feedback" => $feedback->id, "course" => $courseid));
         $message .= ' | ' . $this->render_results_link($courseid, $feedback->id);
         return $message;
     }
