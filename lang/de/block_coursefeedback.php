@@ -36,7 +36,7 @@ $string['notif_emoji_neutral']             = 'ausreichend';
 $string['notif_emoji_bad']                 = 'mangelhaft';
 $string['notif_emoji_superbad']            = 'ungenügend';
 $string['notif_thankyou']                  = 'Vielen Dank für Ihr Feedback &#128522;';
-$string['notif_deactivate_howto']          = ' Sie können die Umfrage in Ihrem Kurs deaktivieren indem Sie in den Einstellungen des "Kursfeedback"-Block, "Kursfeedback verbergen" wählen.';
+$string['notif_deactivate_howto']          = 'Sie können die Umfrage deaktivieren, indem Sie den Block "Kursfeedback" verbergen.';
 $string['notif_feedbackactive']            = ' Derzeit ist eine Teilnehmer*innen Feedbackumfrage des Blocks Kursfeedback aktiv. ';
 
 /* Page */
