@@ -86,11 +86,16 @@ class block_coursefeedback_renderer extends plugin_renderer_base {
     {
         // TODO do we need the export for template function here?
         // Template vars are automatically escaped
+        $urlparams = [
+            'feedback' => $feedback->id,
+            'course' => $this->page->course->id
+        ];
         $data = [
             'fbheading' => $feedback->heading,
             'qid' => $openquestions['currentopenqstn']->questionid,
             'qsum' => $openquestions['questionsum'],
-            'qtext' => $openquestions['currentopenqstn']->question
+            'qtext' => $openquestions['currentopenqstn']->question,
+            'link' => new moodle_url("/blocks/coursefeedback/feedbackinfo.php", $urlparams)
         ];
         return parent::render_from_template('block_coursefeedback/questionnotif', $data);
     }
