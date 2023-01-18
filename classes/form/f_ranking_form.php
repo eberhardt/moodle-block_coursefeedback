@@ -56,7 +56,7 @@ class f_ranking_form extends moodleform {
         if($DB->record_exists("block", array("name" => "coursefeedback")) && $feedbacks = $DB->get_records("block_coursefeedback"))
         {
             // Populate feedback options
-            $options[-1] = get_string("form_option_choose", "block_coursefeedback");
+            $options = [-1 => get_string("form_option_choose", "block_coursefeedback")];
             foreach($feedbacks as $feedback)
             {
                 if(block_coursefeedback_questions_exist($feedback->id))
