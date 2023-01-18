@@ -393,11 +393,14 @@ function block_coursefeedback_delete_questions($feedbackid, $languages)
  */
 function block_coursefeedback_delete_answers($feedbackid)
 {
-	global $DB;
-	$conditions = array("coursefeedbackid" => intval($feedbackid));
+    global $DB;
+    $conditions = array("coursefeedbackid" => intval($feedbackid));
+    $dbtrans = $DB->start_delegated_transaction();
     $DB->delete_records("block_coursefeedback_uidansw", array("coursefeedbackid" => $feedbackid));
+    $res = $DB->delete_records("block_coursefeedback_answers", $conditions);
+    $dbtrans->allow_commit();
 
-	return clean_param($DB->delete_records("block_coursefeedback_answers", $conditions), PARAM_BOOL);
+    return clean_param($res, PARAM_BOOL);
 }
 
 /**
