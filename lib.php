@@ -777,7 +777,7 @@ function block_coursefeedback_create_activate_button($feedbackid, $value = "") {
         // Reactivation of FB's for whom answers exist is not possible.
         return get_string("page_html_wasactive", "block_coursefeedback", $feedbackid);
 
-    if (!is_string($value) or $value === "")
+    if (!is_string($value) || $value === "")
 		$value = get_string("page_link_use", "block_coursefeedback");
 	$url = block_coursefeedback_adminurl("feedback", "activate", $feedbackid);
 	return html_writer::link($url, $value);
