@@ -44,7 +44,7 @@ class admin_setting_configtextarea_time_period extends admin_setting_configtexta
                     return 'zu viele bindestriche';
                 }
                 foreach ($datepairs as $datepair) {
-                    if (!preg_match('/^[0-3]{1}[0-9]{1}.[0-3]{1}[0-9]{1}$/', $datepair)) {
+                    if (!preg_match('/^[0-3][0-9]\.[0-1][0-9]$/', $datepair)) {
                         return 'falsches datepair';
                     }
                 }
