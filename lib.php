@@ -1008,31 +1008,6 @@ function block_coursefeedback_adminurl($mode, $action, $fid = null, array $other
 }
 
 /**
- * Calculates a rating from all given answers
- *
- * @param number $course the course for which the rating should be calculated.
- * @param number $treshold the number of answers, which has to be given, before a rating is calculated
- * @param number|NULL $feedback the ID of the feedback, which the rating is calculated of. If NULL, all
- *                              feedbacks (even inactive ones) will be taken into account.
- * @return number|NULL A float rating (between 1 and 6) or NULL, if $treshold is not reached
- */
-function block_coursefeedback_get_course_rating($course, $treshold = 20, $feedback = null) {
-	global $DB;
-	$select = "course = ? AND answer > 0";
-	$params = array(intval($course));
-	if ($feedback >= 0) {
-		$select .= " AND coursefeedbackid = ?";
-		$params[] = intval($feedback);
-	}
-	$answers = $DB->get_fieldset_select("block_coursefeedback_answers", "answer", $select, $params);
-	if ($answers && count($answers) >= $treshold) {
-		return array_sum($answers)/count($answers);
-	} else {
-		return null;
-	}
-}
-
-/**
  * Checks if a Feedbackperiod is active.
  *
  * @return array|bool $period if active, false if not, true if no periods given
@@ -1168,7 +1143,7 @@ function block_coursefeedback_get_courserankings($questionid, $coursefeedbackid,
         //$courseobj = get_course($course->course);
         $courseanswerstotal = count($answers);
         $answersum = 0;
-        // TODO Hier könnte auch 'block_coursefeedback_get_course_rating()' genutzt werden
+        // TODO logik in DB querry auslagern
         foreach ($answers as $answer) {
             $answersum += $answer->answer;
         }
