@@ -26,13 +26,38 @@ import jQuery from 'jquery';
 import * as Str from 'core/str';
 
 /**
+ * reset table
+ *
+ */
+function resetTable() {
+    jQuery('#coursefeedback_table').find('tbody').html('');
+}
+
+/**
  * Used for the ranking page
  * Initialise
  */
 export const init = () => {
+
+    let downquest = jQuery('#id_downloadqu');
+    let downfeed = jQuery('#id_downloadfb');
+
+    // Initially hide the downloadbuttons ($mform->hideIF unfortunately doesn't work properly in this case)
+    downquest.hide();
+    downfeed.hide();
+
     // Eventlistener for changing the selected feedback.
-    jQuery('#id_feedback').change(function() {
+    jQuery('#id_feedback').change(function () {
         let selectedfeedback = jQuery('#id_feedback').val();
+
+        // Check if a valid fb is selected
+        if (selectedfeedback == '0') {
+            downfeed.hide();
+        } else {
+            downfeed.show();
+        }
+
+        // Get fb questions
         let promises = Ajax.call([{
             methodname: 'block_coursefeedback_get_feedback_questions',
             args: {feedbackid: selectedfeedback}
@@ -43,12 +68,17 @@ export const init = () => {
             jQuery('#id_question').html('');
             let choosestr = Str.get_string('form_option_choose', 'block_coursefeedback');
             choosestr.done(function (string) {
-                jQuery('<option/>').val('-1').html(string).appendTo('#id_question');
-                data.questions.forEach(function(quest) {
+                jQuery('<option/>').val('0').html(string).appendTo('#id_question');
+                data.questions.forEach(function (quest) {
                     window.console.debug(quest);
-                    jQuery('<option/>').val(quest.id).html(quest.question).appendTo('#id_question');
+                    jQuery('<option/>').val(quest.questionid).html(quest.question).appendTo('#id_question');
                 });
             });
+
+            // Hide and reset downloadqu button and reset table
+            jQuery('#id_question').val('0');
+            downquest.hide();
+            resetTable();
 
             return;
         }).fail(function (ex) {
@@ -61,6 +91,16 @@ export const init = () => {
     // Eventlistener for changing the selected question.
     jQuery('#id_question').change(function() {
         let selectedquestion = jQuery('#id_question').val();
+        let selectedfb = jQuery('#id_feedback').val();
+        // Check if a valid question is selected
+        if (selectedquestion == '0') {
+            downquest.hide();
+            resetTable();
+            return;
+        } else {
+            downquest.show();
+        }
+
         let answerlimit = 0;
         let showperpage = 200;
         let page = 1;
@@ -68,19 +108,18 @@ export const init = () => {
         let promises = Ajax.call([{
             methodname: 'block_coursefeedback_get_ranking_for_question',
             args: {
-                id: selectedquestion,
+                questionid: selectedquestion,
+                feedback: selectedfb,
                 answerlimit: answerlimit,
                 showperpage: showperpage,
                 page: page
             }
         }]);
         promises[0].done(function (questiondata) {
-            window.console.debug("AJAX QUESTION DONE");
             // Reset rankingtable.
+            resetTable();
             let table = window.document.getElementById('coursefeedback_table');
             let tbody = table.getElementsByTagName('tbody')[0];
-            tbody.innerHTML = '';
-
             // Populate rankingtable.
             questiondata.ranking.forEach(function(course) {
                 let row = tbody.insertRow();
@@ -94,26 +133,10 @@ export const init = () => {
 
             return;
         }).fail(function (ex) {
-            window.console.debug("ajax QUESTION fAIL");
             window.console.debug(ex);
         });
     });
 
-    // Eventlistener to download FB CSV.
-    jQuery('#id_downloadfb').click( function() {
-        let url = new URL(window.location);
-        url.searchParams.append('action', 'download');
-        url.searchParams.append('feedback', jQuery('#id_feedback').val());
-        window.location.href = url;
-    });
-
-    // Eventlistener to download FB-question CSV.
-    jQuery('#id_downloadqu').click( function() {
-        let url = new URL(window.location);
-        url.searchParams.append('action', 'download');
-        url.searchParams.append('feedback', jQuery('#id_feedback').val());
-        url.searchParams.append('question', jQuery('#id_question').val());
-        window.location.href = url;
-    });
+    // Don't ask if user really wants to leave the page
     window.onbeforeunload = null;
 };

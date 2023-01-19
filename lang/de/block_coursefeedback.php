@@ -1,16 +1,17 @@
 <?php #GERMAN
 
 /* Defaults */
-$string['pluginname']                      = 'Kursfeedback';
-$string['caution']                         = 'Warnhinweis';
-$string['untitled']                        = 'Unbenannt';
+$string['pluginname'] = 'Kursfeedback';
+$string['caution'] = 'Warnhinweis';
+$string['untitled'] = 'Unbenannt';
+$string['categorypath'] = 'Kategoriepfad';
 
 /* Adminpage */
-$string['adminpage_link_feedbackedit']     = 'Umfragen erstellen/bearbeiten';
-$string['adminpage_html_fbactiveforcoursesa']   = 'Vergangene Zeit seit Kursstart max. ';
-$string['adminpage_html_fbactiveforcoursesb']   = 'Diese Einstellung ermöglicht es Feedbackumfragen nur in akutellen Kursen zu schalten bei welchen das Startdatum nicht zu lange her ist ';
-$string['adminpage_html_periodsfeedbacka']   = 'Feedbackzeiträume:';
-$string['adminpage_html_periodsfeedbackb']   = 'Zeiträume in denen die aktuelle Umfrage geschaltet wird. 
+$string['adminpage_link_feedbackedit'] = 'Umfragen erstellen/bearbeiten';
+$string['adminpage_html_fbactiveforcoursesa'] = 'Vergangene Zeit seit Kursstart max. ';
+$string['adminpage_html_fbactiveforcoursesb'] = 'Diese Einstellung ermöglicht es Feedbackumfragen nur in akutellen Kursen zu schalten bei welchen das Startdatum nicht zu lange her ist ';
+$string['adminpage_html_periodsfeedbacka'] = 'Feedbackzeiträume:';
+$string['adminpage_html_periodsfeedbackb'] = 'Zeiträume in denen die aktuelle Umfrage geschaltet wird. 
                         Wenn leer, dann ist die Umfrage dauerhaft aktiv.
                         Pro Zeile ein Zeitraum im Format: "04.12-24.12" (exakt 11 Zeichen; Bindestrich in der Mitte; Nur Zahlen, Punkte und Bindestrich).
                         Es werden jeweils die Zeitstempel von 0 Uhr benutzt';
@@ -133,3 +134,4 @@ $string['perm_html_wasactive']             = 'Die Umfrage war bereits aktive, er
 
 /* Events */
 $string['eventviewed']                     = 'Ergebnisse angezeigt';
+

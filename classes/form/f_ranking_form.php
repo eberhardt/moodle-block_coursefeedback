@@ -41,30 +41,45 @@ class f_ranking_form extends moodleform {
         $mform = $this->_form;
         $mform->addElement('header', 'rankingsettings', get_string("form_header_ranking", "block_coursefeedback"));
 
-        $mform->addElement('select', 'feedback', get_string("form_select_feedback", "block_coursefeedback"),  $this->get_possible_feedbacks() );
-        $mform->addElement('button', 'downloadfb', get_string("form_button_downloadfb", "block_coursefeedback"));
-        $mform->hideIf('downloadfb', 'feedback', 'eq', -1);
-        $options = [-1 => get_string("form_option_choose", "block_coursefeedback")];
+        $mform->addElement('select', 'feedback', get_string("form_select_feedback", "block_coursefeedback"), $this->get_possible_feedbacks());
+        $mform->addElement('submit', 'downloadfb', get_string("form_button_downloadfb", "block_coursefeedback"));
+        $options = [0 => get_string("form_option_choose", "block_coursefeedback")];
         $mform->addElement('select', 'question', get_string("form_select_question", "block_coursefeedback"), $options);
-        $mform->addElement('button', 'downloadqu', get_string("form_button_downloadqu", "block_coursefeedback"));
-        $mform->hideIf('downloadqu', 'question', 'eq', -1);
+        $mform->addElement('submit', 'downloadqu', get_string("form_button_downloadqu", "block_coursefeedback"));
+
     }
 
     protected function get_possible_feedbacks() {
         global $DB;
 
-        if($DB->record_exists("block", array("name" => "coursefeedback")) && $feedbacks = $DB->get_records("block_coursefeedback"))
-        {
+        if($DB->record_exists("block", array("name" => "coursefeedback")) && $feedbacks = $DB->get_records("block_coursefeedback")) {
             // Populate feedback options
-            $options = [-1 => get_string("form_option_choose", "block_coursefeedback")];
-            foreach($feedbacks as $feedback)
-            {
-                if(block_coursefeedback_questions_exist($feedback->id))
+            $options = [0 => get_string("form_option_choose", "block_coursefeedback")];
+            foreach ($feedbacks as $feedback) {
+                if (block_coursefeedback_questions_exist($feedback->id))
                     $options[$feedback->id] = format_string($feedback->name);
             }
             ksort($options);
         }
         return $options;
+    }
+
+    public function definition_after_data()
+    {
+        parent::definition_after_data();
+        $mform = $this->_form;
+
+        $feedback = $mform->getElementValue('feedback');
+        if (is_null($feedback)) {
+            return;
+        }
+        $feedback = $feedback[0];
+        if ($feedback === '' || $feedback === null) {
+            return;
+        }
+        $choices = block_coursefeedback_get_questions($feedback);
+        $q = $mform->getElement('question');
+        $q->loadArray($choices);;
     }
 }
 

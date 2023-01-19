@@ -1,16 +1,17 @@
 <?php #ENGLISH
 
 /* Defaults */
-$string['pluginname']                      = 'Course feedback';
-$string['caution']                         = 'Warning';
-$string['untitled']                        = 'Untitled';
+$string['pluginname'] = 'Course feedback';
+$string['caution'] = 'Warning';
+$string['untitled'] = 'Untitled';
+$string['categorypath'] = 'Category path';
 
 /* Adminpage */
-$string['adminpage_link_feedbackedit']     = 'edit/create survey';
-$string['adminpage_html_fbactiveforcoursesa']   = 'Max. time past since coursestart.';
-$string['adminpage_html_fbactiveforcoursesb']   = 'Determines the time boundary pperiod since coursestart.';
-$string['adminpage_html_periodsfeedbacka']   = 'Feedback time periods:';
-$string['adminpage_html_periodsfeedbackb']   = 'Timeperiods in which the feedback is active. 
+$string['adminpage_link_feedbackedit'] = 'edit/create survey';
+$string['adminpage_html_fbactiveforcoursesa'] = 'Max. time past since coursestart.';
+$string['adminpage_html_fbactiveforcoursesb'] = 'Determines the time boundary pperiod since coursestart.';
+$string['adminpage_html_periodsfeedbacka'] = 'Feedback time periods:';
+$string['adminpage_html_periodsfeedbackb'] = 'Timeperiods in which the feedback is active. 
                         If empty, than the feedback is active permanently.
                         Per line one period in the following format: "04.12-24.12" (exactly 11 Chars; Hyphen in the middle; Only digits, dots und one hyphen).
                         Timestamps at 12pm are used';

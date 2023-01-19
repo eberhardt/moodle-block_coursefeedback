@@ -25,7 +25,9 @@
 
 defined("MOODLE_INTERNAL") || die();
 
+
 require_once($CFG->dirroot . "/blocks/coursefeedback/lib.php");
+require_once($CFG->libdir . '/csvlib.class.php');
 
 class feedbackexport
 {
@@ -180,28 +182,147 @@ class exportformat_csv extends exportformat
  */
 class rankingexport
 {
-    protected $feedback  = null;
+    protected $feedback = null;
     protected $questionid = null;
-    private $content     = "";
+    protected $seperator = ";";
 
-    public function __construct($feedback = null, $question = null) {
+    private $content = "";
+
+    public function __construct($feedback = null, $question = null)
+    {
         global $DB;
 
-        if($fb = $DB->get_record("block_coursefeedback", array("id" => $feedback))) {
+        if ($fb = $DB->get_record("block_coursefeedback", array("id" => $feedback))) {
             $this->feedback = $fb;
             $this->questionid = $question;
-        }
-        else {
+        } else {
             print_error("feedbacknotfound", "error");
             exit(0);
         }
     }
 
+    public function export()
+    {
+        global $DB;
+        $writer = new csv_export_writer('semicolon');
+        $writer->set_filename(
+            clean_param(get_string("download_html_filename", "block_coursefeedback")
+                , PARAM_FILE));
+
+        $writer->add_data([
+            'Feedbackid: ' . $this->feedback->id,
+            'Feedbackid: ' . $this->feedback->name
+        ]);
+
+        // Get questions
+        $qus = block_coursefeedback_get_questions_by_language($this->feedback->id, [current_language()]);
+        $questions = null;
+
+        if ($this->questionid) {
+            // Only display one question.
+            foreach ($qus as $qu) {
+                if ($qu->questionid == $this->questionid) {
+                    $questions = array($qu);
+                }
+            }
+        } else {
+            // Display all questions.
+            $questions = $qus;
+        }
+
+        foreach ($questions as $question) {
+            // Output headings.
+            $writer->add_data([]);
+            $writer->add_data([
+                $question->question,
+                $question->questionid
+            ]);
+
+            $writer->add_data([
+                get_string('course'),
+                get_string('user'),
+                get_string('name'),
+                get_string('categories'),
+                get_string('categorypath', 'block_coursefeedback'),
+                get_string('notif_emoji_super', 'block_coursefeedback'),
+                get_string('notif_emoji_good', 'block_coursefeedback'),
+                get_string('notif_emoji_ok', 'block_coursefeedback'),
+                get_string('notif_emoji_neutral', 'block_coursefeedback'),
+                get_string('notif_emoji_bad', 'block_coursefeedback'),
+                get_string('notif_emoji_superbad', 'block_coursefeedback'),
+                get_string('table_html_average', 'block_coursefeedback'),
+                get_string('table_html_votes', 'block_coursefeedback'),
+                get_string('table_html_nochoice', 'block_coursefeedback'),
+            ]);
+
+            // Get courseids and the amount of answers in this course for the current question.
+            $params = array(
+                'questionid' => $question->questionid,
+                'feedbackid' => $this->feedback->id,
+                'answerlimit' => 0,
+                'feedbackid2' => $this->feedback->id,
+                'questionid2' => $question->questionid,
+            );
+            $sql = "
+                SELECT one.courseid, five.usero, c.shortname, c.category, cc.path,  
+                    six.one, six.two, six.three, six.four, six.five, six.six, 
+                    (six.answersum - (one.anstotal - six.abstain)) as average, one.anstotal, six.abstain FROM
+                    (
+                        SELECT course as courseid, count(*) as anstotal FROM {block_coursefeedback_answers}
+                            WHERE questionid = :questionid AND coursefeedbackid = :feedbackid
+                            GROUP BY course
+                            HAVING count(*) > :answerlimit
+                    ) one
+                    LEFT JOIN 
+                    (
+                        SELECT four.courseid, SUM(users) as usero FROM
+                        (
+                            SELECT e.id, e.courseid, two.users FROM {enrol} e
+                                JOIN
+                                ( 
+                                    SELECT enrolid, COUNT(*) AS users FROM {user_enrolments}
+                                    GROUP BY enrolid 
+                                ) two
+                                ON e.id = two.enrolid    
+                        ) four
+                        GROUP BY four.courseid  
+                    ) five
+                    ON five.courseid = one.courseid
+                    LEFT JOIN {course} c ON one.courseid = c.id
+                    LEFT JOIN {course_categories} cc ON cc.id = c.category
+                    LEFT JOIN
+                    (
+                        SELECT course, SUM(CASE WHEN answer = 0 THEN 1 ELSE 0 END) AS abstain, 
+                            SUM(CASE WHEN answer = 1 THEN 1 ELSE 0 END) AS one,
+                            SUM(CASE WHEN answer = 2 THEN 1 ELSE 0 END) AS two,
+                            SUM(CASE WHEN answer = 3 THEN 1 ELSE 0 END) AS three,
+                            SUM(CASE WHEN answer = 4 THEN 1 ELSE 0 END) AS four,
+                            SUM(CASE WHEN answer = 5 THEN 1 ELSE 0 END) AS five,
+                            SUM(CASE WHEN answer = 6 THEN 1 ELSE 0 END) AS six,
+                            SUM(answer) AS answersum
+                        FROM {block_coursefeedback_answers}
+                        WHERE coursefeedbackid = :feedbackid2 AND questionid = :questionid2
+                        GROUP BY course
+                    ) six
+                    ON one.courseid = six.course
+                ";
+            $courses = $DB->get_records_sql($sql, $params);
+            array_walk($courses, function (&$e, $f) {
+                $e = get_object_vars($e);
+            });
+            foreach ($courses as $course) {
+                $writer->add_data($course);
+            }
+        }
+        $writer->download_file();
+    }
+
+
     public function create_file($lang)
     {
         global $DB;
         $seperator = ";";
-        $newline   = "\n";
+        $newline = "\n";
 
         $clang = current_language();
         $this->content .= $this->feedback->name . $newline;

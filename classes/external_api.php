@@ -272,9 +272,9 @@ class external_api extends \external_api {
         self::validate_context($context);
         require_capability('block/coursefeedback:managefeedbacks', $context);
 
-        $currentlang = current_language();
+        $currentlang[] = current_language();
         $questions = block_coursefeedback_get_questions_by_language($params['feedbackid'], $currentlang, "questionid",
-            "id,questionid,question,coursefeedbackid,language" );
+            "id,questionid,question,coursefeedbackid,language");
         $result = ['questions' => array()];
         foreach($questions as $question) {
             array_push($result['questions'], (array)$question);
@@ -311,10 +311,16 @@ class external_api extends \external_api {
      * @return external_function_parameters
      */
     //TODO das Anzeigen der Rankings in der Weboberfläche ist nicht fertig implementiert -> CSV Download nutzen
-    public static function get_ranking_for_question_parameters() {
+    public static function get_ranking_for_question_parameters()
+    {
         $questionid = new external_value(
             PARAM_INT,
-            'question.id',
+            'question.questionid',
+            VALUE_REQUIRED
+        );
+        $feedback = new external_value(
+            PARAM_INT,
+            'feedback.id',
             VALUE_REQUIRED
         );
         $answerlimit = new external_value(
@@ -333,7 +339,8 @@ class external_api extends \external_api {
             VALUE_REQUIRED
         );
         $params = array(
-            'id' => $questionid,
+            'questionid' => $questionid,
+            'feedback' => $feedback,
             'answerlimit' => $answerlimit,
             'showperpage' => $showperpage,
             'page' => $page
@@ -350,13 +357,15 @@ class external_api extends \external_api {
      * @returns array
      */
     //TODO das Anzeigen der Rankings in der Weboberfläche ist nicht fertig implementiert -> CSV Download nutzen
-    public static function get_ranking_for_question($questionid, $answerlimit, $showperpage, $page) {
+    public static function get_ranking_for_question($questionid, $feedback, $answerlimit, $showperpage, $page)
+    {
         global $DB;
 
         // Validate parameter
         $params = self::validate_parameters(self::get_ranking_for_question_parameters(),
             array(
-                'id' => $questionid,
+                'questionid' => $questionid,
+                'feedback' => $feedback,
                 'answerlimit' => $answerlimit,
                 'showperpage' => $showperpage,
                 'page' => $page
@@ -368,12 +377,10 @@ class external_api extends \external_api {
         self::validate_context($context);
         require_capability('block/coursefeedback:managefeedbacks', $context);
 
-        // Hole die frage um feedbackid und questionid zu haben
-        $question = $DB->get_record('block_coursefeedback_questns',
-            array('id' => $params['id']), '*', MUST_EXIST);
+
 
         // TODO hole alle kurse mit mehr antworten als answerlimit
-        $courses = block_coursefeedback_get_courserankings($question->questionid, $question->coursefeedbackid,
+        $courses = block_coursefeedback_get_courserankings($params['questionid'], $params['feedback'],
             $params['answerlimit'], $params['showperpage'], $params['page']);
         $result = ['ranking' => $courses];
         return $result;
