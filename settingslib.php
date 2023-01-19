@@ -33,19 +33,18 @@ class admin_setting_configtextarea_time_period extends admin_setting_configtexta
         }
         try {
             $periods = preg_split('/\r\n|\r|\n/', $data);
-            $result = array();
 
             foreach ($periods as $period) {
                 if (!preg_match('/^.{5}-.{5}$/', $period)) {
-                    return 'falsche länge oder mitlerer bindestrich Fehler';
+                    return get_string("adminpage_html_periodtolong", "block_coursefeedback");
                 }
                 $datepairs = explode('-', $period);
                 if (count($datepairs) != 2) {
-                    return 'zu viele bindestriche';
+                    return get_string("adminpage_html_perioderrora", "block_coursefeedback");
                 }
                 foreach ($datepairs as $datepair) {
                     if (!preg_match('/^[0-3][0-9]\.[0-1][0-9]$/', $datepair)) {
-                        return 'falsches datepair';
+                        return get_string("adminpage_html_perioderrorb", "block_coursefeedback");
                     }
                 }
             };

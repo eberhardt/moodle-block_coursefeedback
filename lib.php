@@ -1097,8 +1097,8 @@ function block_coursefeedback_parse_dates($datesraw) {
             // Wir speichern den jeweiligen (begin und end) timestamp für das laufende Jahr
             //ohne Rücksicht auf Jahreswechel überlappende Zeiträume
             $result[] = array(
-                'begin' => mktime(0, 0, 0, $begmonth, $begday, date("Y")),
-                'end' => mktime(0, 0, 0, $endmonth, $endday, date("Y"))
+                'begin' => gmmktime(0, 0, 1, $begmonth, $begday, date("Y")),
+                'end' => gmmktime(0, 0, 1, $endmonth, $endday, date("Y"))
             );
         };
         return $result;
