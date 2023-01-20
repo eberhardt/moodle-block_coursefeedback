@@ -272,7 +272,7 @@ class external_api extends \external_api {
         self::validate_context($context);
         require_capability('block/coursefeedback:managefeedbacks', $context);
 
-        $currentlang[] = current_language();
+        $currentlang = [current_language()];
         $questions = block_coursefeedback_get_questions_by_language($params['feedbackid'], $currentlang, "questionid",
             "id,questionid,question,coursefeedbackid,language");
         $result = ['questions' => array()];
