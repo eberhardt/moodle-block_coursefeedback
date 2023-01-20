@@ -16,11 +16,12 @@ It will be shown in all course main pages.
 
 Upgrade to version 2
 ==============
-For version 2, all existing blocks are deleted because one "system context"-block is wanted which will be displayed in all Courses.
-Single "course-context" blocks are not allowed because this could cause duplicate issues. 
-Only mangers are allowed now to add or delete the block. Exactly one block in each course is wanted.
-To make things as easy as possible the blcoks are automatically added while upgradind to version 2 or installing of the block.
-Since the block is automatically added, manually adding the block is only needed if the block was manually deleted before for some reason.
+For version 2, all existing blocks will be deleted as the rendering is now achieved via a "system context" block that is visible in all courses.
+Therefore, individual "Course Context" blocks are no longer allowed as they could conflict with the system block.
+Also for this reason only managers are allowed to add or delete the block. There can only be exactly one block in each course.
+
+To make things as easy as possible, the necessary system block will be added automatically when upgrading to version 2 or installing the block.
+This means that the block only needs to be added manually if it has been deleted beforehand.
 
 Here is how you would add the block manually:   
   1.  First, start on the frontpage of your Moodle site ("Home"). Make sure that editing is turned on, and click "+ Add a block".
