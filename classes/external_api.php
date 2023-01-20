@@ -113,7 +113,7 @@ class external_api extends \external_api {
         // Check if FB and question exist
         if (!$DB->record_exists("block_coursefeedback_questns",
             ['questionid' => $params['questionid'], 'coursefeedbackid' => $params['feedbackid']])) {
-            throw new \moodle_exception('Feedback or question does not exist', 'block_coursefeedback');
+            throw new \moodle_exception('except_no_question', 'block_coursefeedback');
         }
 
         // Check if answer exist already
@@ -124,14 +124,14 @@ class external_api extends \external_api {
                 "questionid" => $params['questionid'],
                 "coursefeedbackid" => $params['feedbackid']
             ])) {
-            throw new \moodle_exception('Answer for this question already exist', 'block_coursefeedback');
+            throw new \moodle_exception('except_answer_exist', 'block_coursefeedback');
         }
 
         // Check if FB active and period is running and coursestart is ok
         if ($config->active_feedback != $params['feedbackid']
             || !block_coursefeedbck_coursestartcheck_good($config, $params['courseid'])
             || !block_coursefeedback_period_is_active()) {
-            throw new \moodle_exception('Given feedback not active at the monent', 'block_coursefeedback');
+            throw new \moodle_exception('except_not_active', 'block_coursefeedback');
         }
 
         // Check if more than one coursefeedback blocks exist in the course or block is hidden
@@ -145,10 +145,10 @@ class external_api extends \external_api {
         ];
         $blocks = $DB->get_records_sql($sql, $sqlparams);
         if (count($blocks) > 1) {
-            throw new \moodle_exception('More than one coursefeedbackblock in the course', 'block_coursefeedback');
+            throw new \moodle_exception('except_block_duplicate', 'block_coursefeedback');
         } elseif (count($blocks) == 1) {
             if (array_pop($blocks)->visible != 1) {
-                throw new \moodle_exception('Coursefeedback block in this course is hidden', 'block_coursefeedback');
+                throw new \moodle_exception('except_block_hidden', 'block_coursefeedback');
             }
         }
 
