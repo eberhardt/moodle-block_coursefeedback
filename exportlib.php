@@ -266,7 +266,8 @@ class rankingexport
             $sql = "
                 SELECT one.courseid, five.usero, c.shortname, c.category, cc.path,  
                     six.one, six.two, six.three, six.four, six.five, six.six, 
-                    (six.answersum - (one.anstotal - six.abstain)) as average, one.anstotal, six.abstain FROM
+                    (six.answersum / ( NULLIF ((one.anstotal - six.abstain), 0))) as average, 
+                    one.anstotal, six.abstain FROM
                     (
                         SELECT course as courseid, count(*) as anstotal FROM {block_coursefeedback_answers}
                             WHERE questionid = :questionid AND coursefeedbackid = :feedbackid
