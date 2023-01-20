@@ -14,14 +14,13 @@ Make it sticky
 Since version 1.0.6. there is an option in the plugin settings, to create a global sticky instance.
 It will be shown in all course main pages.
 
-Upgrade to v2
+Upgrade to version 2
 ==============
-For version 2, all existing blocks are deleted because we want one "system context"-block which we display in all Courses.
-We are not allowing single "course-context" blocks because this could cause duplicate issues. 
-Since Version 2 we only allow one "context system" block which is displayed on all courses.
-Only mangers are allowed now to add or delete the block. We want exactly one block in each course.
-To make things as easy as possible we automatically add the block when upgradind to version 2 or installing the block.
-Since we are adding the block automatically, manually adding the block is only needed if the block was manually deleted before for some reason.
+For version 2, all existing blocks are deleted because one "system context"-block is wanted which will be displayed in all Courses.
+Single "course-context" blocks are not allowed because this could cause duplicate issues. 
+Only mangers are allowed now to add or delete the block. Exactly one block in each course is wanted.
+To make things as easy as possible the blcoks are automatically added while upgradind to version 2 or installing of the block.
+Since the block is automatically added, manually adding the block is only needed if the block was manually deleted before for some reason.
 
 Here is how you would add the block manually:   
   1.  First, start on the frontpage of your Moodle site ("Home"). Make sure that editing is turned on, and click "+ Add a block".
