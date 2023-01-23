@@ -19,61 +19,100 @@
  *
  * @package    block
  * @subpackage coursefeedback
- * @copyright  2011-2014 onwards Jan Eberhardt (@ innoCampus, TU Berlin)
+ * @copyright  2011-2014 onwards Jan Eberhardt / Felix Di Lenarda (@ innoCampus, TU Berlin)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 class block_coursefeedback_renderer extends plugin_renderer_base {
 
 	/**
-	 * @param float $rating
 	 * @return string
-	 */
-	public function render_rating($rating) {
-		$rating = round($rating, 1, PHP_ROUND_HALF_UP);
-		$ratingtext = $this->star_rating($rating);
-		return html_writer::empty_tag("hr", array("size" => 1))
-		     . html_writer::div(get_String("page_html_courserating", "block_coursefeedback"), "center notifytiny")
-		     . html_writer::div($ratingtext, "center");
-	}
+     */
+    public function render_manage_link()
+    {
+        return html_writer::link(new moodle_url("/admin/settings.php?section=blocksettingcoursefeedback"),
+            get_string("page_link_settings", "block_coursefeedback"));
+    }
 
-	/**
-	 * @param number $rating
-	 * @param number $maxstars
-	 * @param number $ratingscale
-	 * @return string
-	 */
-	public function star_rating($rating, $maxstars = 5, $ratingscale = 6) {
-		$computedrating = round(($ratingscale+1-$rating)/$ratingscale*$maxstars, 0, PHP_ROUND_HALF_UP);
-		$ratingtext = str_repeat('&#9733; ', $computedrating)
-		            . str_repeat('&#9734; ', $maxstars-$computedrating);
+    /**
+     * @param number $courseid
+     * @param number $feedbackid
+     * @return string
+     */
+    public function render_results_link($courseid, $feedbackid)
+    {
+        return html_writer::link(new moodle_url("/blocks/coursefeedback/view.php", array("course" => $courseid, "feedback" => $feedbackid)),
+            get_string("page_link_viewresults", "block_coursefeedback"));
+    }
 
-		return $ratingtext;
-	}
+    /**
+     * @param number $courseid
+     * @return array
+     */
+    public function render_result_links($answerredfbs)
+    {
+        $results = [];
+        foreach ($answerredfbs as $feedback) {
+            $results[] = html_writer::link(new moodle_url("/blocks/coursefeedback/view.php",
+                ["course" => $feedback->course, "feedback" => $feedback->id]), format_string($feedback->name));
+        }
+        return $results;
+    }
 
-	/**
-	 * @return string
-	 */
-	public function render_manage_link() {
-		return html_writer::link(new moodle_url("/admin/settings.php?section=blocksettingcoursefeedback"),
-				                 get_string("page_link_settings", "block_coursefeedback"));
-	}
+    /**
+     * @return string
+     */
+    public function render_ranking_link()
+    {
+        return html_writer::link(new moodle_url("/blocks/coursefeedback/ranking.php"),
+            get_string("page_link_rankings", "block_coursefeedback"));
+    }
 
-	/**
-	 * @param number $courseid
-	 * @return string
-	 */
-	public function render_view_link($courseid) {
-		return html_writer::link(new moodle_url("/blocks/coursefeedback/evaluate.php", array("id" => $courseid)),
-				                 get_string("page_link_evaluate", "block_coursefeedback"));
-	}
+    /**
+     * @return string
+     */
+    public function render_moreinfo_link($params)
+    {
+        return html_writer::link(new moodle_url("/blocks/coursefeedback/feedbackinfo.php", $params),
+            get_string("infopage_link_feedbackinfo", "block_coursefeedback"));
+    }
 
-	/**
-	 * @param number $courseid
-	 * @return string
-	 */
-	public function render_results_link($courseid) {
-		return html_writer::link(new moodle_url("/blocks/coursefeedback/view.php", array("id" => $courseid)),
-				                 get_string("page_link_view", "block_coursefeedback"));
-	}
+    /**
+     * @param object $feedback
+     * @param array $openquestions
+     * @return string
+     */
+    public function render_notif_message($feedback, $openquestions)
+    {
+        // TODO do we need the export for template function here?
+        // Template vars are automatically escaped
+        $urlparams = [
+            'feedback' => $feedback->id,
+            'course' => $this->page->course->id
+        ];
+        $data = [
+            'fbheading' => $feedback->heading,
+            'qid' => $openquestions['currentopenqstn']->questionid,
+            'qsum' => $openquestions['questionsum'],
+            'qtext' => $openquestions['currentopenqstn']->question,
+            'link' => new moodle_url("/blocks/coursefeedback/feedbackinfo.php", $urlparams)
+        ];
+        return parent::render_from_template('block_coursefeedback/questionnotif', $data);
+    }
+
+    /**
+     * @param object $feedback
+     * @param int $courseid
+     * @return string
+     */
+    public function render_notif_message_teacher($feedback, $courseid)
+    {
+        $message = get_string("notif_feedbackactive", "block_coursefeedback");
+        if (get_config("block_coursefeedback", "allow_hiding")) {
+            $message .= ' ' . get_string("notif_deactivate_howto", "block_coursefeedback");
+        }
+        $message .= ' ' . $this->render_moreinfo_link(array("feedback" => $feedback->id, "course" => $courseid));
+        $message .= ' | ' . $this->render_results_link($courseid, $feedback->id);
+        return $message;
+    }
 }

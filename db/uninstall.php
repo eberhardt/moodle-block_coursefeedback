@@ -19,7 +19,7 @@
  *
  * @package    block
  * @subpackage coursefeedback
- * @copyright  2011-2014 onwards Jan Eberhardt (@ innoCampus, TU Berlin)
+ * @copyright  2011-2014 onwards Jan Eberhardt / Felix Di Lenarda (@ innoCampus, TU Berlin)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -31,7 +31,8 @@ function xmldb_block_coursefeedback_uninstall()
 
 	$tbls = array("block_coursefeedback",
 	              "block_coursefeedback_questns",
-	              "block_coursefeedback_answers"); // Tables marked for deletion.
+	              "block_coursefeedback_answers",
+                  "block_coursefeedback_uidansw"); // Tables marked for deletion.
 
 	foreach ($tbls as &$tbl)
 	{

@@ -19,7 +19,7 @@
  *
  * @package    block
  * @subpackage coursefeedback
- * @copyright  2011-2014 onwards Jan Eberhardt (@ innoCampus, TU Berlin)
+ * @copyright  2011-2014 onwards Jan Eberhardt / Felix Di Lenarda (@ innoCampus, TU Berlin)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -30,7 +30,6 @@ $capabilities = array(
 	"block/coursefeedback:managefeedbacks" => array(
 
     	"riskbitmask" => RISK_XSS,
-
 		"captype" => "write",
 		"contextlevel" => CONTEXT_SYSTEM,
 		"archetypes" => array(
@@ -74,21 +73,22 @@ $capabilities = array(
 
 		"captype" => "write",
 		"contextlevel" => CONTEXT_BLOCK,
-		"archtypes" => array(
-			"manager"        => CAP_ALLOW,
-			"editingteacher" => CAP_ALLOW
-		)
+		"archetypes" => array(
+            "manager" => CAP_ALLOW,
+            "editingteacher" => CAP_PROHIBIT
+        ) // Only allow to add the block in context_system so it is shown in all courses exactly once
 	),
 
 	"block/coursefeedback:myaddinstance" => array(
 
 		"captype" => "write",
 		"contextlevel" => CONTEXT_SYSTEM,
-		"archtypes" => array(
-			"manager" => CAP_PROHIBIT,
-			"user" => CAP_PROHIBIT
-		) // This plugin is useless on "my page".
-	)
+		"archetypes" => array(
+            "manager" => CAP_PROHIBIT,
+            "editingteacher" => CAP_PROHIBIT,
+            "user" => CAP_PROHIBIT
+        )
+	),
 );
 
 

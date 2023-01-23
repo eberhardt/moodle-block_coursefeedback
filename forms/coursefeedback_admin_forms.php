@@ -19,7 +19,7 @@
  *
  * @package    block
  * @subpackage coursefeedback
- * @copyright  2011-2014 onwards Jan Eberhardt (@ innoCampus, TU Berlin)
+ * @copyright  2011-2014 onwards Jan Eberhardt / Felix Di Lenarda (@ innoCampus, TU Berlin)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -36,29 +36,45 @@ class coursefeedback_feedback_new_form extends coursefeedbackform
 	protected function definition()
 	{
 		global $CFG, $DB;
-
 		$form = &$this->_form;
 
 		$form->addElement("hidden", "template", $this->fid);
 
-		$form->addElement("header",
-		                    "formheader_feedback_new",
-		                    get_string("form_header_newfeedback", "block_coursefeedback"));
+		$form->addElement("header", "formheader_feedback_new", get_string("form_header_newfeedback", "block_coursefeedback"));
 		$form->addElement("text", "name", get_string("name"), "size=\"50\"");
 
-		if($name = $DB->get_field("block_coursefeedback", "name", array("id" => $this->fid)))
-			$form->getElement("name")->setValue(get_string("copyof", "block_coursefeedback", stripslashes($name)));
-
 		$form->addRule("name", get_string("requiredelement", "form"), "required");
-		$submits	= array();
+		$form->addElement("text", "heading", get_string("form_notif_heading", "block_coursefeedback" ), "size=\"50\"");
+
+        $form->addElement("editor", "infotext", get_string('form_feedback_infotext', 'block_coursefeedback'));
+        $form->addHelpButton('infotext', 'form_feedback_infotext', 'block_coursefeedback');
+
+        $submits	= array();
 		$submits[]	= &$form->createElement("submit", "add", get_string("add"));
 		$submits[]	= &$form->createElement("cancel");
 		$form->addGroup($submits, "submits", "", "&nbsp;");
 
 		// Types..
 		$form->setType("name", PARAM_TEXT);
-		$form->setType("template", PARAM_INT);
+        $form->setType("heading", PARAM_TEXT);
+        $form->setType('infotext', PARAM_RAW);
+        $form->setType("template", PARAM_INT);
+
 	}
+    // Set_data is only called if an existing feddback is about to be copied.
+    function set_data($feedback) {
+        // For now we don't set "itemid".
+        // "infotext" editor element maxfiles == 0 per default(-> no need for itemid and draft area because no files are accepted)
+        // $draftid_editor = file_get_submitted_draft_itemid('infotext');.
+        $newfbname = get_string("form_copyof", "block_coursefeedback" ).'('.$feedback->id.')'.$feedback->name;
+        $feedback->name = $newfbname;
+
+        // Display html text correctly.
+        $text = $feedback->infotext;
+        $feedback->infotext = array('text' => $text, 'format' => FORMAT_HTML);
+
+        parent::set_data($feedback);
+    }
 }
 
 /**
@@ -70,29 +86,46 @@ class coursefeedback_feedback_edit_form extends coursefeedbackform
 {
 	protected function definition()
 	{
-		global $CFG, $DB;
-
 		$form = &$this->_form;
-
-		$feedback = $DB->get_record("block_coursefeedback", array("id" => $this->fid));
 
 		$form->addElement("hidden", "template", $this->fid);
 		$form->addElement("header",
 		                  "formheader_feedback_edit",
 		                  get_string("form_header_editfeedback", "block_coursefeedback"));
 		$form->addElement("text", "name", get_string("name"), "size=\"50\"");
-
 		$form->addRule("name", get_string("requiredelement", "form"), "required");
+        $form->addElement("text", "heading", get_string("form_notif_heading", "block_coursefeedback" ), "size=\"50\"");
 
-		$submits	= array();
+        $systemcontext = context_system::instance();
+        // All editoroptions are finally set in MoodleQuickForm_editor Class (lib/form/editor.php) -> no files allowed.
+        $editoroptions = array('context'=>$systemcontext);
+        $form->addElement("editor", "infotext", get_string('form_feedback_infotext', 'block_coursefeedback'), null, $editoroptions);
+        $form->addHelpButton('infotext', 'form_feedback_infotext', 'block_coursefeedback');
+
+        $submits	= array();
 		$submits[]	= &$form->createElement("submit", "edit", get_string("savechanges"));
 		$submits[]	= &$form->createElement("cancel");
 		$form->addGroup($submits, "submits", "", "&nbsp;");
 
 		// Types.
 		$form->setType("template", PARAM_INT);
-		$form->setType("name", PARAM_TEXT);
-	}
+        $form->setType("heading", PARAM_TEXT);
+        $form->setType("name", PARAM_TEXT);
+        $form->setType("notifheading", PARAM_TEXT);
+        $form->setType('infotext', PARAM_RAW);
+
+    }
+
+    // Override of the parents set_data function.
+    function set_data($defaults) {
+        // For now we don't set "itemid"
+        // "infotext" editor element maxfiles == 0 per default (-> no need for itemid and draft area because no files are accepted)
+        // $draftid_editor = file_get_submitted_draft_itemid('infotext');.
+        $text = $defaults->infotext;
+        $defaults->infotext = array('text' => $text, 'format' => FORMAT_HTML);
+
+        parent::set_data($defaults);
+    }
 }
 
 /**
@@ -104,7 +137,7 @@ class coursefeedback_feedback_delete_form extends coursefeedbackform
 {
 	protected function definition()
 	{
-		global $CFG, $DB;
+		global $DB;
 
 		$form =& $this->_form;
 		$name = $DB->get_field("block_coursefeedback", "name", array("id" => $this->fid));
@@ -129,8 +162,6 @@ class coursefeedback_delete_answers_form extends coursefeedbackform
 {
 	protected function definition()
 	{
-		global $CFG;
-
 		$form = $this->_form;
 
 		$form->addElement("header", "deleteanswersheader", get_string("form_header_deleteanswers", "block_coursefeedback"));
@@ -212,10 +243,7 @@ class coursefeedback_questions_edit_form extends coursefeedbackform
 {
 	protected function definition()
 	{
-		global $CFG,$DB;
-
 		$form =& $this->_form;
-		$name = $DB->get_field("block_coursefeedback", "name", array("id" => $this->fid));
 
 		$form->addElement("header", "header_move", get_string("form_header_editquestion", "block_coursefeedback"));
 		$form->addElement("hidden", "template", $this->fid);
@@ -249,7 +277,7 @@ class coursefeedback_questions_delete_form extends coursefeedbackform
 {
 	protected function definition()
 	{
-		global $CFG, $DB;
+		global $DB;
 
 		$form =& $this->_form;
 		$name =  $DB->get_field("block_coursefeedback", "name", array("id" => $this->fid));
@@ -283,7 +311,7 @@ class coursefeedback_question_delete_form extends coursefeedbackform
 {
 	protected function definition()
 	{
-		global $CFG, $DB;
+		global $DB;
 
 		$form =& $this->_form;
 		$name = $DB->get_field("block_coursefeedback", "name", array("id" => $this->fid));
@@ -316,7 +344,7 @@ class coursefeedback_question_edit_form extends coursefeedbackform
 {
 	protected function definition()
 	{
-		global $CFG, $DB;
+		global $DB;
 
 		$form =& $this->_form;
 		$question = $DB->get_field("block_coursefeedback_questns", "question", array("coursefeedbackid" => $this->fid,
@@ -366,8 +394,6 @@ class coursefeedback_question_new_form extends coursefeedbackform
 {
 	protected function definition()
 	{
-		global $CFG;
-
 		$form =& $this->_form;
 		$submits	= array();
 
@@ -415,8 +441,6 @@ class coursefeedback_delete_language_form extends coursefeedbackform
 {
 	protected function definition()
 	{
-		global $CFG;
-
 		$form =& $this->_form;
 
 		$form->addElement("header", "chooselang", get_string("form_header_deletelang", "block_coursefeedback"));
