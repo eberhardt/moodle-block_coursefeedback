@@ -24,9 +24,8 @@ $string['adminpage_html_periodtolong'] = 'Falsche Länge oder mitlerer Bindestri
 $string['adminpage_html_perioderrora'] = 'Zu viele Bindestriche';
 $string['adminpage_html_perioderrorb'] = 'Falsches Datenpaar, bitte beachten Sie das gewünschte Format';
 
-
 /* Infopage */
-$string['infopage_html_coursestartcountd'] = 'Die Umfrage ist nur aktiv, wenn seit Kursstart maximal {$a} Tage vergangen sind';
+$string['infopage_html_coursestartcountd'] = 'Die Umfrage ist nur aktiv, wenn seit Kursstart maximal {$a} Tage vergangen sind.';
 $string['infopage_headline_feedbackinfo'] = 'Feedbackinfo';
 $string['infopage_html_activeperiods'] = 'Dieses Feedback ist in folgenden Zeiträumen aktiv: ';
 $string['infopage_link_feedbackinfo'] = 'Weitere Informationen';

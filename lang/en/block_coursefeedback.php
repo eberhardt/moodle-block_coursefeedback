@@ -23,8 +23,9 @@ $string['adminpage_html_notinstalled'] = '\'{$a}\' (not installed)';
 $string['adminpage_html_periodtolong'] = 'Wrong length or hyphen error';
 $string['adminpage_html_perioderrora'] = 'To many hyphens';
 $string['adminpage_html_perioderrorb'] = 'Wrong datepair, please note the wanted format';
+
 /* Infopage */
-$string['infopage_html_coursestartcountd'] = 'Feedback is active if  not more time than {$a} days since coursestart has past.';
+$string['infopage_html_coursestartcountd'] = 'Feedback is active if  not more time than {$a} days since coursestart have past.';
 $string['infopage_headline_feedbackinfo'] = 'Feedback info';
 $string['infopage_html_activeperiods'] = 'This feedback is active in the following timeperiods: ';
 $string['infopage_link_feedbackinfo'] = 'More information';
