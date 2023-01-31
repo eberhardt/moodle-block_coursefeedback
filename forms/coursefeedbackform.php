@@ -36,23 +36,23 @@ require_once($CFG->libdir.'/formslib.php');
  */
 abstract class coursefeedbackform extends moodleform
 {
-	public $fid;
-	public $qid;
-	public $lang;
+    public $fid;
+    public $qid;
+    public $lang;
 
-	public $_form;
+    public $_form;
 
-	public function __construct($action, $feedbackid=0, $questionid=null, $language=null)
-	{
-		$this->fid  = clean_param($feedbackid, PARAM_INT);
-		$this->qid  = clean_param($questionid, PARAM_INT);
-		$this->lang = clean_param($language, PARAM_TEXT);
+    public function __construct($action, $feedbackid=0, $questionid=null, $language=null)
+    {
+        $this->fid  = clean_param($feedbackid, PARAM_INT);
+        $this->qid  = clean_param($questionid, PARAM_INT);
+        $this->lang = clean_param($language, PARAM_TEXT);
 
-		parent::__construct($action);
-	}
+        parent::__construct($action);
+    }
 
     // Override the parents set_data() function
     function set_data($defaults) {
-	    parent::set_data($defaults);
+        parent::set_data($defaults);
     }
 }

@@ -54,9 +54,9 @@ function block_coursefeedback_order_questions($feedbackid, $checkonly = true)
                     $max--;
                 }
                 $sql[] = array("query" => "UPDATE {block_coursefeedback_questns}
-				                           SET questionid = :currentid,timemodified = :modified
-				                           WHERE coursefeedbackid = :fid
-				                           AND questionid = :max",
+                                           SET questionid = :currentid,timemodified = :modified
+                                           WHERE coursefeedbackid = :fid
+                                           AND questionid = :max",
                     "params" => array("currentid" => $currentid,
                         "modified" => time(),
                         "fid" => $feedbackid,
@@ -236,9 +236,9 @@ function block_coursefeedback_swap_questions($feedbackid, $oldpos, $newpos)
         // Set temporary position.
         $sql[] = array(
             "query" => "UPDATE {block_coursefeedback_questns}
-		                          SET questionid = :tmppos
-		                          WHERE coursefeedbackid = :feedbackid
-		                          AND questionid = :newpos",
+                                  SET questionid = :tmppos
+                                  WHERE coursefeedbackid = :feedbackid
+                                  AND questionid = :newpos",
             "params" => array(
                 "tmppos" => $tmppos,
                 "feedbackid" => $feedbackid,
@@ -248,9 +248,9 @@ function block_coursefeedback_swap_questions($feedbackid, $oldpos, $newpos)
         // Move to new position.
         $sql[] = array(
             "query" => "UPDATE {block_coursefeedback_questns}
-		                          SET questionid = :newpos, timemodified = :modified
-		                          WHERE coursefeedbackid = :fid
-		                          AND questionid = :oldpos",
+                                  SET questionid = :newpos, timemodified = :modified
+                                  WHERE coursefeedbackid = :fid
+                                  AND questionid = :oldpos",
             "params" => array(
                 "newpos" => $newpos,
                 "modified" => time(),
@@ -261,9 +261,9 @@ function block_coursefeedback_swap_questions($feedbackid, $oldpos, $newpos)
         // Restore old position.
         $sql[] = array(
             "query" => "UPDATE {block_coursefeedback_questns}
-		                          SET questionid = :oldpos, timemodified = :modified
-		                          WHERE coursefeedbackid = :fid
-		                          AND questionid = :tmppos",
+                                  SET questionid = :oldpos, timemodified = :modified
+                                  WHERE coursefeedbackid = :fid
+                                  AND questionid = :tmppos",
             "params" => array(
                 "oldpos" => $oldpos,
                 "modified" => time(),
@@ -514,15 +514,15 @@ function block_coursefeedback_get_answers($course, $feedbackid, $sort = "questio
         foreach (array_keys($questions) as $question) {
             $params["qid"] = $question;
             $sql = "SELECT
-			            answer,COUNT(*) AS count
-			        FROM
-			            {block_coursefeedback_answers}
-			        WHERE
-			            coursefeedbackid = :fid AND
-			            questionid = :qid AND
-			            course = :course
-			        GROUP BY
-			            answer";
+                        answer,COUNT(*) AS count
+                    FROM
+                        {block_coursefeedback_answers}
+                    WHERE
+                        coursefeedbackid = :fid AND
+                        questionid = :qid AND
+                        course = :course
+                    GROUP BY
+                        answer";
 
             if ($results = $DB->get_records_sql($sql, $params)) {
                 $answers[$question] = array();

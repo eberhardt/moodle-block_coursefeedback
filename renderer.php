@@ -25,8 +25,8 @@
 
 class block_coursefeedback_renderer extends plugin_renderer_base {
 
-	/**
-	 * @return string
+    /**
+     * @return string
      */
     public function render_manage_link()
     {

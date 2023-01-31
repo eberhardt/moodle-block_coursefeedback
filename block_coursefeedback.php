@@ -63,11 +63,11 @@ class block_coursefeedback extends block_base {
         global $CFG, $DB, $USER;
         // Don't reload block content!
         if ($this->content !== null) {
-			return $this->content;
-		}
-		$this->content = new stdClass;
-		$context = context_course::instance($this->page->course->id);
-		$config = get_config("block_coursefeedback");
+            return $this->content;
+        }
+        $this->content = new stdClass;
+        $context = context_course::instance($this->page->course->id);
+        $config = get_config("block_coursefeedback");
         $renderer = $this->page->get_renderer("block_coursefeedback");
         $feedback = $DB->get_record("block_coursefeedback", array("id" => $config->active_feedback));
         $list = array();
@@ -77,7 +77,7 @@ class block_coursefeedback extends block_base {
             // No active FB at the moment -> do nothing
         }
         else if (!block_coursefeedback_period_is_active()){
-		    // Feedbackperiod is over check if answer exist -> delete uids and activate a copy of the current feedback for the next period.
+            // Feedbackperiod is over check if answer exist -> delete uids and activate a copy of the current feedback for the next period.
             if (block_coursefeedback_answers_exist($feedback->id)) {
                 $newid = block_coursefeedback_copy_feedback($feedback->id, $feedback->name, $feedback->heading,
                     $feedback->infotext, $feedback->infotextformat);
@@ -87,7 +87,7 @@ class block_coursefeedback extends block_base {
             }
         }
         else if (block_coursefeedback_questions_exist()) {
-		    // Feedbackperiod is active and Feedback with questions is active.
+            // Feedbackperiod is active and Feedback with questions is active.
             if (has_capability("block/coursefeedback:viewanswers", $context)) {
                 $message = $renderer->render_notif_message_teacher($feedback, $this->page->course->id);
                 \core\notification::add($message,\core\output\notification::NOTIFY_INFO);
@@ -95,7 +95,7 @@ class block_coursefeedback extends block_base {
             if ((has_capability("block/coursefeedback:evaluate", $context)
                     && !has_capability("block/coursefeedback:viewanswers", $context))
                     || has_capability("block/coursefeedback:managefeedbacks", $context)) {
-			    // A feedback is currently active.
+                // A feedback is currently active.
                 if (null !== ($openquestions = block_coursefeedback_get_open_question())) {
                     // There are unanswered questions (for this course and this user) in the currently active feedback.
                     $message = $renderer->render_notif_message($feedback, $openquestions);
@@ -108,11 +108,11 @@ class block_coursefeedback extends block_base {
                     );
                     $this->page->requires->js_call_amd('block_coursefeedback/notif', 'initialise', $args);
                 }
-			}
-		}
-		else {
+            }
+        }
+        else {
             $this->content->text = get_string("page_html_noquestions", "block_coursefeedback");
-		}
+        }
 
         if (has_capability("block/coursefeedback:managefeedbacks", $context)) {
             $list[] = $renderer->render_manage_link();
@@ -132,26 +132,26 @@ class block_coursefeedback extends block_base {
         else {
             $this->content->text = html_writer::alist($list, array("style" => "list-style:none"));
         }
-		$this->content->footer = "";
-		return $this->content;
-	}
+        $this->content->footer = "";
+        return $this->content;
+    }
 
-	/**
-	 * (non-PHPdoc)
+    /**
+     * (non-PHPdoc)
      * Tell Moodle that the block has a global configuration settings form
-	 * @see block_base::has_config()
-	 */
-	public function has_config()
-	{
-		return true;
-	}
+     * @see block_base::has_config()
+     */
+    public function has_config()
+    {
+        return true;
+    }
 
-	/**
-	 * (non-PHPdoc)
-	 * @see block_base::instance_can_be_hidden()
-	 */
-	public function instance_can_be_hidden()
-	{
-		return get_config("block_coursefeedback", "allow_hiding");
-	}
+    /**
+     * (non-PHPdoc)
+     * @see block_base::instance_can_be_hidden()
+     */
+    public function instance_can_be_hidden()
+    {
+        return get_config("block_coursefeedback", "allow_hiding");
+    }
 }
