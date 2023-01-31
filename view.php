@@ -16,9 +16,10 @@
 
 /**
  * Display homepage of the given feedbacks for this course  (Survey analysis).
+ *
  * @package    block
  * @subpackage coursefeedback
- * @copyright  2011-2014 onwards Jan Eberhardt / Felix Di Lenarda (@ innoCampus, TU Berlin)
+ * @copyright  2023 Technische Universität Berlin
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 

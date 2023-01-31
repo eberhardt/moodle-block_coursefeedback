@@ -21,9 +21,10 @@ defined("MOODLE_INTERNAL") || die();
 /**
  * Feedback evaluated event
  *
- * @package block_coursefeedback
- * @copyright 2015 Jan Eberhardt <eberhardt@math.tu-berlin.de>
- * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package    block
+ * @subpackage coursefeedback
+ * @copyright  2023 Technische Universität Berlin
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class coursefeedback_viewed extends \core\event\base {
 

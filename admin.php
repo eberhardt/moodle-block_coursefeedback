@@ -20,8 +20,6 @@
  * @package    block
  * @subpackage coursefeedback
  * @copyright  2023 Technische Universität Berlin
- * @author     2011-2023 onwards Jan Eberhardt
- * @author     2023 onwards Felix Di Lenarda
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
