@@ -31,67 +31,67 @@ require_once($CFG->libdir . '/csvlib.class.php');
 
 class feedbackexport
 {
-	protected $course    = 0;
-	protected $feedback  = 0;
-	protected $filetypes = array("csv");
-	private $content     = "";
-	private $format;
+    protected $course    = 0;
+    protected $feedback  = 0;
+    protected $filetypes = array("csv");
+    private $content     = "";
+    private $format;
 
-	public function __construct($course = 0, $feedback = 0, $seperator = "\t") {
-		global $DB;
+    public function __construct($course = 0, $feedback = 0, $seperator = "\t") {
+        global $DB;
 
-		if($DB->record_exists("course", array("id" => $course))) {
+        if($DB->record_exists("course", array("id" => $course))) {
             $this->course = $course;
             $this->feedback = $feedback;
         }
-		else {
-			print_error("courseidnotfound", "error");
-			exit(0);
-		}
-	}
+        else {
+            print_error("courseidnotfound", "error");
+            exit(0);
+        }
+    }
 
-	public function get_filetypes()
-	{
-		return $this->filetypes;
-	}
+    public function get_filetypes()
+    {
+        return $this->filetypes;
+    }
 
-	public function init_format($format)
-	{
-		if(in_array($format, $this->get_filetypes()))
-		{
-			$exportformatclass = "exportformat_" . $format;
-			$this->format = new $exportformatclass();
-			return true;
-		}
-		else
-			return false;
-	}
+    public function init_format($format)
+    {
+        if(in_array($format, $this->get_filetypes()))
+        {
+            $exportformatclass = "exportformat_" . $format;
+            $this->format = new $exportformatclass();
+            return true;
+        }
+        else
+            return false;
+    }
 
-	public function create_file($lang)
-	{
-		global $CFG, $DB;
+    public function create_file($lang)
+    {
+        global $CFG, $DB;
 
-		if(!isset($this->format))
-		{
-			print_error("format not initialized", "block_coursefeedback");
-		}
-		else
-		{
-			$answers = block_coursefeedback_get_answers($this->course, $this->feedback);
-			$this->reset();
-			$this->content = $this->format->build($answers, $lang);
-		}
-	}
+        if(!isset($this->format))
+        {
+            print_error("format not initialized", "block_coursefeedback");
+        }
+        else
+        {
+            $answers = block_coursefeedback_get_answers($this->course, $this->feedback);
+            $this->reset();
+            $this->content = $this->format->build($answers, $lang);
+        }
+    }
 
-	public function get_content()
-	{
-		return $this->content;
-	}
+    public function get_content()
+    {
+        return $this->content;
+    }
 
-	public function reset()
-	{
-		$this->content = "";
-	}
+    public function reset()
+    {
+        $this->content = "";
+    }
 }
 
 /**
@@ -100,14 +100,14 @@ class feedbackexport
  */
 abstract class exportformat
 {
-	private $type = "unknown";
+    private $type = "unknown";
 
-	public final function get_type()
-	{
-		return $this->type;
-	}
+    public final function get_type()
+    {
+        return $this->type;
+    }
 
-	public abstract function build($arg1);
+    public abstract function build($arg1);
 }
 
 /**
@@ -116,65 +116,65 @@ abstract class exportformat
  */
 class exportformat_csv extends exportformat
 {
-	public $seperator;
-	public $newline;
-	public $quotes;
+    public $seperator;
+    public $newline;
+    public $quotes;
 
-	/**
-	 * Set CSV options.
-	 *
-	 * TODO Choosable values.
-	 */
-	public function __construct()
-	{
-		$this->type      = "csv";
-		$this->seperator = ";";
-		$this->newline   = "\n";
-		$this->quotes    = "\"";
-	}
+    /**
+     * Set CSV options.
+     *
+     * TODO Choosable values.
+     */
+    public function __construct()
+    {
+        $this->type      = "csv";
+        $this->seperator = ";";
+        $this->newline   = "\n";
+        $this->quotes    = "\"";
+    }
 
-	/**
-	 * (non-PHPdoc)
-	 * @see exportformat::build()
-	 */
-	public function build($answers, $lang = null)
-	{
-		global $DB;
-		$config  = get_config("block_coursefeedback");
-		$content = $this->quote(get_string("download_thead_questions", "block_coursefeedback"))
-		         . $this->seperator
-		         . $this->quote(get_string("table_html_nochoice", "block_coursefeedback"));
-		for ($i = 1; $i < 7; $i++)
-			$content .= $this->seperator . $i;
-		$content .= $this->newline;
+    /**
+     * (non-PHPdoc)
+     * @see exportformat::build()
+     */
+    public function build($answers, $lang = null)
+    {
+        global $DB;
+        $config  = get_config("block_coursefeedback");
+        $content = $this->quote(get_string("download_thead_questions", "block_coursefeedback"))
+                 . $this->seperator
+                 . $this->quote(get_string("table_html_nochoice", "block_coursefeedback"));
+        for ($i = 1; $i < 7; $i++)
+            $content .= $this->seperator . $i;
+        $content .= $this->newline;
 
-		$lang = block_coursefeedback_find_language($lang);
+        $lang = block_coursefeedback_find_language($lang);
 
-		foreach ($answers as $questionid => $values)
-		{
-			$conditions = array("coursefeedbackid" => $config->active_feedback,
-			                    "language" => $lang,
-			                    "questionid" => $questionid);
-			if($question = $DB->get_field("block_coursefeedback_questns", "question", $conditions));
-			{
-				$question = $this->quote(format_text(trim($question, " \""), FORMAT_PLAIN));
-				$content .= $question . $this->seperator . join($this->seperator, $values) . $this->newline;
-			}
-		}
+        foreach ($answers as $questionid => $values)
+        {
+            $conditions = array("coursefeedbackid" => $config->active_feedback,
+                                "language" => $lang,
+                                "questionid" => $questionid);
+            if($question = $DB->get_field("block_coursefeedback_questns", "question", $conditions));
+            {
+                $question = $this->quote(format_text(trim($question, " \""), FORMAT_PLAIN));
+                $content .= $question . $this->seperator . join($this->seperator, $values) . $this->newline;
+            }
+        }
 
-		return $content;
-	}
+        return $content;
+    }
 
-	/**
-	 * Quotes a field value.
-	 *
-	 * @param string $str
-	 * @return string
-	 */
-	private function quote($str)
-	{
-		return $this->quotes . $str . $this->quotes;
-	}
+    /**
+     * Quotes a field value.
+     *
+     * @param string $str
+     * @return string
+     */
+    private function quote($str)
+    {
+        return $this->quotes . $str . $this->quotes;
+    }
 }
 /**
  * @author Felix Di Lenarda
@@ -380,7 +380,7 @@ class rankingexport
 
                     $sql = "SELECT enrolid,COUNT(*) AS count FROM {user_enrolments}
                     WHERE enrolid = :enrolid
-			        GROUP BY enrolid";
+                    GROUP BY enrolid";
 
                     if ($result = $DB->get_record_sql($sql, $params)) {
                         $usercount += $result->count;
@@ -410,15 +410,15 @@ class rankingexport
                     "qid" => $question->questionid
                 );
                 $sql = "SELECT
-			            answer,COUNT(*) AS count
-			        FROM
-			            {block_coursefeedback_answers}
-			        WHERE
-			            coursefeedbackid = :fid AND
-			            questionid = :qid AND
-			            course = :course
-			        GROUP BY
-			            answer";
+                        answer,COUNT(*) AS count
+                    FROM
+                        {block_coursefeedback_answers}
+                    WHERE
+                        coursefeedbackid = :fid AND
+                        questionid = :qid AND
+                        course = :course
+                    GROUP BY
+                        answer";
 
                 // Initiate (reset) $anserres
                 $answerres = array();
