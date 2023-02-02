@@ -240,7 +240,6 @@ class rankingexport
 
             $writer->add_data([
                 get_string('course'),
-                get_string('user'),
                 get_string('name'),
                 get_string('categories'),
                 get_string('categorypath', 'block_coursefeedback'),
@@ -252,6 +251,7 @@ class rankingexport
                 get_string('notif_emoji_superbad', 'block_coursefeedback'),
                 get_string('table_html_average', 'block_coursefeedback'),
                 get_string('table_html_votes', 'block_coursefeedback'),
+                get_string('user'),
                 get_string('table_html_nochoice', 'block_coursefeedback'),
             ]);
 
@@ -264,19 +264,19 @@ class rankingexport
                 'questionid2' => $question->questionid,
             );
             $sql = "
-                SELECT one.courseid, five.usero, c.shortname, c.category, cc.path,  
-                    six.one, six.two, six.three, six.four, six.five, six.six, 
-                    (six.answersum / ( NULLIF ((one.anstotal - six.abstain), 0))) as average, 
-                    one.anstotal, six.abstain FROM
+                SELECT course.courseid, c.shortname, c.category, cc.path,  
+                    answers.one, answers.two, answers.three, answers.four, answers.five, answers.six, 
+                    (CAST(answers.answersum AS float) / ( NULLIF ((course.anstotal - answers.abstain), 0))) as average, 
+                    course.anstotal, courseuser.usum, answers.abstain FROM
                     (
                         SELECT course as courseid, count(*) as anstotal FROM {block_coursefeedback_answers}
                             WHERE questionid = :questionid AND coursefeedbackid = :feedbackid
                             GROUP BY course
                             HAVING count(*) > :answerlimit
-                    ) one
+                    ) course
                     LEFT JOIN 
                     (
-                        SELECT four.courseid, SUM(users) as usero FROM
+                        SELECT enrols.courseid, SUM(users) as usum FROM
                         (
                             SELECT e.id, e.courseid, two.users FROM {enrol} e
                                 JOIN
@@ -285,11 +285,11 @@ class rankingexport
                                     GROUP BY enrolid 
                                 ) two
                                 ON e.id = two.enrolid    
-                        ) four
-                        GROUP BY four.courseid  
-                    ) five
-                    ON five.courseid = one.courseid
-                    LEFT JOIN {course} c ON one.courseid = c.id
+                        ) enrols
+                        GROUP BY enrols.courseid  
+                    ) courseuser
+                    ON courseuser.courseid = course.courseid
+                    LEFT JOIN {course} c ON course.courseid = c.id
                     LEFT JOIN {course_categories} cc ON cc.id = c.category
                     LEFT JOIN
                     (
@@ -304,8 +304,8 @@ class rankingexport
                         FROM {block_coursefeedback_answers}
                         WHERE coursefeedbackid = :feedbackid2 AND questionid = :questionid2
                         GROUP BY course
-                    ) six
-                    ON one.courseid = six.course
+                    ) answers
+                    ON course.courseid = answers.course
                 ";
             $courses = $DB->get_records_sql($sql, $params);
             array_walk($courses, function (&$e, $f) {
