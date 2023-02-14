@@ -27,19 +27,19 @@ defined("MOODLE_INTERNAL") || die();
  */
 class coursefeedback_viewed extends \core\event\base {
 
-	/**
-	 *
-	 * @return string
-	 */
-	public static function get_name() {
-		return get_string("eventviewed", "block_coursefeedback");
-	}
+    /**
+     *
+     * @return string
+     */
+    public static function get_name() {
+        return get_string("eventviewed", "block_coursefeedback");
+    }
 
-	/**
-	 * (non-PHPdoc)
-	 * @see \core\event\base::get_url()
-	 */
-	public function get_url() {
+    /**
+     * (non-PHPdoc)
+     * @see \core\event\base::get_url()
+     */
+    public function get_url() {
         return new \moodle_url("/blocks/coursefeedback/view.php", array("id" => $this->courseid));
     }
 
