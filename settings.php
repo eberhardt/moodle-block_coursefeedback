@@ -29,7 +29,7 @@ require_once(__DIR__ . "/lib.php");
 require_once(__DIR__ . "/settingslib.php");
 
 // Ensure that default_language can only be changed into a valid language!
-$afid  = clean_param(get_config("block_coursefeedback", "active_feedback"), PARAM_INT);
+$afid = clean_param(get_config("block_coursefeedback", "active_feedback"), PARAM_INT);
 $langs = $afid > 0
     ? block_coursefeedback_get_combined_languages($afid, false)
     : get_string_manager()->get_list_of_translations();

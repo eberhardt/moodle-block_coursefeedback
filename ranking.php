@@ -51,13 +51,13 @@ if ($form->is_submitted() && $form->is_validated()) {
     if (!isset($data->feedback) || $data->feedback == 0) {
         $message = get_string("form_select_feedback", "block_coursefeedback");
         \core\notification::add($message, \core\output\notification::NOTIFY_ERROR);
-    } elseif (isset($data->downloadqu) && (!isset($data->question) || $data->question == 0)) {
+    } else if (isset($data->downloadqu) && (!isset($data->question) || $data->question == 0)) {
         $message = get_string("form_select_question", "block_coursefeedback");
         \core\notification::add($message, \core\output\notification::NOTIFY_ERROR);
     } else {
         if (isset($data->downloadfb)) {
             $export = new rankingexport($data->feedback);
-        } elseif (isset($data->downloadqu)) {
+        } else if (isset($data->downloadqu)) {
             $export = new rankingexport($data->feedback, $data->question);
         }
         $lang = current_language();
@@ -65,7 +65,6 @@ if ($form->is_submitted() && $form->is_validated()) {
         exit(0);
     }
 }
-
 
 $PAGE->set_pagelayout("standard");
 $PAGE->set_title(get_string("page_link_rankings", "block_coursefeedback"));

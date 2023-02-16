@@ -22,12 +22,15 @@
  * @copyright  2022 Felix Di Lenarda (@ innoCampus, TU Berlin)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 namespace block_coursefeedback\form;
 
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/lib/formslib.php');
+
 use moodleform;
+
 /**
  * Form for displaying and downloading required ranking tables
  *
@@ -40,8 +43,8 @@ class f_ranking_form extends moodleform {
     public function definition() {
         $mform = $this->_form;
         $mform->addElement('header', 'rankingsettings', get_string("form_header_ranking", "block_coursefeedback"));
-
-        $mform->addElement('select', 'feedback', get_string("form_select_feedback", "block_coursefeedback"), $this->get_possible_feedbacks());
+        $mform->addElement('select', 'feedback', get_string("form_select_feedback", "block_coursefeedback"),
+            $this->get_possible_feedbacks());
         $mform->addElement('submit', 'downloadfb', get_string("form_button_downloadfb", "block_coursefeedback"));
         $options = [0 => get_string("form_option_choose", "block_coursefeedback")];
         $mform->addElement('select', 'question', get_string("form_select_question", "block_coursefeedback"), $options);
@@ -52,20 +55,21 @@ class f_ranking_form extends moodleform {
     protected function get_possible_feedbacks() {
         global $DB;
 
-        if($DB->record_exists("block", array("name" => "coursefeedback")) && $feedbacks = $DB->get_records("block_coursefeedback")) {
+        if ($DB->record_exists("block", array("name" => "coursefeedback"))
+                && $feedbacks = $DB->get_records("block_coursefeedback")) {
             // Populate feedback options
             $options = [0 => get_string("form_option_choose", "block_coursefeedback")];
             foreach ($feedbacks as $feedback) {
-                if (block_coursefeedback_questions_exist($feedback->id))
+                if (block_coursefeedback_questions_exist($feedback->id)) {
                     $options[$feedback->id] = format_string($feedback->name);
+                }
             }
             ksort($options);
         }
         return $options;
     }
 
-    public function definition_after_data()
-    {
+    public function definition_after_data() {
         parent::definition_after_data();
         $mform = $this->_form;
 

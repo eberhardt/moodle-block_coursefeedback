@@ -21,6 +21,7 @@
  * @copyright   2022 onwards Felix Di Lenarda (@ innoCampus, TU Berlin)
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 namespace block_coursefeedback;
 
 defined('MOODLE_INTERNAL') || die();
@@ -91,7 +92,7 @@ class external_api extends \external_api {
      * @param int $questionid
      * @returns array The next questiondetails
      */
-    public static function answer_question_and_get_new($courseid, $feedback, $feedbackid,  $questionid) {
+    public static function answer_question_and_get_new($courseid, $feedback, $feedbackid, $questionid) {
         global $DB, $USER, $COURSE;
 
         // Validate parameter
@@ -112,25 +113,25 @@ class external_api extends \external_api {
 
         // Check if FB and question exist
         if (!$DB->record_exists("block_coursefeedback_questns",
-            ['questionid' => $params['questionid'], 'coursefeedbackid' => $params['feedbackid']])) {
+                ['questionid' => $params['questionid'], 'coursefeedbackid' => $params['feedbackid']])) {
             throw new \moodle_exception('except_no_question', 'block_coursefeedback');
         }
 
         // Check if answer exist already
         if ($DB->record_exists("block_coursefeedback_uidansw",
-            [
-                "userid" => $USER->id,
-                "course" => $params['courseid'],
-                "questionid" => $params['questionid'],
-                "coursefeedbackid" => $params['feedbackid']
-            ])) {
+                [
+                    "userid" => $USER->id,
+                    "course" => $params['courseid'],
+                    "questionid" => $params['questionid'],
+                    "coursefeedbackid" => $params['feedbackid']
+                ])) {
             throw new \moodle_exception('except_answer_exist', 'block_coursefeedback');
         }
 
         // Check if FB active and period is running and coursestart is ok
         if ($config->active_feedback != $params['feedbackid']
-            || !block_coursefeedbck_coursestartcheck_good($config, $params['courseid'])
-            || !block_coursefeedback_period_is_active()) {
+                || !block_coursefeedbck_coursestartcheck_good($config, $params['courseid'])
+                || !block_coursefeedback_period_is_active()) {
             throw new \moodle_exception('except_not_active', 'block_coursefeedback');
         }
 
@@ -146,16 +147,14 @@ class external_api extends \external_api {
         $blocks = $DB->get_records_sql($sql, $sqlparams);
         if (count($blocks) > 1) {
             throw new \moodle_exception('except_block_duplicate', 'block_coursefeedback');
-        } elseif (count($blocks) == 1) {
+        } else if (count($blocks) == 1) {
             if (array_pop($blocks)->visible != 1) {
                 throw new \moodle_exception('except_block_hidden', 'block_coursefeedback');
             }
         }
 
         // Answer received -> save in DB.
-        $result = array(
-            'saved' => false
-        );
+        $result = ['saved' => false];
         $record = new stdClass();
         $record->course = $params['courseid'];
         $record->coursefeedbackid = $params['feedbackid'];
@@ -170,12 +169,11 @@ class external_api extends \external_api {
         $uidtoans->questionid = $params['questionid'];
 
         $dbtrans = $DB->start_delegated_transaction();
-        if ($DB->insert_record("block_coursefeedback_answers", $record, false, false) &&
-            $DB->insert_record("block_coursefeedback_uidansw", $uidtoans, false, false)) {
+        if ($DB->insert_record("block_coursefeedback_answers", $record, false, false)
+                && $DB->insert_record("block_coursefeedback_uidansw", $uidtoans, false, false)) {
             $result['saved'] = true;
         }
         $dbtrans->allow_commit();
-
 
         // Check if there are questions left and return the resulting infos.
         if (null !== ($openquestions = block_coursefeedback_get_open_question())) {
@@ -198,7 +196,7 @@ class external_api extends \external_api {
      * @return external_single_structure
      */
     public static function answer_question_and_get_new_returns() {
-        $saved =  new external_value(
+        $saved = new external_value(
             PARAM_BOOL,
             'Given feeback saved',
             VALUE_REQUIRED
@@ -276,8 +274,8 @@ class external_api extends \external_api {
         $questions = block_coursefeedback_get_questions_by_language($params['feedbackid'], $currentlang, "questionid",
             "id,questionid,question,coursefeedbackid,language");
         $result = ['questions' => array()];
-        foreach($questions as $question) {
-            array_push($result['questions'], (array)$question);
+        foreach ($questions as $question) {
+            array_push($result['questions'], (array) $question);
         }
         return $result;
     }
@@ -292,9 +290,9 @@ class external_api extends \external_api {
     public static function get_feedback_questions_returns() {
         $questions = new external_multiple_structure (
             new external_single_structure([
-                'id'  => new external_value(PARAM_INT, 'Id'),
-                'questionid'  => new external_value(PARAM_INT, 'Questionid'),
-                'question'    => new external_value(PARAM_TEXT, 'Question'),
+                'id' => new external_value(PARAM_INT, 'Id'),
+                'questionid' => new external_value(PARAM_INT, 'Questionid'),
+                'question' => new external_value(PARAM_TEXT, 'Question'),
                 'coursefeedbackid' => new external_value(PARAM_INT, 'CFId'),
                 'language' => new external_value(PARAM_TEXT, 'lang'),
             ])
@@ -311,8 +309,7 @@ class external_api extends \external_api {
      * @return external_function_parameters
      */
     //TODO das Anzeigen der Rankings in der Weboberfläche ist nicht fertig implementiert -> CSV Download nutzen
-    public static function get_ranking_for_question_parameters()
-    {
+    public static function get_ranking_for_question_parameters() {
         $questionid = new external_value(
             PARAM_INT,
             'question.questionid',
@@ -357,8 +354,7 @@ class external_api extends \external_api {
      * @returns array
      */
     //TODO das Anzeigen der Rankings in der Weboberfläche ist nicht fertig implementiert -> CSV Download nutzen
-    public static function get_ranking_for_question($questionid, $feedback, $answerlimit, $showperpage, $page)
-    {
+    public static function get_ranking_for_question($questionid, $feedback, $answerlimit, $showperpage, $page) {
         global $DB;
 
         // Validate parameter
@@ -377,8 +373,6 @@ class external_api extends \external_api {
         self::validate_context($context);
         require_capability('block/coursefeedback:managefeedbacks', $context);
 
-
-
         // TODO hole alle kurse mit mehr antworten als answerlimit
         $courses = block_coursefeedback_get_courserankings($params['questionid'], $params['feedback'],
             $params['answerlimit'], $params['showperpage'], $params['page']);
@@ -395,9 +389,9 @@ class external_api extends \external_api {
     public static function get_ranking_for_question_returns() {
         $ranking = new external_multiple_structure (
             new external_single_structure([
-                'courseid'  => new external_value(PARAM_INT, 'courseid'),
+                'courseid' => new external_value(PARAM_INT, 'courseid'),
                 //'shortname'    => new external_value(PARAM_TEXT, 'shortname'),
-                'answerstotal'  => new external_value(PARAM_INT, 'answersum'),
+                'answerstotal' => new external_value(PARAM_INT, 'answersum'),
                 'avfeedbackresult' => new external_value(PARAM_FLOAT, 'Average feedback result '),
             ])
         );

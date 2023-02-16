@@ -16,6 +16,7 @@
 
 /**
  * Display homepage of the given feedbacks for this course  (Survey analysis).
+ *
  * @package    block
  * @subpackage coursefeedback
  * @copyright  2011-2014 onwards Jan Eberhardt / Felix Di Lenarda (@ innoCampus, TU Berlin)
@@ -31,7 +32,7 @@ $feedbackid = required_param("feedback", PARAM_INT);
 $download = optional_param("download", null, PARAM_ALPHA);
 $lang = optional_param("lang", null, PARAM_ALPHA);
 
-if (! ($course = $DB->get_record("course", array("id" => $courseid))) ) {
+if (!($course = $DB->get_record("course", array("id" => $courseid)))) {
     error("Invalid course id");
 }
 
@@ -43,12 +44,10 @@ $feedback = $DB->get_record("block_coursefeedback", array("id" => $feedbackid));
 $statusmsg = "";
 $errormsg = "";
 
-if (!empty($download))
-{
+if (!empty($download)) {
     require_capability("block/coursefeedback:download", $context);
     $export = new feedbackexport($course->id, $feedbackid);
-    if ($export->init_format($download))
-    {
+    if ($export->init_format($download)) {
         $filename = get_string("download_html_filename", "block_coursefeedback")
             . date("_Y-m-d-H-i") . ".csv";
         $export->create_file($lang);
@@ -56,8 +55,9 @@ if (!empty($download))
         header("Content-Disposition: attachment; filename=" . $filename);
         echo $export->get_content();
         exit(0);
+    } else {
+        $errormsg = "wrong format";
     }
-    else $errormsg = "wrong format";
 }
 
 if ($course->id == SITEID) {
@@ -83,18 +83,17 @@ if ($questions) {
     $answers = block_coursefeedback_get_answers($courseid, $feedbackid);
     $table = new html_table();
     $table->id = "coursefeedback_table";
-    $table->size        = array_fill(0, 8, "10%");
+    $table->size = array_fill(0, 8, "10%");
     $j = 0;
-    foreach ($questions as $question)
-    {
+    foreach ($questions as $question) {
         $table->data[$j] = new html_table_row();
         $table->data[$j]->attributes = array("class" => "coursefeedback_table_headrow");
         $c11 = new html_table_cell();
         $c11->colspan = 9;
-        $c11->style   = "padding-bottom:1em;";
-        $c11->text    = html_writer::tag("span",
-            get_string("form_header_question", "block_coursefeedback",
-            $question->questionid) . ": ", array("style" => "font-weight: bold; font-size: 1.5rem"));
+        $c11->style = "padding-bottom:1em;";
+        $c11->text = html_writer::tag("span",
+            get_string("form_header_question", "block_coursefeedback", $question->questionid)
+            . ": ", array("style" => "font-weight: bold; font-size: 1.5rem"));
         $c11->text .= html_writer::tag("span", format_string($question->question), array("style" => "font-size: 1.5rem"));
         $table->data[$j++]->cells = array($c11);
         $table->data[$j] = new html_table_row();
@@ -108,20 +107,19 @@ if ($questions) {
         $c27 = new html_table_cell();
         $c27->colspan = 3;
 
-        $c21->text    = get_string("notif_emoji_super", "block_coursefeedback");
-        $c22->text    = get_string("notif_emoji_good", "block_coursefeedback");
-        $c23->text    = get_string("notif_emoji_ok", "block_coursefeedback");
-        $c24->text    = get_string("notif_emoji_neutral", "block_coursefeedback");
-        $c25->text    = get_string("notif_emoji_bad", "block_coursefeedback");
-        $c26->text    = get_string("notif_emoji_superbad", "block_coursefeedback");
+        $c21->text = get_string("notif_emoji_super", "block_coursefeedback");
+        $c22->text = get_string("notif_emoji_good", "block_coursefeedback");
+        $c23->text = get_string("notif_emoji_ok", "block_coursefeedback");
+        $c24->text = get_string("notif_emoji_neutral", "block_coursefeedback");
+        $c25->text = get_string("notif_emoji_bad", "block_coursefeedback");
+        $c26->text = get_string("notif_emoji_superbad", "block_coursefeedback");
 
         $table->data[$j++]->cells = array($c21, $c22, $c23, $c24, $c25, $c26, $c27);
 
         $table->data[$j] = new html_table_row();
         $table->data[$j]->attributes = array("class" => "coursefeedback_table_descrow");
-        for($i = 1; $i <= 9; $i++)
-        {
-            $cn = "c3".$i;
+        for ($i = 1; $i <= 9; $i++) {
+            $cn = "c3" . $i;
             ${$cn} = new html_table_cell();
             ${$cn}->style = "font-weight:bold;";
         }
@@ -134,27 +132,26 @@ if ($questions) {
         $c37->text = get_string("table_html_average", "block_coursefeedback");
         $c38->text = get_string("table_html_votes", "block_coursefeedback");
         $c39->text = get_string("table_html_nochoice", "block_coursefeedback");
-        $c31->style ="font-size: 1.5rem;";
-        $c32->style ="font-size: 1.5rem;";
-        $c33->style ="font-size: 1.5rem;";
-        $c34->style ="font-size: 1.5rem;";
-        $c35->style ="font-size: 1.5rem;";
-        $c36->style ="font-size: 1.5rem;";
+        $c31->style = "font-size: 1.5rem;";
+        $c32->style = "font-size: 1.5rem;";
+        $c33->style = "font-size: 1.5rem;";
+        $c34->style = "font-size: 1.5rem;";
+        $c35->style = "font-size: 1.5rem;";
+        $c36->style = "font-size: 1.5rem;";
         $table->data[$j++]->cells = array($c31, $c32, $c33, $c34, $c35, $c36, $c37, $c38, $c39);
 
         $question->answers = $answers[$question->questionid];
         $vsum = 0;
         $table->data[$j] = new html_table_row();
         $table->data[$j]->attributes = array("class" => "coursefeedback_table_graderow");
-        for($i = 1; $i <= 6; $i++)
-        {
-            $cn = "c4".$i;
+        for ($i = 1; $i <= 6; $i++) {
+            $cn = "c4" . $i;
             ${$cn} = new html_table_cell();
-            ${$cn}->text  = $question->answers[$i];
+            ${$cn}->text = $question->answers[$i];
             $vsum += $i * $question->answers[$i];
         }
         $choices = array_sum($question->answers);
-        $ksum    = $choices - $question->answers[0];
+        $ksum = $choices - $question->answers[0];
         $average = $ksum > 0 ? ($vsum / $ksum) : 0;
         $c47 = new html_table_cell();
         $c48 = new html_table_cell();
@@ -170,34 +167,32 @@ if ($questions) {
 
     $html = html_writer::table($table);
     $params = array("course" => $course->id, "feedback" => $feedbackid, "download" => "csv");
-    if ($lang !== null)
+    if ($lang !== null) {
         $params["lang"] = $lang;
+    }
     $link = html_writer::link(new moodle_url("/blocks/coursefeedback/view.php", $params),
         get_string("page_link_download", "block_coursefeedback", "CSV"));
-}
-else if ($feedbackid > 0)
+} else if ($feedbackid > 0) {
     $html = get_string("page_html_noquestions", "block_coursefeedback");
-else
+} else {
     redirect(new moodle_url("/course/view.php", array("id" => $course->id)),
         get_string("page_html_nofeedbackactive", "block_coursefeedback"));
-
+}
 
 // Start output.
 echo $OUTPUT->header();
-echo $OUTPUT->heading(get_string("pluginname", "block_coursefeedback"). ": " . format_string($feedback->name));
+echo $OUTPUT->heading(get_string("pluginname", "block_coursefeedback") . ": " . format_string($feedback->name));
 
-if ($errormsg !== "")
-{
+if ($errormsg !== "") {
     echo $OUTPUT->notification($errormsg);
-}
-else if ($statusmsg !== "")
-{
+} else if ($statusmsg !== "") {
     echo $OUTPUT->notification($statusmsg, "notifysuccess");
 }
 echo $OUTPUT->box_start("generalbox coursefeedbackbox");
-if ($link > "")
+if ($link > "") {
     echo $link . "<br/>";
+}
 echo html_writer::tag("span", get_string("page_html_viewintro", "block_coursefeedback"), array("id" => "viewintro"))
-   . $OUTPUT->box_end()
-   . $OUTPUT->box($html)
-   . $OUTPUT->footer();
+    . $OUTPUT->box_end()
+    . $OUTPUT->box($html)
+    . $OUTPUT->footer();

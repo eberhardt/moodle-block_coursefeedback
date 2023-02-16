@@ -48,7 +48,8 @@ class coursefeedback_viewed extends \core\event\base {
      * @see \core\event\base::get_description()
      */
     public function get_description() {
-        return "The user with id '$this->userid' viewed the results of the coursefeedback in the course with id '" . $this->courseid . "'.";
+        return "The user with id '$this->userid' viewed the results of the coursefeedback in the course with id '"
+            . $this->courseid . "'.";
     }
 
     /**

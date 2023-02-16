@@ -23,8 +23,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-function xmldb_block_coursefeedback_install()
-{
+function xmldb_block_coursefeedback_install() {
     // For the upgrade to Version 2 we add the wanted block automatically so it is shown in every courses main page.
     // Since Version 2 we only allow one context system block which is displayed on all courses.
     // Only mangers are allowed now to add or delete the block.

@@ -23,7 +23,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once($CFG->libdir.'/formslib.php');
+require_once($CFG->libdir . '/formslib.php');
 
 /**
  * CLASS COURSEFEEDBACKFORM
@@ -34,18 +34,15 @@ require_once($CFG->libdir.'/formslib.php');
  * @date   15/11/2012
  *
  */
-abstract class coursefeedbackform extends moodleform
-{
+abstract class coursefeedbackform extends moodleform {
     public $fid;
     public $qid;
     public $lang;
-
     public $_form;
 
-    public function __construct($action, $feedbackid=0, $questionid=null, $language=null)
-    {
-        $this->fid  = clean_param($feedbackid, PARAM_INT);
-        $this->qid  = clean_param($questionid, PARAM_INT);
+    public function __construct($action, $feedbackid = 0, $questionid = null, $language = null) {
+        $this->fid = clean_param($feedbackid, PARAM_INT);
+        $this->qid = clean_param($questionid, PARAM_INT);
         $this->lang = clean_param($language, PARAM_TEXT);
 
         parent::__construct($action);
