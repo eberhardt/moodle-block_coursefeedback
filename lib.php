@@ -52,9 +52,9 @@ function block_coursefeedback_order_questions($feedbackid, $checkonly = true) {
                     $max--;
                 }
                 $sql = array("query" => "UPDATE {block_coursefeedback_questns}
-                       SET questionid = :currentid,timemodified = :modified
-                       WHERE coursefeedbackid = :fid
-                       AND questionid = :max",
+                                            SET questionid = :currentid,timemodified = :modified
+                                          WHERE coursefeedbackid = :fid 
+                                                AND questionid = :max",
                     "params" => array("currentid" => $currentid,
                         "modified" => time(),
                         "fid" => $feedbackid,
@@ -233,9 +233,9 @@ function block_coursefeedback_swap_questions($feedbackid, $oldpos, $newpos) {
         // Set temporary position.
         $sql[] = array(
             "query" => "UPDATE {block_coursefeedback_questns}
-                SET questionid = :tmppos
-                WHERE coursefeedbackid = :feedbackid
-                AND questionid = :newpos",
+                           SET questionid = :tmppos
+                         WHERE coursefeedbackid = :feedbackid 
+                               AND questionid = :newpos",
             "params" => array(
                 "tmppos" => $tmppos,
                 "feedbackid" => $feedbackid,
@@ -245,9 +245,9 @@ function block_coursefeedback_swap_questions($feedbackid, $oldpos, $newpos) {
         // Move to new position.
         $sql[] = array(
             "query" => "UPDATE {block_coursefeedback_questns}
-                SET questionid = :newpos, timemodified = :modified
-                WHERE coursefeedbackid = :fid
-                AND questionid = :oldpos",
+                           SET questionid = :newpos, timemodified = :modified
+                         WHERE coursefeedbackid = :fid 
+                               AND questionid = :oldpos",
             "params" => array(
                 "newpos" => $newpos,
                 "modified" => time(),
@@ -258,9 +258,9 @@ function block_coursefeedback_swap_questions($feedbackid, $oldpos, $newpos) {
         // Restore old position.
         $sql[] = array(
             "query" => "UPDATE {block_coursefeedback_questns}
-                SET questionid = :oldpos, timemodified = :modified
-                WHERE coursefeedbackid = :fid
-                AND questionid = :tmppos",
+                           SET questionid = :oldpos, timemodified = :modified
+                         WHERE coursefeedbackid = :fid 
+                               AND questionid = :tmppos",
             "params" => array(
                 "oldpos" => $oldpos,
                 "modified" => time(),
@@ -428,7 +428,9 @@ function block_coursefeedback_get_implemented_languages($feedbackid, $questionid
 
     $feedbackid = intval($feedbackid);
 
-    $sql = "SELECT language FROM {block_coursefeedback_questns} WHERE coursefeedbackid = :fid ";
+    $sql = "SELECT language 
+              FROM {block_coursefeedback_questns} 
+             WHERE coursefeedbackid = :fid ";
     if (is_int($questionid) && $questionid > 0) {
         $sql .= "AND questionid = :qid ";
     }
@@ -512,16 +514,12 @@ function block_coursefeedback_get_answers($course, $feedbackid, $sort = "questio
         $count = count($questions);
         foreach (array_keys($questions) as $question) {
             $params["qid"] = $question;
-            $sql = "SELECT
-                        answer,COUNT(*) AS count
-                    FROM
-                        {block_coursefeedback_answers}
-                    WHERE
-                        coursefeedbackid = :fid AND
-                        questionid = :qid AND
-                        course = :course
-                    GROUP BY
-                        answer";
+            $sql = "SELECT answer,COUNT(*) AS count
+                      FROM {block_coursefeedback_answers}
+                     WHERE coursefeedbackid = :fid 
+                           AND questionid = :qid 
+                           AND course = :course
+                  GROUP BY answer";
 
             if ($results = $DB->get_records_sql($sql, $params)) {
                 $answers[$question] = array();
@@ -1094,10 +1092,12 @@ function block_coursefeedback_get_courserankings($questionid, $coursefeedbackid,
         'answerlimit' => $answerlimit
     );
     // Kursids und die Anzahl der jeweiligen Antworten in dem Kurs für die übergebene Frage(id) holen
-    $sql = "SELECT course, count(*) FROM {block_coursefeedback_answers}
-        WHERE questionid = :questionid AND coursefeedbackid = :feedbackid
-        GROUP BY course
-        HAVING count(*) >= :answerlimit";
+    $sql = "SELECT course, count(*) 
+              FROM {block_coursefeedback_answers}
+             WHERE questionid = :questionid 
+                   AND coursefeedbackid = :feedbackid
+          GROUP BY course
+            HAVING count(*) >= :answerlimit";
     $courses = $DB->get_records_sql($sql, $params);
     $coursearray = array();
     //TODO calculate rankings
@@ -1163,9 +1163,9 @@ function block_coursefeedbck_coursestartcheck_good($config, $courseid) {
 function block_coursefeedbck_get_fbsfor_course($courseid) {
     global $DB;
     $sql = "SELECT DISTINCT cf.id, cf.name, ans.course
-                FROM {block_coursefeedback_answers} ans
-                JOIN {block_coursefeedback} cf ON ans.coursefeedbackid = cf.id
-                WHERE ans.course = ?";
+              FROM {block_coursefeedback_answers} ans
+              JOIN {block_coursefeedback} cf ON ans.coursefeedbackid = cf.id
+             WHERE ans.course = ?";
     $answerredfbs = $DB->get_records_sql($sql, array($courseid));
 
     return $answerredfbs;

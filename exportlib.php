@@ -243,48 +243,41 @@ class rankingexport {
             ];
             $sql = "
                 SELECT one.courseid, five.usero, c.shortname, c.category, cc.path,  
-                    six.one, six.two, six.three, six.four, six.five, six.six, 
-                    (six.answersum / ( NULLIF ((one.anstotal - six.abstain), 0))) as average, 
-                    one.anstotal, six.abstain FROM
-                    (
-                        SELECT course as courseid, count(*) as anstotal FROM {block_coursefeedback_answers}
-                            WHERE questionid = :questionid AND coursefeedbackid = :feedbackid
-                            GROUP BY course
-                            HAVING count(*) > :answerlimit
-                    ) one
-                    LEFT JOIN 
-                    (
-                        SELECT four.courseid, SUM(users) as usero FROM
-                        (
-                            SELECT e.id, e.courseid, two.users FROM {enrol} e
-                                JOIN
-                                ( 
-                                    SELECT enrolid, COUNT(*) AS users FROM {user_enrolments}
-                                    GROUP BY enrolid 
-                                ) two
-                                ON e.id = two.enrolid    
-                        ) four
-                        GROUP BY four.courseid  
-                    ) five
-                    ON five.courseid = one.courseid
-                    LEFT JOIN {course} c ON one.courseid = c.id
-                    LEFT JOIN {course_categories} cc ON cc.id = c.category
-                    LEFT JOIN
-                    (
-                        SELECT course, SUM(CASE WHEN answer = 0 THEN 1 ELSE 0 END) AS abstain, 
-                            SUM(CASE WHEN answer = 1 THEN 1 ELSE 0 END) AS one,
-                            SUM(CASE WHEN answer = 2 THEN 1 ELSE 0 END) AS two,
-                            SUM(CASE WHEN answer = 3 THEN 1 ELSE 0 END) AS three,
-                            SUM(CASE WHEN answer = 4 THEN 1 ELSE 0 END) AS four,
-                            SUM(CASE WHEN answer = 5 THEN 1 ELSE 0 END) AS five,
-                            SUM(CASE WHEN answer = 6 THEN 1 ELSE 0 END) AS six,
-                            SUM(answer) AS answersum
-                        FROM {block_coursefeedback_answers}
-                        WHERE coursefeedbackid = :feedbackid2 AND questionid = :questionid2
-                        GROUP BY course
-                    ) six
-                    ON one.courseid = six.course
-                ";
+                       six.one, six.two, six.three, six.four, six.five, six.six, 
+                       (six.answersum / ( NULLIF ((one.anstotal - six.abstain), 0))) as average, 
+                       one.anstotal, six.abstain 
+                  FROM ( SELECT course as courseid, count(*) as anstotal 
+                           FROM {block_coursefeedback_answers}
+                          WHERE questionid = :questionid 
+                                AND coursefeedbackid = :feedbackid
+                       GROUP BY course
+                         HAVING count(*) > :answerlimit
+                       ) one
+             LEFT JOIN ( SELECT four.courseid, SUM(users) as usero 
+                           FROM ( SELECT e.id, e.courseid, two.users 
+                                    FROM {enrol} e
+                                    JOIN ( SELECT enrolid, COUNT(*) AS users 
+                                             FROM {user_enrolments}
+                                         GROUP BY enrolid 
+                                         ) two ON e.id = two.enrolid    
+                                ) four
+                         GROUP BY four.courseid  
+                       ) five ON five.courseid = one.courseid
+             LEFT JOIN {course} c ON one.courseid = c.id
+             LEFT JOIN {course_categories} cc ON cc.id = c.category
+             LEFT JOIN ( SELECT course, SUM(CASE WHEN answer = 0 THEN 1 ELSE 0 END) AS abstain, 
+                                SUM(CASE WHEN answer = 1 THEN 1 ELSE 0 END) AS one,
+                                SUM(CASE WHEN answer = 2 THEN 1 ELSE 0 END) AS two,
+                                SUM(CASE WHEN answer = 3 THEN 1 ELSE 0 END) AS three,
+                                SUM(CASE WHEN answer = 4 THEN 1 ELSE 0 END) AS four,
+                                SUM(CASE WHEN answer = 5 THEN 1 ELSE 0 END) AS five,
+                                SUM(CASE WHEN answer = 6 THEN 1 ELSE 0 END) AS six,
+                                SUM(answer) AS answersum
+                          FROM {block_coursefeedback_answers}
+                         WHERE coursefeedbackid = :feedbackid2 
+                               AND questionid = :questionid2
+                      GROUP BY course
+                       ) six ON one.courseid = six.course";
             $courses = $DB->get_records_sql($sql, $params);
             array_walk($courses, function(&$e, $f) {
                 $e = get_object_vars($e);
@@ -340,10 +333,13 @@ class rankingexport {
                 'feedbackid' => $this->feedback->id,
                 'answerlimit' => 0,
             ];
-            $sql = "SELECT course as courseid, count(*) FROM {block_coursefeedback_answers}
-            WHERE questionid = :questionid AND coursefeedbackid = :feedbackid
-            GROUP BY course
-            HAVING count(*) > :answerlimit";
+            $sql = "SELECT course as courseid, count(*) 
+                      FROM {block_coursefeedback_answers}
+                     WHERE questionid = :questionid 
+                           AND coursefeedbackid = :feedbackid
+                  GROUP BY course
+                    HAVING count(*) > :answerlimit";
+
             $courses = $DB->get_records_sql($sql, $params);
 
             foreach ($courses as $course) {
@@ -354,9 +350,10 @@ class rankingexport {
                 foreach ($enrolmentinstances as $einstance) {
                     $params = array('enrolid' => $einstance->id);
 
-                    $sql = "SELECT enrolid,COUNT(*) AS count FROM {user_enrolments}
-                    WHERE enrolid = :enrolid
-                    GROUP BY enrolid";
+                    $sql = "SELECT enrolid,COUNT(*) AS count 
+                              FROM {user_enrolments}
+                             WHERE enrolid = :enrolid
+                          GROUP BY enrolid";
 
                     if ($result = $DB->get_record_sql($sql, $params)) {
                         $usercount += $result->count;
@@ -385,16 +382,12 @@ class rankingexport {
                     "course" => $course->courseid,
                     "qid" => $question->questionid
                 ];
-                $sql = "SELECT
-                        answer,COUNT(*) AS count
-                    FROM
-                        {block_coursefeedback_answers}
-                    WHERE
-                        coursefeedbackid = :fid AND
-                        questionid = :qid AND
-                        course = :course
-                    GROUP BY
-                        answer";
+                $sql = "SELECT answer,COUNT(*) AS count
+                          FROM {block_coursefeedback_answers}
+                         WHERE coursefeedbackid = :fid 
+                               AND questionid = :qid 
+                               AND course = :course
+                      GROUP BY answer";
 
                 // Initiate (reset) $anserres
                 $answerres = array();

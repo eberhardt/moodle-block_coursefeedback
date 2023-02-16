@@ -137,9 +137,10 @@ class external_api extends \external_api {
 
         // Check if more than one coursefeedback blocks exist in the course or block is hidden
         $sql = "SELECT bp.visible
-            FROM {block_positions} bp
-            JOIN {block_instances} bi ON bp.blockinstanceid = bi.id
-            WHERE bp.contextid = :contextid AND bi.blockname = :blockname";
+                  FROM {block_positions} bp
+                  JOIN {block_instances} bi ON bp.blockinstanceid = bi.id
+                 WHERE bp.contextid = :contextid 
+                       AND bi.blockname = :blockname";
         $sqlparams = [
             'contextid' => $context->id,
             'blockname' => 'coursefeedback'
