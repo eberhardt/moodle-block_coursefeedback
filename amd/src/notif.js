@@ -25,11 +25,11 @@ import Ajax from 'core/ajax';
 import * as Str from 'core/str';
 
 // Initiate the needed  global vars through an ajax call.
-let courseid;
-let feedbackid;
-let questionid;
-let questionsum;
-let sendingactive = false;
+let courseId;
+let feedbackId;
+let questionId;
+let questionSum;
+let sendingActive = false;
 
 /**
  * fadeOut element
@@ -37,15 +37,15 @@ let sendingactive = false;
  * @returns {Promise}
  */
 function fadeOut(element) {
-    return new Promise((resolve)=>{
+    return new Promise((resolve) => {
         let opacity = parseFloat(window.getComputedStyle(element).getPropertyValue("opacity"));
         // Fallback if opacity isn't computed properly.
         if (isNaN(opacity)) {
             opacity = 0;
         }
-        let fadingout = setInterval(function () {
+        let fadingOut = setInterval(function () {
             if (opacity <= 0) {
-                clearInterval(fadingout);
+                clearInterval(fadingOut);
                 resolve();
             } else {
                 opacity = opacity - 0.1;
@@ -66,9 +66,9 @@ function fadeIn(element) {
     if (isNaN(opacity)) {
         opacity = 0;
     }
-    let fadingin = setInterval(function () {
+    let fadingIn = setInterval(function () {
         if (opacity >= 1) {
-            clearInterval(fadingin);
+            clearInterval(fadingIn);
         } else {
             opacity = opacity + 0.1;
             element.style.opacity = opacity;
@@ -79,106 +79,104 @@ function fadeIn(element) {
 /**
  * send and receive feedback after answer was given
  *
- * @param {number} feedback: given answer
+ * @param {number} feedback (given answer)
  */
-const sendandreceive_feedback = (function() {
-    return function sendandreceive_feedback(feedback) {
-        // Prevent doubleclicking for the same question.
-        if (sendingactive == true) {
-            return;
-        } else {
-            sendingactive = true;
+const sendAndReceiveFeedback = (feedback) => {
+    // Prevent doubleclicking for the same question.
+    if (sendingActive == true) {
+        return;
+    } else {
+        sendingActive = true;
+    }
+
+    // Get needed elements/nodes.
+    let notifikations = document.getElementById("user-notifications");
+    let feedbackNotif = notifikations.getElementsByClassName("cfb-notification-container")[0];
+    let questionInfo = notifikations.getElementsByClassName("cfb-question-info")[0];
+    let question = notifikations.getElementsByClassName("cfb-question")[0];
+    let notif = feedbackNotif.parentElement;
+
+    // Fading out notification after clicking an emoji.
+    let foPromise = fadeOut(notif);
+
+    // Submit given FB to the server and receive new question if any left.
+    let promises = Ajax.call([{
+        methodname: 'block_coursefeedback_answer_question_and_get_new',
+        args: {
+            courseid: courseId,
+            feedback: feedback,
+            feedbackid: feedbackId,
+            questionid: questionId,
         }
-
-        // Get needed elements/nodes.
-        let notifikations = document.getElementById("user-notifications");
-        let feedback_notif = notifikations.getElementsByClassName("cfb-notification-container")[0];
-        let questioninfo = notifikations.getElementsByClassName("cfb-question-info")[0];
-        let question = notifikations.getElementsByClassName("cfb-question")[0];
-        let notif = feedback_notif.parentElement;
-
-        // Fading out notification after clicking an emoji.
-        let fopromise = fadeOut(notif);
-
-        // Submit given FB to the server and receive new question if any left.
-        let promises = Ajax.call([{
-            methodname: 'block_coursefeedback_answer_question_and_get_new',
-            args: {
-                courseid: courseid,
-                feedback: feedback,
-                feedbackid: feedbackid,
-                questionid: questionid,
+    }]);
+    promises[0].done(function (data) {
+        // Put new notification content and fade in after fadingout-promise resolved.
+        foPromise.then(() => {
+            if (data.nextquestion === null) {
+                // All questions were answered (no following question).
+                let thanksString = Str.get_string('notif_thankyou', 'block_coursefeedback');
+                thanksString.done(function (string) {
+                    feedbackNotif.innerHTML = string;
+                    fadeIn(notif);
+                });
+            } else {
+                // A following question was returned.
+                questionId = data.nextquestionid;
+                let qStr = Str.get_string('notif_question', 'block_coursefeedback');
+                qStr.done(function (string) {
+                    questionInfo.innerHTML = string.concat(questionId).concat('/').concat(questionSum).concat(': ');
+                    question.innerHTML = data.nextquestion;
+                    sendingActive = false;
+                    fadeIn(notif);
+                });
             }
-        }]);
-        promises[0].done(function (data) {
-            // Put new notification content and fade in after fadingout-promise resolved.
-            fopromise.then(()=> {
-                if (data.nextquestion === null) {
-                    // All questions were answered (no following question).
-                    let thanksstring = Str.get_string('notif_thankyou', 'block_coursefeedback');
-                    thanksstring.done(function (string) {
-                        feedback_notif.innerHTML = string;
-                        fadeIn(notif);
-                    });
-                } else {
-                    // A following question was returned.
-                    questionid = data.nextquestionid;
-                    let qstr = Str.get_string('notif_question', 'block_coursefeedback');
-                    qstr.done(function (string) {
-                        questioninfo.innerHTML = string.concat(questionid).concat('/').concat(questionsum).concat(': ');
-                        question.innerHTML = data.nextquestion;
-                        sendingactive = false;
-                        fadeIn(notif);
-                    });
-                }
-            });
-        }).fail(function (ex) {
-            window.console.error(ex);
         });
-    };
-})();
+    }).fail(function (ex) {
+        window.console.error(ex);
+    });
+};
 
 /**
  * Initialise by activatin the emoji click listeners
  *
- * @param {number} cid courseid
- * @param {number} fbid feedbackid
- * @param {number} quid questionid
+ * @param {number} cid courseId
+ * @param {number} fbid feedbackId
+ * @param {number} quid questionId
  * @param {number} qusum how many question in total in this FB
  */
 export const initialise = (cid, fbid, quid, qusum) => {
     // Set global vars.
-    courseid = cid;
-    feedbackid = fbid;
-    questionid = quid;
-    questionsum = qusum;
+    courseId = cid;
+    feedbackId = fbid;
+    questionId = quid;
+    questionSum = qusum;
 
     let notifikations = document.getElementById("user-notifications");
-    let feedback_notif = notifikations.getElementsByClassName("cfb-notification-container")[0];
+    let feedbackNotif = notifikations.getElementsByClassName("cfb-notification-container")[0];
 
     // To prevent the destruction of our click events from bootsrap.
     // We need to remove the 'role' attribute from this notification.
-    feedback_notif.parentElement.removeAttribute("role");
+    feedbackNotif.parentElement.removeAttribute("role");
 
     // Add click listener to our fbemoji-buttons.
     const emojis = [...notifikations.getElementsByClassName("cfb-fbemoji")];
     emojis.map((emoji) => {
-        let answer = emojis.indexOf(emoji)+1;
+        let answer = emojis.indexOf(emoji) + 1;
         emoji.onclick = () => {
-            sendandreceive_feedback(answer, courseid, feedbackid, questionid, questionsum);
+            sendAndReceiveFeedback(answer, courseId, feedbackId, questionId, questionSum);
         };
     });
 
     // Bootstrap 4 does not have opacity classes, inline styles are filtered out for some reason.
     // Therefore we use invisible class and then switch to opacity to fade in.
-    let overlayicon = notifikations.getElementsByClassName("cfb-overlay-icon")[0];
-    let buttoncontainer = notifikations.getElementsByClassName("cfb-button-containaer")[0];
-    buttoncontainer.style.opacity = 0;
-    buttoncontainer.classList.remove('invisible');
+    let overlayIcon = notifikations.getElementsByClassName("cfb-overlay-icon")[0];
+    let buttonContainer = notifikations.getElementsByClassName("cfb-button-containaer")[0];
+    buttonContainer.style.opacity = 0;
+    buttonContainer.classList.remove('invisible');
     // Fase out the loadingspinner and fade in the fbemoji-buttons.
-    let fopromise = fadeOut(overlayicon);
-    fopromise.then(()=> {
-        fadeIn(buttoncontainer);
+    let foPromise = fadeOut(overlayIcon);
+    foPromise.then(() => {
+        fadeIn(buttonContainer);
     });
 };
 
