@@ -36,7 +36,7 @@ if (!$context = context_course::instance($courseid)) {
 }
 if ($courseid == SITEID) {
     // This course is not a real course.
-    redirect($CFG->wwwroot ."/");
+    redirect($CFG->wwwroot . "/");
 }
 require_login($courseid);
 
@@ -49,7 +49,7 @@ if ($config->active_feedback != $feedbackid && $period) {
     redirect(new moodle_url($CFG->wwwroot));
 }
 
-$url = new moodle_url("/blocks/coursefeedback/feedbackinfo.php", array("feedback" =>$feedbackid, "course" =>$courseid));
+$url = new moodle_url("/blocks/coursefeedback/feedbackinfo.php", array("feedback" => $feedbackid, "course" => $courseid));
 $PAGE->set_url($url);
 $PAGE->set_context($context);
 $PAGE->set_pagelayout("standard");
@@ -64,7 +64,7 @@ if ($period && is_array($period)) {
     $infotext .= html_writer::tag("p", get_string("infopage_html_activeperiods", "block_coursefeedback"));
     $infotext .= html_writer::start_tag('ul');
 
-    $periodstr = date('d M', $period['begin']).' - '.date('d M', $period['end']);
+    $periodstr = date('d M', $period['begin']) . ' - ' . date('d M', $period['end']);
     $infotext .= html_writer::tag('li', $periodstr);
 
     $infotext .= html_writer::end_tag('ul');
@@ -72,11 +72,13 @@ if ($period && is_array($period)) {
 
 if ($config->since_coursestart_enabled) {
     // Only show if "since_coursestart" setting is enabled.
-    $infotext .= html_writer::tag("p", get_string('infopage_html_coursestartcountd','block_coursefeedback', (ceil($config->since_coursestart/86400))));
+    $infotext .= html_writer::tag("p",
+        get_string('infopage_html_coursestartcountd', 'block_coursefeedback',
+        (ceil($config->since_coursestart / 86400))));
 }
 $infotext .= format_text($feedback->infotext, $feedback->infotextformat);
 echo $OUTPUT->header();
-echo $OUTPUT->heading(get_string("infopage_headline_feedbackinfo", "block_coursefeedback").': '.$feedback->name);
+echo $OUTPUT->heading(get_string("infopage_headline_feedbackinfo", "block_coursefeedback") . ': ' . $feedback->name);
 echo $OUTPUT->box($infotext);
 echo $OUTPUT->footer();
 

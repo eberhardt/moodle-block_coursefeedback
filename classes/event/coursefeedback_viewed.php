@@ -27,52 +27,53 @@ defined("MOODLE_INTERNAL") || die();
  */
 class coursefeedback_viewed extends \core\event\base {
 
-	/**
-	 *
-	 * @return string
-	 */
-	public static function get_name() {
-		return get_string("eventviewed", "block_coursefeedback");
-	}
+    /**
+     *
+     * @return string
+     */
+    public static function get_name() {
+        return get_string("eventviewed", "block_coursefeedback");
+    }
 
-	/**
-	 * (non-PHPdoc)
-	 * @see \core\event\base::get_url()
-	 */
-	public function get_url() {
-		return new \moodle_url("/blocks/coursefeedback/view.php", array("id" => $this->courseid));
-	}
+    /**
+     * (non-PHPdoc)
+     * @see \core\event\base::get_url()
+     */
+    public function get_url() {
+        return new \moodle_url("/blocks/coursefeedback/view.php", array("id" => $this->courseid));
+    }
 
-	/**
-	 * (non-PHPdoc)
-	 * @see \core\event\base::get_description()
-	 */
-	public function get_description() {
-		return "The user with id '$this->userid' viewed the results of the coursefeedback in the course with id '" . $this->courseid . "'.";
-	}
+    /**
+     * (non-PHPdoc)
+     * @see \core\event\base::get_description()
+     */
+    public function get_description() {
+        return "The user with id '$this->userid' viewed the results of the coursefeedback in the course with id '"
+            . $this->courseid . "'.";
+    }
 
-	/**
-	 * (non-PHPdoc)
-	 * @see \core\event\base::init()
-	 */
-	public function init() {
-		$this->data["crud"] = "r";
-		$this->data["edulevel"] = self::LEVEL_TEACHING;
-	}
+    /**
+     * (non-PHPdoc)
+     * @see \core\event\base::init()
+     */
+    public function init() {
+        $this->data["crud"] = "r";
+        $this->data["edulevel"] = self::LEVEL_TEACHING;
+    }
 
-	/**
-	 * (non-PHPdoc)
-	 * @see \mod_registration\event\base::get_legacy_eventname()
-	 */
-	public static function get_legacy_eventname() {
-		return "coursefeedback_view";
-	}
+    /**
+     * (non-PHPdoc)
+     * @see \mod_registration\event\base::get_legacy_eventname()
+     */
+    public static function get_legacy_eventname() {
+        return "coursefeedback_view";
+    }
 
-	/**
-	 * @return multitype:string
-	 */
-	protected function get_legacy_eventdata() {
-		return array($this->courseid, "coursefeedback", "view", "view.php?id={$this->courseid}", $this->courseid);
-	}
+    /**
+     * @return multitype:string
+     */
+    protected function get_legacy_eventdata() {
+        return array($this->courseid, "coursefeedback", "view", "view.php?id={$this->courseid}", $this->courseid);
+    }
 }
 

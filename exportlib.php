@@ -25,171 +25,151 @@
 
 defined("MOODLE_INTERNAL") || die();
 
-
 require_once($CFG->dirroot . "/blocks/coursefeedback/lib.php");
 require_once($CFG->libdir . '/csvlib.class.php');
 
-class feedbackexport
-{
-	protected $course    = 0;
-	protected $feedback  = 0;
-	protected $filetypes = array("csv");
-	private $content     = "";
-	private $format;
+class feedbackexport {
+    protected $course = 0;
+    protected $feedback = 0;
+    protected $filetypes = array("csv");
+    private $content = "";
+    private $format;
 
-	public function __construct($course = 0, $feedback = 0, $seperator = "\t") {
-		global $DB;
+    public function __construct($course = 0, $feedback = 0, $seperator = "\t") {
+        global $DB;
 
-		if($DB->record_exists("course", array("id" => $course))) {
+        if ($DB->record_exists("course", array("id" => $course))) {
             $this->course = $course;
             $this->feedback = $feedback;
+        } else {
+            print_error("courseidnotfound", "error");
+            exit(0);
         }
-		else {
-			print_error("courseidnotfound", "error");
-			exit(0);
-		}
-	}
+    }
 
-	public function get_filetypes()
-	{
-		return $this->filetypes;
-	}
+    public function get_filetypes() {
+        return $this->filetypes;
+    }
 
-	public function init_format($format)
-	{
-		if(in_array($format, $this->get_filetypes()))
-		{
-			$exportformatclass = "exportformat_" . $format;
-			$this->format = new $exportformatclass();
-			return true;
-		}
-		else
-			return false;
-	}
+    public function init_format($format) {
+        if (in_array($format, $this->get_filetypes())) {
+            $exportformatclass = "exportformat_" . $format;
+            $this->format = new $exportformatclass();
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-	public function create_file($lang)
-	{
-		global $CFG, $DB;
+    public function create_file($lang) {
+        global $CFG, $DB;
 
-		if(!isset($this->format))
-		{
-			print_error("format not initialized", "block_coursefeedback");
-		}
-		else
-		{
-			$answers = block_coursefeedback_get_answers($this->course, $this->feedback);
-			$this->reset();
-			$this->content = $this->format->build($answers, $lang);
-		}
-	}
+        if (!isset($this->format)) {
+            print_error("format not initialized", "block_coursefeedback");
+        } else {
+            $answers = block_coursefeedback_get_answers($this->course, $this->feedback);
+            $this->reset();
+            $this->content = $this->format->build($answers, $lang);
+        }
+    }
 
-	public function get_content()
-	{
-		return $this->content;
-	}
+    public function get_content() {
+        return $this->content;
+    }
 
-	public function reset()
-	{
-		$this->content = "";
-	}
+    public function reset() {
+        $this->content = "";
+    }
 }
 
 /**
  * @author Jan Eberhardt
  * Generell format class. Doesn"t contain very much so far, but should provide basics.
  */
-abstract class exportformat
-{
-	private $type = "unknown";
+abstract class exportformat {
+    private $type = "unknown";
 
-	public final function get_type()
-	{
-		return $this->type;
-	}
+    public final function get_type() {
+        return $this->type;
+    }
 
-	public abstract function build($arg1);
+    public abstract function build($arg1);
 }
 
 /**
  * @author Jan Eberhardt
  * CSV export class
  */
-class exportformat_csv extends exportformat
-{
-	public $seperator;
-	public $newline;
-	public $quotes;
+class exportformat_csv extends exportformat {
+    public $seperator;
+    public $newline;
+    public $quotes;
 
-	/**
-	 * Set CSV options.
-	 *
-	 * TODO Choosable values.
-	 */
-	public function __construct()
-	{
-		$this->type      = "csv";
-		$this->seperator = ";";
-		$this->newline   = "\n";
-		$this->quotes    = "\"";
-	}
+    /**
+     * Set CSV options.
+     *
+     * TODO Choosable values.
+     */
+    public function __construct() {
+        $this->type = "csv";
+        $this->seperator = ";";
+        $this->newline = "\n";
+        $this->quotes = "\"";
+    }
 
-	/**
-	 * (non-PHPdoc)
-	 * @see exportformat::build()
-	 */
-	public function build($answers, $lang = null)
-	{
-		global $DB;
-		$config  = get_config("block_coursefeedback");
-		$content = $this->quote(get_string("download_thead_questions", "block_coursefeedback"))
-		         . $this->seperator
-		         . $this->quote(get_string("table_html_nochoice", "block_coursefeedback"));
-		for ($i = 1; $i < 7; $i++)
-			$content .= $this->seperator . $i;
-		$content .= $this->newline;
+    /**
+     * (non-PHPdoc)
+     * @see exportformat::build()
+     */
+    public function build($answers, $lang = null) {
+        global $DB;
+        $config = get_config("block_coursefeedback");
+        $content = $this->quote(get_string("download_thead_questions", "block_coursefeedback"))
+            . $this->seperator
+            . $this->quote(get_string("table_html_nochoice", "block_coursefeedback"));
+        for ($i = 1; $i < 7; $i++) {
+            $content .= $this->seperator . $i;
+        }
+        $content .= $this->newline;
 
-		$lang = block_coursefeedback_find_language($lang);
+        $lang = block_coursefeedback_find_language($lang);
 
-		foreach ($answers as $questionid => $values)
-		{
-			$conditions = array("coursefeedbackid" => $config->active_feedback,
-			                    "language" => $lang,
-			                    "questionid" => $questionid);
-			if($question = $DB->get_field("block_coursefeedback_questns", "question", $conditions));
-			{
-				$question = $this->quote(format_text(trim($question, " \""), FORMAT_PLAIN));
-				$content .= $question . $this->seperator . join($this->seperator, $values) . $this->newline;
-			}
-		}
+        foreach ($answers as $questionid => $values) {
+            $conditions = array("coursefeedbackid" => $config->active_feedback,
+                    "language" => $lang,
+                    "questionid" => $questionid);
+            if ($question = $DB->get_field("block_coursefeedback_questns", "question", $conditions)) {
+                $question = $this->quote(format_text(trim($question, " \""), FORMAT_PLAIN));
+                $content .= $question . $this->seperator . join($this->seperator, $values) . $this->newline;
+            }
+        }
 
-		return $content;
-	}
+        return $content;
+    }
 
-	/**
-	 * Quotes a field value.
-	 *
-	 * @param string $str
-	 * @return string
-	 */
-	private function quote($str)
-	{
-		return $this->quotes . $str . $this->quotes;
-	}
+    /**
+     * Quotes a field value.
+     *
+     * @param string $str
+     * @return string
+     */
+    private function quote($str) {
+        return $this->quotes . $str . $this->quotes;
+    }
 }
+
 /**
  * @author Felix Di Lenarda
  * rankings CSV export class
  */
-class rankingexport
-{
+class rankingexport {
     protected $feedback = null;
     protected $questionid = null;
     protected $seperator = ";";
 
     private $content = "";
 
-    public function __construct($feedback = null, $question = null)
-    {
+    public function __construct($feedback = null, $question = null) {
         global $DB;
 
         if ($fb = $DB->get_record("block_coursefeedback", array("id" => $feedback))) {
@@ -201,13 +181,11 @@ class rankingexport
         }
     }
 
-    public function export()
-    {
+    public function export() {
         global $DB;
         $writer = new csv_export_writer('semicolon');
-        $writer->set_filename(
-            clean_param(get_string("download_html_filename", "block_coursefeedback")
-                , PARAM_FILE));
+        $writer->set_filename( clean_param(get_string("download_html_filename", "block_coursefeedback"),
+            PARAM_FILE));
 
         $writer->add_data([
             'Feedbackid: ' . $this->feedback->id,
@@ -256,59 +234,52 @@ class rankingexport
             ]);
 
             // Get courseids and the amount of answers in this course for the current question.
-            $params = array(
+            $params = [
                 'questionid' => $question->questionid,
                 'feedbackid' => $this->feedback->id,
                 'answerlimit' => 0,
                 'feedbackid2' => $this->feedback->id,
                 'questionid2' => $question->questionid,
-            );
+            ];
             $sql = "
                 SELECT one.courseid, five.usero, c.shortname, c.category, cc.path,  
-                    six.one, six.two, six.three, six.four, six.five, six.six, 
-                    (six.answersum / ( NULLIF ((one.anstotal - six.abstain), 0))) as average, 
-                    one.anstotal, six.abstain FROM
-                    (
-                        SELECT course as courseid, count(*) as anstotal FROM {block_coursefeedback_answers}
-                            WHERE questionid = :questionid AND coursefeedbackid = :feedbackid
-                            GROUP BY course
-                            HAVING count(*) > :answerlimit
-                    ) one
-                    LEFT JOIN 
-                    (
-                        SELECT four.courseid, SUM(users) as usero FROM
-                        (
-                            SELECT e.id, e.courseid, two.users FROM {enrol} e
-                                JOIN
-                                ( 
-                                    SELECT enrolid, COUNT(*) AS users FROM {user_enrolments}
-                                    GROUP BY enrolid 
-                                ) two
-                                ON e.id = two.enrolid    
-                        ) four
-                        GROUP BY four.courseid  
-                    ) five
-                    ON five.courseid = one.courseid
-                    LEFT JOIN {course} c ON one.courseid = c.id
-                    LEFT JOIN {course_categories} cc ON cc.id = c.category
-                    LEFT JOIN
-                    (
-                        SELECT course, SUM(CASE WHEN answer = 0 THEN 1 ELSE 0 END) AS abstain, 
-                            SUM(CASE WHEN answer = 1 THEN 1 ELSE 0 END) AS one,
-                            SUM(CASE WHEN answer = 2 THEN 1 ELSE 0 END) AS two,
-                            SUM(CASE WHEN answer = 3 THEN 1 ELSE 0 END) AS three,
-                            SUM(CASE WHEN answer = 4 THEN 1 ELSE 0 END) AS four,
-                            SUM(CASE WHEN answer = 5 THEN 1 ELSE 0 END) AS five,
-                            SUM(CASE WHEN answer = 6 THEN 1 ELSE 0 END) AS six,
-                            SUM(answer) AS answersum
-                        FROM {block_coursefeedback_answers}
-                        WHERE coursefeedbackid = :feedbackid2 AND questionid = :questionid2
-                        GROUP BY course
-                    ) six
-                    ON one.courseid = six.course
-                ";
+                       six.one, six.two, six.three, six.four, six.five, six.six, 
+                       (six.answersum / ( NULLIF ((one.anstotal - six.abstain), 0))) as average, 
+                       one.anstotal, six.abstain 
+                  FROM ( SELECT course as courseid, count(*) as anstotal 
+                           FROM {block_coursefeedback_answers}
+                          WHERE questionid = :questionid 
+                                AND coursefeedbackid = :feedbackid
+                       GROUP BY course
+                         HAVING count(*) > :answerlimit
+                       ) one
+             LEFT JOIN ( SELECT four.courseid, SUM(users) as usero 
+                           FROM ( SELECT e.id, e.courseid, two.users 
+                                    FROM {enrol} e
+                                    JOIN ( SELECT enrolid, COUNT(*) AS users 
+                                             FROM {user_enrolments}
+                                         GROUP BY enrolid 
+                                         ) two ON e.id = two.enrolid    
+                                ) four
+                         GROUP BY four.courseid  
+                       ) five ON five.courseid = one.courseid
+             LEFT JOIN {course} c ON one.courseid = c.id
+             LEFT JOIN {course_categories} cc ON cc.id = c.category
+             LEFT JOIN ( SELECT course, SUM(CASE WHEN answer = 0 THEN 1 ELSE 0 END) AS abstain, 
+                                SUM(CASE WHEN answer = 1 THEN 1 ELSE 0 END) AS one,
+                                SUM(CASE WHEN answer = 2 THEN 1 ELSE 0 END) AS two,
+                                SUM(CASE WHEN answer = 3 THEN 1 ELSE 0 END) AS three,
+                                SUM(CASE WHEN answer = 4 THEN 1 ELSE 0 END) AS four,
+                                SUM(CASE WHEN answer = 5 THEN 1 ELSE 0 END) AS five,
+                                SUM(CASE WHEN answer = 6 THEN 1 ELSE 0 END) AS six,
+                                SUM(answer) AS answersum
+                          FROM {block_coursefeedback_answers}
+                         WHERE coursefeedbackid = :feedbackid2 
+                               AND questionid = :questionid2
+                      GROUP BY course
+                       ) six ON one.courseid = six.course";
             $courses = $DB->get_records_sql($sql, $params);
-            array_walk($courses, function (&$e, $f) {
+            array_walk($courses, function(&$e, $f) {
                 $e = get_object_vars($e);
             });
             foreach ($courses as $course) {
@@ -318,9 +289,7 @@ class rankingexport
         $writer->download_file();
     }
 
-
-    public function create_file($lang)
-    {
+    public function create_file($lang) {
         global $DB;
         $seperator = ";";
         $newline = "\n";
@@ -345,42 +314,46 @@ class rankingexport
         }
         foreach ($questions as $question) {
             // Output headings.
-            $this->content .= $question->question.': '.$question->questionid . $newline;
+            $this->content .= $question->question . ': ' . $question->questionid . $newline;
             $this->content .= get_string('course') . $seperator . 'USER' . $seperator . get_string('name') . $seperator
-                . 'Category: ' . $seperator . 'TopLevelCategory' . $seperator .
-                get_string('notif_emoji_super', 'block_coursefeedback') . $seperator .
-                get_string('notif_emoji_good', 'block_coursefeedback') . $seperator .
-                get_string('notif_emoji_ok', 'block_coursefeedback') . $seperator .
-                get_string('notif_emoji_neutral', 'block_coursefeedback') . $seperator .
-                get_string('notif_emoji_bad', 'block_coursefeedback') . $seperator .
-                get_string('notif_emoji_superbad', 'block_coursefeedback') . $seperator .
-                get_string('table_html_average', 'block_coursefeedback') . $seperator .
-                get_string('table_html_votes', 'block_coursefeedback') . $seperator .
-                get_string('table_html_nochoice', 'block_coursefeedback') . $newline;
+                . 'Category: ' . $seperator . 'TopLevelCategory' . $seperator
+                . get_string('notif_emoji_super', 'block_coursefeedback') . $seperator
+                . get_string('notif_emoji_good', 'block_coursefeedback') . $seperator
+                . get_string('notif_emoji_ok', 'block_coursefeedback') . $seperator
+                . get_string('notif_emoji_neutral', 'block_coursefeedback') . $seperator
+                . get_string('notif_emoji_bad', 'block_coursefeedback') . $seperator
+                . get_string('notif_emoji_superbad', 'block_coursefeedback') . $seperator
+                . get_string('table_html_average', 'block_coursefeedback') . $seperator
+                . get_string('table_html_votes', 'block_coursefeedback') . $seperator
+                . get_string('table_html_nochoice', 'block_coursefeedback') . $newline;
 
             // Get courseids and the amount of answers in this course for the current question.
-            $params = array(
+            $params = [
                 'questionid' => $question->questionid,
                 'feedbackid' => $this->feedback->id,
                 'answerlimit' => 0,
-            );
-            $sql = "SELECT course as courseid, count(*) FROM {block_coursefeedback_answers}
-            WHERE questionid = :questionid AND coursefeedbackid = :feedbackid
-            GROUP BY course
-            HAVING count(*) > :answerlimit";
+            ];
+            $sql = "SELECT course as courseid, count(*) 
+                      FROM {block_coursefeedback_answers}
+                     WHERE questionid = :questionid 
+                           AND coursefeedbackid = :feedbackid
+                  GROUP BY course
+                    HAVING count(*) > :answerlimit";
+
             $courses = $DB->get_records_sql($sql, $params);
 
-            foreach($courses as $course) {
+            foreach ($courses as $course) {
 
                 // Get amount of enrolled users for this course.
                 $usercount = 0;
                 $enrolmentinstances = $DB->get_records('enrol', array('courseid' => $course->courseid));
-                foreach( $enrolmentinstances as $einstance) {
+                foreach ($enrolmentinstances as $einstance) {
                     $params = array('enrolid' => $einstance->id);
 
-                    $sql = "SELECT enrolid,COUNT(*) AS count FROM {user_enrolments}
-                    WHERE enrolid = :enrolid
-			        GROUP BY enrolid";
+                    $sql = "SELECT enrolid,COUNT(*) AS count 
+                              FROM {user_enrolments}
+                             WHERE enrolid = :enrolid
+                          GROUP BY enrolid";
 
                     if ($result = $DB->get_record_sql($sql, $params)) {
                         $usercount += $result->count;
@@ -404,21 +377,17 @@ class rankingexport
                 }
 
                 // Get amount of answers (for each answerpossibility) for the current question.
-                $params = array(
+                $params = [
                     "fid" => $this->feedback->id,
                     "course" => $course->courseid,
                     "qid" => $question->questionid
-                );
-                $sql = "SELECT
-			            answer,COUNT(*) AS count
-			        FROM
-			            {block_coursefeedback_answers}
-			        WHERE
-			            coursefeedbackid = :fid AND
-			            questionid = :qid AND
-			            course = :course
-			        GROUP BY
-			            answer";
+                ];
+                $sql = "SELECT answer,COUNT(*) AS count
+                          FROM {block_coursefeedback_answers}
+                         WHERE coursefeedbackid = :fid 
+                               AND questionid = :qid 
+                               AND course = :course
+                      GROUP BY answer";
 
                 // Initiate (reset) $anserres
                 $answerres = array();
@@ -433,30 +402,28 @@ class rankingexport
                 }
                 // Vsum -> Amount of given Answers
                 $vsum = 0;
-                for($i = 1; $i <= 6; $i++) {
-                    $this->content .=  $answerres[$i] . $seperator;
+                for ($i = 1; $i <= 6; $i++) {
+                    $this->content .= $answerres[$i] . $seperator;
                     $vsum += $i * $answerres[$i];
                 }
                 $answercount = array_sum($answerres);
-                
+
                 // Ksum -> Amount of given Answers without the Amount of abstentions (abstentions were possible in earlier Versions).
-                $ksum    = $answercount - $answerres[0];
+                $ksum = $answercount - $answerres[0];
                 $average = $ksum > 0 ? ($vsum / $ksum) : 0;
 
                 // Output
-                $this->content .=  $average . $seperator . $answercount . $seperator . $answerres[0] . $newline;
+                $this->content .= $average . $seperator . $answercount . $seperator . $answerres[0] . $newline;
             }
-        $this->content .= $newline .$newline;
+            $this->content .= $newline . $newline;
         }
     }
 
-    public function get_content()
-    {
+    public function get_content() {
         return $this->content;
     }
 
-    public function reset()
-    {
+    public function reset() {
         $this->content = "";
     }
 }

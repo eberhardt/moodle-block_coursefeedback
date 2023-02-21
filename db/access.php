@@ -27,68 +27,68 @@ defined("MOODLE_INTERNAL") || die();
 
 $capabilities = array(
 
-	"block/coursefeedback:managefeedbacks" => array(
+    "block/coursefeedback:managefeedbacks" => array(
 
-    	"riskbitmask" => RISK_XSS,
-		"captype" => "write",
-		"contextlevel" => CONTEXT_SYSTEM,
-		"archetypes" => array(
-			"manager"        => CAP_ALLOW
-		)
-	),
-
-	"block/coursefeedback:viewanswers" => array(
-
-		"captype" => "read",
-		"contextlevel" => CONTEXT_COURSE,
-		"archetypes" => array(
-			"manager"        => CAP_ALLOW,
-       		"editingteacher" => CAP_ALLOW,
-			"teacher"        => CAP_ALLOW
+        "riskbitmask" => RISK_XSS,
+        "captype" => "write",
+        "contextlevel" => CONTEXT_SYSTEM,
+        "archetypes" => array(
+            "manager" => CAP_ALLOW
         )
     ),
 
-	"block/coursefeedback:download" => array(
+    "block/coursefeedback:viewanswers" => array(
 
-		"captype" => "read",
-		"contextlevel" => CONTEXT_COURSE,
-		"archetypes" => array(
-			"manager"        => CAP_ALLOW,
-			"editingteacher" => CAP_ALLOW
-		)
-	),
+        "captype" => "read",
+        "contextlevel" => CONTEXT_COURSE,
+        "archetypes" => array(
+            "manager" => CAP_ALLOW,
+            "editingteacher" => CAP_ALLOW,
+            "teacher" => CAP_ALLOW
+        )
+    ),
 
-	"block/coursefeedback:evaluate" => array(
+    "block/coursefeedback:download" => array(
 
-		"captype" => "write",
-		"contextlevel" => CONTEXT_COURSE,
-		"archetypes" => array(
-			"manager"        => CAP_ALLOW,
-			"teacher"        => CAP_PREVENT,
-			"student"        => CAP_ALLOW
-		)
-	),
+        "captype" => "read",
+        "contextlevel" => CONTEXT_COURSE,
+        "archetypes" => array(
+            "manager" => CAP_ALLOW,
+            "editingteacher" => CAP_ALLOW
+        )
+    ),
 
-	"block/coursefeedback:addinstance" => array(
+    "block/coursefeedback:evaluate" => array(
 
-		"captype" => "write",
-		"contextlevel" => CONTEXT_BLOCK,
-		"archetypes" => array(
+        "captype" => "write",
+        "contextlevel" => CONTEXT_COURSE,
+        "archetypes" => array(
+            "manager" => CAP_ALLOW,
+            "teacher" => CAP_PREVENT,
+            "student" => CAP_ALLOW
+        )
+    ),
+
+    "block/coursefeedback:addinstance" => array(
+
+        "captype" => "write",
+        "contextlevel" => CONTEXT_BLOCK,
+        "archetypes" => array(
             "manager" => CAP_ALLOW,
             "editingteacher" => CAP_PROHIBIT
         ) // Only allow to add the block in context_system so it is shown in all courses exactly once
-	),
+    ),
 
-	"block/coursefeedback:myaddinstance" => array(
+    "block/coursefeedback:myaddinstance" => array(
 
-		"captype" => "write",
-		"contextlevel" => CONTEXT_SYSTEM,
-		"archetypes" => array(
+        "captype" => "write",
+        "contextlevel" => CONTEXT_SYSTEM,
+        "archetypes" => array(
             "manager" => CAP_PROHIBIT,
             "editingteacher" => CAP_PROHIBIT,
             "user" => CAP_PROHIBIT
         )
-	),
+    ),
 );
 
 

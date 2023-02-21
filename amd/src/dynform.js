@@ -39,35 +39,35 @@ function resetTable() {
  */
 export const init = () => {
 
-    let downquest = jQuery('#id_downloadqu');
-    let downfeed = jQuery('#id_downloadfb');
+    let downQuest = jQuery('#id_downloadqu');
+    let downFeed = jQuery('#id_downloadfb');
 
     // Initially hide the downloadbuttons ($mform->hideIF unfortunately doesn't work properly in this case)
-    downquest.hide();
-    downfeed.hide();
+    downQuest.hide();
+    downFeed.hide();
 
     // Eventlistener for changing the selected feedback.
     jQuery('#id_feedback').change(function () {
-        let selectedfeedback = jQuery('#id_feedback').val();
+        let selectedFeedback = jQuery('#id_feedback').val();
 
         // Check if a valid fb is selected
-        if (selectedfeedback == '0') {
-            downfeed.hide();
+        if (selectedFeedback == '0') {
+            downFeed.hide();
         } else {
-            downfeed.show();
+            downFeed.show();
         }
 
         // Get fb questions
         let promises = Ajax.call([{
             methodname: 'block_coursefeedback_get_feedback_questions',
-            args: {feedbackid: selectedfeedback}
+            args: {feedbackid: selectedFeedback}
         }]);
         promises[0].done(function (data) {
             // Populate question options.
             window.console.debug("AJAX FEEDBACK DONE");
             jQuery('#id_question').html('');
-            let choosestr = Str.get_string('form_option_choose', 'block_coursefeedback');
-            choosestr.done(function (string) {
+            let chooseStr = Str.get_string('form_option_choose', 'block_coursefeedback');
+            chooseStr.done(function (string) {
                 jQuery('<option/>').val('0').html(string).appendTo('#id_question');
                 data.questions.forEach(function (quest) {
                     window.console.debug(quest);
@@ -77,7 +77,7 @@ export const init = () => {
 
             // Hide and reset downloadqu button and reset table
             jQuery('#id_question').val('0');
-            downquest.hide();
+            downQuest.hide();
             resetTable();
 
             return;
@@ -85,33 +85,33 @@ export const init = () => {
             window.console.debug("ajax fAIL");
             window.console.debug(ex);
         });
-        window.console.debug(selectedfeedback);
+        window.console.debug(selectedFeedback);
     });
 
     // Eventlistener for changing the selected question.
     jQuery('#id_question').change(function() {
-        let selectedquestion = jQuery('#id_question').val();
-        let selectedfb = jQuery('#id_feedback').val();
+        let selectedQuestion = jQuery('#id_question').val();
+        let selectedFb = jQuery('#id_feedback').val();
         // Check if a valid question is selected
-        if (selectedquestion == '0') {
-            downquest.hide();
+        if (selectedQuestion == '0') {
+            downQuest.hide();
             resetTable();
             return;
         } else {
-            downquest.show();
+            downQuest.show();
         }
 
-        let answerlimit = 0;
-        let showperpage = 200;
+        let answerLimit = 0;
+        let showPerPage = 200;
         let page = 1;
         // Get rankings.
         let promises = Ajax.call([{
             methodname: 'block_coursefeedback_get_ranking_for_question',
             args: {
-                questionid: selectedquestion,
-                feedback: selectedfb,
-                answerlimit: answerlimit,
-                showperpage: showperpage,
+                questionid: selectedQuestion,
+                feedback: selectedFb,
+                answerlimit: answerLimit,
+                showperpage: showPerPage,
                 page: page
             }
         }]);
@@ -119,10 +119,10 @@ export const init = () => {
             // Reset rankingtable.
             resetTable();
             let table = window.document.getElementById('coursefeedback_table');
-            let tbody = table.getElementsByTagName('tbody')[0];
+            let tBody = table.getElementsByTagName('tbody')[0];
             // Populate rankingtable.
             questiondata.ranking.forEach(function(course) {
-                let row = tbody.insertRow();
+                let row = tBody.insertRow();
                 var cell1 = row.insertCell(0);
                 var cell2 = row.insertCell(1);
                 var cell3 = row.insertCell(2);

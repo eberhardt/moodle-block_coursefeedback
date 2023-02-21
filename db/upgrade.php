@@ -20,13 +20,13 @@
  * @package    block_coursefeedback
  * @copyright  2022 Felix Di Lenarda, innoCampus, TU Berlin
  */
+.
 
 defined('MOODLE_INTERNAL') || die();
 
-
 /**
  * Upgrade code for block_coursefeedback.
- * @package    block_coursefeedback
+ *
  * @param int $oldversion the version we are upgrading from.
  */
 function xmldb_block_coursefeedback_upgrade($oldversion = 0) {
@@ -125,7 +125,8 @@ function xmldb_block_coursefeedback_upgrade($oldversion = 0) {
         }
 
         // add missing index
-        $mindex = new xmldb_index('block_cfb_coufbidqidans_i', XMLDB_INDEX_NOTUNIQUE, ['course', 'coursefeedbackid', 'questionid', 'answer']);
+        $mindex = new xmldb_index('block_cfb_coufbidqidans_i', XMLDB_INDEX_NOTUNIQUE,
+            ['course', 'coursefeedbackid', 'questionid', 'answer']);
         $dbman->add_index($anstable, $mindex);
 
         upgrade_block_savepoint(true, 2022120200, 'coursefeedback');
