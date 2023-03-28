@@ -20,7 +20,6 @@
  * @package    block_coursefeedback
  * @copyright  2022 Felix Di Lenarda, innoCampus, TU Berlin
  */
-.
 
 defined('MOODLE_INTERNAL') || die();
 
