@@ -971,81 +971,6 @@ function block_coursefeedback_adminurl($mode, $action, $fid = null, array $other
 }
 
 /**
- * Checks if a Feedbackperiod is active.
- *
- * @return array|bool $period if active, false if not, true if no periods given
- */
-function block_coursefeedback_period_is_active() {
-    $config = get_config("block_coursefeedback");
-    $currenttime = time();
-
-    if (!empty($config->periods_feedback)) {
-        // Es sind Zeitraume angegeben
-        $datesraw = $config->periods_feedback;
-        if (empty($datesraw)) {
-            return false;
-        }
-        $periods = block_coursefeedback_parse_dates($datesraw);
-        foreach ($periods as $period) {
-
-            if ($period['begin'] <= $period['end']) {
-                // Period definition is not crossing the turn of the year -> show if begin <= now <= end
-                if ($period['begin'] < $currenttime && $currenttime < $period['end']) {
-                    // Period is active right now
-                    return $period;
-                }
-            } else {
-                // Period definition crosses the turn of the year
-                if ($period['begin'] < $currenttime || $currenttime < $period['end']) {
-                    // Period is active right now
-                    return $period;
-                }
-            }
-        }
-        return false;
-    } else {
-        // Period not defined -> Active-feedback is always live
-        return true;
-    }
-}
-
-/**
- * Parses the dates settings to actual date objects.
- *
- * @param string $datesraw Raw data from the form representing dates.
- * @return array
- * @throws \moodle_exception
- */
-function block_coursefeedback_parse_dates($datesraw) {
-    try {
-        $periods = preg_split('/\r\n|\r|\n/', $datesraw);
-        $result = array();
-
-        foreach ($periods as $period) {
-            $datepairs = explode('-', $period);
-            $beginperiod = explode('.', $datepairs[0]);
-            $endperiod = explode('.', $datepairs[1]);
-
-            $begmonth = $beginperiod[1];
-            $begday = $beginperiod[0];
-            $endmonth = $endperiod[1];
-            $endday = $endperiod[0];
-
-            // Wir speichern den jeweiligen (begin und end) timestamp für das laufende Jahr
-            //ohne Rücksicht auf Jahreswechel überlappende Zeiträume
-            $result[] = array(
-                'begin' => gmmktime(0, 0, 1, $begmonth, $begday, date("Y")),
-                'end' => gmmktime(0, 0, 1, $endmonth, $endday, date("Y"))
-            );
-        };
-        return $result;
-    } catch (\moodle_exception $e) {
-        return false;
-    }
-
-}
-
-/**
  * Returns the next open quesiton to answer if there is one
  *
  * @return array|null
@@ -1055,7 +980,8 @@ function block_coursefeedback_get_open_question() {
     global $DB, $COURSE, $USER;
     $config = get_config("block_coursefeedback");
     $currentlang = current_language();
-    if (block_coursefeedback_period_is_active()) {
+    // Check if FB is active just in case
+    if (isset($config->active_feedback) && $config->active_feedback != 0) {
         $questions = block_coursefeedback_get_questions_by_language($config->active_feedback, $currentlang);
         foreach ($questions as $question) {
             $params = [

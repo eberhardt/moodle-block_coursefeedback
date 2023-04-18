@@ -73,17 +73,8 @@ class block_coursefeedback extends block_base {
         if (!isset($config->active_feedback) || $config->active_feedback == 0
                 || !block_coursefeedbck_coursestartcheck_good($config, $this->page->course->id)) {
             // No active FB at the moment -> do nothing
-        } else if (!block_coursefeedback_period_is_active()) {
-            // Feedbackperiod is over check if answer exist -> delete uids and activate a copy of the current feedback for the next period.
-            if (block_coursefeedback_answers_exist($feedback->id)) {
-                $newid = block_coursefeedback_copy_feedback($feedback->id, $feedback->name, $feedback->heading,
-                    $feedback->infotext, $feedback->infotextformat);
-                if ($newid) {
-                    block_coursefeedback_set_active($newid);
-                }
-            }
         } else if (block_coursefeedback_questions_exist()) {
-            // Feedbackperiod is active and Feedback with questions is active.
+            // Feedback is active and Feedback with questions is active.
             if (has_capability("block/coursefeedback:viewanswers", $context)) {
                 $message = $renderer->render_notif_message_teacher($feedback, $this->page->course->id);
                 \core\notification::add($message, \core\output\notification::NOTIFY_INFO);

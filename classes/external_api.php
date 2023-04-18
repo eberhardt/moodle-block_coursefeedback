@@ -127,11 +127,10 @@ class external_api extends \external_api {
                 ])) {
             throw new \moodle_exception('except_answer_exist', 'block_coursefeedback');
         }
-
-        // Check if FB active and period is running and coursestart is ok
+        // Check if FB active and coursestart is ok
         if ($config->active_feedback != $params['feedbackid']
                 || !block_coursefeedbck_coursestartcheck_good($config, $params['courseid'])
-                || !block_coursefeedback_period_is_active()) {
+                || $config->active_feedback == 0) {
             throw new \moodle_exception('except_not_active', 'block_coursefeedback');
         }
 

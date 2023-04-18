@@ -10,21 +10,15 @@ $string['categorypath'] = 'Category path';
 $string['adminpage_link_feedbackedit'] = 'edit/create survey';
 $string['adminpage_html_fbactiveforcoursesa'] = 'Max. time past since coursestart.';
 $string['adminpage_html_fbactiveforcoursesb'] = 'Determines the time boundary pperiod since coursestart.';
-$string['adminpage_html_periodsfeedbacka'] = 'Feedback time periods:';
-$string['adminpage_html_periodsfeedbackb'] = 'Timeperiods in which the feedback is active. If empty, than the feedback is active permanently. Per line one period in the following format: "04.12-24.12" (exactly 11 Chars; Hyphen in the middle; Only digits, dots und one hyphen). Timestamps at 00:00:01 GMT are used';
 $string['adminpage_html_defaultlanguagea'] = 'Default language';
 $string['adminpage_html_defaultlanguageb'] = 'Questions in the default language will be shown, if other languages fail to load (i.e. if questions in a user-prefered language aren\'t defined). That means you must at least define all questions in the default language!';
 $string['adminpage_html_allowhidinga'] = 'Allow hiding';
 $string['adminpage_html_allowhidingb'] = 'If enabled, teachers can edit the visibility of the block.';
 $string['adminpage_html_notinstalled'] = '\'{$a}\' (not installed)';
-$string['adminpage_html_periodtolong'] = 'Wrong length or hyphen error';
-$string['adminpage_html_perioderrora'] = 'To many hyphens';
-$string['adminpage_html_perioderrorb'] = 'Wrong datepair, please note the wanted format';
 
 /* Infopage */
 $string['infopage_html_coursestartcountd'] = 'Feedback is active if  not more time than {$a} days since coursestart have past.';
 $string['infopage_headline_feedbackinfo'] = 'Feedback info';
-$string['infopage_html_activeperiods'] = 'This feedback is active in the following timeperiods: ';
 $string['infopage_link_feedbackinfo'] = 'More information';
 
 /* Notification */
