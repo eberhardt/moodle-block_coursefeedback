@@ -20,6 +20,9 @@ $string['adminpage_html_notinstalled'] = '\'{$a}\' (not installed)';
 $string['adminpage_html_periodtolong'] = 'Wrong length or hyphen error';
 $string['adminpage_html_perioderrora'] = 'To many hyphens';
 $string['adminpage_html_perioderrorb'] = 'Wrong datepair, please note the wanted format';
+$string['adminpage_html_globalenablea'] = 'If enabled, the block will appear in every course';
+$string['adminpage_html_globalenableb'] = 'If disabled , the block will be removed from every course';
+
 
 /* Infopage */
 $string['infopage_html_coursestartcountd'] = 'Feedback is active if  not more time than {$a} days since coursestart have past.';

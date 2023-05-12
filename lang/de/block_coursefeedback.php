@@ -20,6 +20,8 @@ $string['adminpage_html_notinstalled'] = '\'{$a}\' (nicht installiert)';
 $string['adminpage_html_periodtolong'] = 'Falsche Länge oder mitlerer Bindestrich Fehler';
 $string['adminpage_html_perioderrora'] = 'Zu viele Bindestriche';
 $string['adminpage_html_perioderrorb'] = 'Falsches Datenpaar, bitte beachten Sie das gewünschte Format';
+$string['adminpage_html_globalenablea'] = 'Wenn aktiviert, wird der Block in jeden Kurs ausgerollt.';
+$string['adminpage_html_globalenableb'] = 'Wenn deaktiviert, wird der Block aus allen Kursen entfernt.';
 
 /* Infopage */
 $string['infopage_html_coursestartcountd'] = 'Die Umfrage ist nur aktiv, wenn seit Kursstart maximal {$a} Tage vergangen sind.';

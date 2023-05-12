@@ -27,6 +27,7 @@ defined("MOODLE_INTERNAL") || die();
 
 require_once(__DIR__ . "/lib.php");
 require_once(__DIR__ . "/settingslib.php");
+require_once(__DIR__ . "/locallib.php");
 
 // Ensure that default_language can only be changed into a valid language!
 $afid = clean_param(get_config("block_coursefeedback", "active_feedback"), PARAM_INT);
@@ -55,6 +56,14 @@ $settings->add(new admin_setting_configcheckbox("block_coursefeedback/allow_hidi
     get_string("adminpage_html_allowhidinga", "block_coursefeedback"),
     get_string("adminpage_html_allowhidingb", "block_coursefeedback"),
     false));
+
+$globalenablesetting = new admin_setting_configcheckbox("block_coursefeedback/global_enable",
+    get_string("adminpage_html_globalenablea", "block_coursefeedback"),
+    get_string("adminpage_html_globalenableb", "block_coursefeedback"),
+    false);
+$globalenablesetting->set_updatedcallback('install_and_deinstall_block');
+$settings->add($globalenablesetting);
+
 
 /* Create/Edit survey link */
 $url = new moodle_url("/blocks/coursefeedback/admin.php", array("mode" => "feedback", "action" => "view"));
