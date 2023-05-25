@@ -29,6 +29,12 @@ $string['infopage_headline_feedbackinfo'] = 'Feedbackinfo';
 $string['infopage_html_activeperiods'] = 'Dieses Feedback ist in folgenden Zeiträumen aktiv: ';
 $string['infopage_link_feedbackinfo'] = 'Weitere Informationen';
 
+/* Results page */
+$string['resultspage_headline'] = 'Liste aller beantworteten Feedbacks in diesem Kurs';
+$string['resultspage_title'] = 'Feedbackergebnisse';
+$string['resultspage_howto'] = 'Klicken sie auf den Namen des Feedbacks um Fragen und Ergebnisse anzuzeigen.';
+$string['resultspage_nav_extension'] = 'Kursfeedbackergebnisse';
+
 /* Notification */
 $string['notif_question'] = 'Frage ';
 $string['notif_pleaseclick'] = 'Bitte wählen Sie einen der Emojis. Ihre Antwort wird anonym gespeichert.';

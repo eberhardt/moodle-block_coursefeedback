@@ -354,7 +354,8 @@ if ($action === "view") {
             . html_writer::link($slink, get_string("page_link_backtoconfig", "block_coursefeedback")) . "</div>");
         $active = get_config("block_coursefeedback", "active_feedback");
         $table = new html_table();
-        $table->head = array("ID",
+        $table->head = array(
+            get_string("idnumber"),
             get_string("name"),
             get_string("modified"),
             get_string("action"),
