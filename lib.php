@@ -651,16 +651,11 @@ function block_coursefeedback_get_editerrors($feedbackid) {
 function block_coursefeedback_set_active($feedbackid) {
     global $DB;
     if ($feedbackid == 0 || $DB->record_exists("block_coursefeedback", array("id" => $feedbackid))) {
-
         $oldfeedbackid = get_config("block_coursefeedback", "active_feedback");
         if (block_coursefeedback_answers_exist($oldfeedbackid)) {
-            // If answers for the last FB exist -> rename it and delete the saved userids.
+            // If answers for the last FB exist -> delete the saved userids.
             // It will not be possible to reactivate a FB for which answers exist
-            $oldfeedback = $DB->get_record("block_coursefeedback", array("id" => $oldfeedbackid));
-            $newname = $oldfeedback->name . "_stop" . date('Ymd', time());
-
             $DB->delete_records("block_coursefeedback_uidansw", array("coursefeedbackid" => $oldfeedbackid));
-            $DB->set_field("block_coursefeedback", "name", $newname, array("id" => $oldfeedbackid));
         }
         set_config("active_feedback", $feedbackid, "block_coursefeedback");
         return true;
