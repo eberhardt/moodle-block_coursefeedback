@@ -76,7 +76,6 @@ $string['table_header_languages'] = 'Verf&uuml;gbare Sprachen';
 $string['table_header_questions'] = 'Fragen';
 $string['table_html_votes'] = 'Anzahl der Stimmen:';
 $string['table_html_average'] = 'Durchschnitt';
-$string['table_html_nochoice'] = 'Enthaltungen';
 $string['table_html_nofeedback'] = 'Keine Umfrage';
 $string['table_html_undefinedlang'] = '&Uuml;bersetzung fehlt. Sprache \'{$a}\' nicht verf&uuml;gbar.'; // maximal 50 Zeichen
 

@@ -497,9 +497,11 @@ function block_coursefeedback_get_feedbackname($feedbackid = null) {
  * @param int $courseid
  * @param string $sort
  * @return array - 2-dimensional array of answers, ordered by question id
+ * array (1){ [<questionid>]=>
+ *   array(7) { [1]=> ... [2]=> <answercount for 'good'> [3]=> ... [4]=> ... [5]=> ... [6]=> ... ['average']=>... ['choicessum']=>...} }
  */
-function block_coursefeedback_get_answers($course, $feedbackid, $sort = "questionid") {
-    global $DB, $CFG, $USER;
+function block_coursefeedback_get_qanswercounts($course, $feedbackid) {
+    global $DB;
     $config = get_config("block_coursefeedback");
     $answers = array();
     $course = clean_param($course, PARAM_INT);
@@ -507,31 +509,38 @@ function block_coursefeedback_get_answers($course, $feedbackid, $sort = "questio
     if ($course <= 0) {
         throw new moodle_exception("invalidcourseid");
     }
-
+    // Get all the questions of the feedback
     $questions = block_coursefeedback_get_questions($feedbackid, $config->default_language);
     $params = array("fid" => $feedbackid, "course" => $course);
     if (!empty($questions)) {
-        $count = count($questions);
-        foreach (array_keys($questions) as $question) {
-            $params["qid"] = $question;
+        // For each question and each answerpossibility, count the amount of the given answers
+        foreach ($questions as $question) {
+            $choicessum = 0;
+            $avsum = 0;
+            $questionid = $question->questionid;
+            $params["qid"] = $questionid;
             $sql = "SELECT answer,COUNT(*) AS count
-                      FROM {block_coursefeedback_answers}
-                     WHERE coursefeedbackid = :fid 
-                           AND questionid = :qid 
-                           AND course = :course
-                  GROUP BY answer";
+                    FROM {block_coursefeedback_answers}
+                    WHERE coursefeedbackid = :fid 
+                        AND questionid = :qid 
+                        AND course = :course
+                    GROUP BY answer";
 
+            // Create $answers array for the question and fill in the answercounts
+            $answers[$questionid] = array_fill(1, 6, 0);
             if ($results = $DB->get_records_sql($sql, $params)) {
-                $answers[$question] = array();
                 foreach ($results as $answer) {
-                    $answers[$question][$answer->answer] = $answer->count;
+                    $answers[$questionid][$answer->answer] = $answer->count;
+
+                    // Calculate choices and average for each question
+                    $choicessum += $answer->count;
+                    $avsum += $answer->answer * $answer->count;
+                    $average = $choicessum > 0 ? ($avsum / $choicessum) : 0;
+                    $answers[$questionid]['average'] = $average;
+                    $answers[$questionid]['choicessum'] = $choicessum;
                 }
-                block_coursefeedback_array_fill_spaces($answers[$question], 0, 8, 0);
-            } else {
-                $answers[$question] = array_fill(0, 8, 0);
             }
         }
-        block_coursefeedback_array_fill_spaces($answers, 1, $count, array_fill(0, 8, 0));
     }
     return $answers;
 }
@@ -598,7 +607,6 @@ function block_coursefeedback_get_question_ids($feedbackid = COURSEFEEDBACK_DEFA
 function block_coursefeedback_get_questions($feedbackid = COURSEFEEDBACK_DEFAULT, $language = COURSEFEEDBACK_DEFAULT) {
     global $DB;
 
-    $res = array();
     $params = array();
 
     if ($feedbackid === COURSEFEEDBACK_DEFAULT) {
@@ -613,12 +621,11 @@ function block_coursefeedback_get_questions($feedbackid = COURSEFEEDBACK_DEFAULT
     $params["language"] = preg_replace("/[^a-z]/", "", $language);
 
     if ($records = $DB->get_records("block_coursefeedback_questns", $params, "questionid ASC", "questionid,question")) {
-        foreach ($records as $record) {
-            $res[$record->questionid] = $record->question;
-        }
+        return $records;
+    } else {
+        return false;
     }
 
-    return $res;
 }
 
 /**
@@ -866,11 +873,11 @@ function block_coursefeedback_get_language($langcode) {
  *
  * @return String - Language code
  */
-function block_coursefeedback_find_language($lang = null) {
-    global $USER, $COURSE, $DB;
+// TODO only used in exportlib?
+function block_coursefeedback_find_language($feednackid, $lang = null) {
 
-    $config = get_config("block_coursefeedback");
-    $langs = block_coursefeedback_get_combined_languages($config->active_feedback);
+    global $USER, $COURSE;
+    $langs = block_coursefeedback_get_combined_languages($feednackid);
 
     if ($lang !== null && in_array($lang, $langs)) {
         return $lang;
@@ -878,7 +885,7 @@ function block_coursefeedback_find_language($lang = null) {
         return $USER->lang;
     } else if (in_array($COURSE->lang, $langs)) {
         return $COURSE->lang;
-    } else if (in_array($config->default_language)) {
+    } else if (in_array($config->default_language, $langs)) {
         return $config->default_language;
     } else {
         return null;
@@ -917,7 +924,8 @@ function block_coursefeedback_answers_exist($feedbackid) {
 
 /**
  * Checks feedback on useableness
- *
+ * (all fbquestions 1. defined in at least one lang.  2. defined in defaultlang.)
+ * (3. There must be at least one question)
  * @param int $feedbackid
  * @param boolean $returnerrors
  * @return multitype:array boolean
@@ -926,15 +934,24 @@ function block_coursefeedback_validate($feedbackid, $returnerrors = false) {
     $notifications = array();
     $feedbackid = intval($feedbackid);
     if ($feedbackid > 0) {
-        $langs = block_coursefeedback_get_combined_languages($feedbackid);
-        if (empty($langs)) {
-            $notifications[] = get_string("page_html_norelations", "block_coursefeedback");
-        }
         $count = block_coursefeedback_get_questionid($feedbackid) - 1;
-        if ($count !== count(block_coursefeedback_get_questions($feedbackid))) {
-            $notifications[] = get_string("page_html_servedefaultlang",
-                "block_coursefeedback",
-                get_config("block_coursefeedback", "default_language"));
+        if ($questions = block_coursefeedback_get_questions($feedbackid) or $count != 0) {
+            $langs = block_coursefeedback_get_combined_languages($feedbackid);
+
+            if (empty($langs)) {
+                // Not all fbquestions are defined in at least one lang.
+                $notifications[] = get_string("page_html_norelations", "block_coursefeedback");
+            }
+            if ($count !== count($questions)) {
+                // Not all fbquestions are defined in the default lang.
+                $notifications[] = get_string("page_html_servedefaultlang",
+                    "block_coursefeedback",
+                    get_config("block_coursefeedback", "default_language"));
+            }
+        } else {
+            // No questions are defined yet
+            $notifications[] = "Bitte legen Sie mindestens eine Frage an";
+            // TODO Link für frage erstellen einbinden
         }
     }
     if ($returnerrors) {
