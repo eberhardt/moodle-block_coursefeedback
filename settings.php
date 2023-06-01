@@ -61,7 +61,7 @@ $globalenablesetting = new admin_setting_configcheckbox("block_coursefeedback/gl
     get_string("adminpage_html_globalenablea", "block_coursefeedback"),
     get_string("adminpage_html_globalenableb", "block_coursefeedback"),
     false);
-$globalenablesetting->set_updatedcallback('install_and_deinstall_block');
+$globalenablesetting->set_updatedcallback('install_and_remove_block');
 $settings->add($globalenablesetting);
 
 

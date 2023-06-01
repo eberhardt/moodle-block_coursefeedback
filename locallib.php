@@ -28,7 +28,7 @@
 /**
  * Adds or removes the coursefeedbackblock in all courses
  */
-function install_and_deinstall_block() {
+function install_and_remove_block() {
     global $DB;
     // Check the current setting.
     $config = get_config("block_coursefeedback");
