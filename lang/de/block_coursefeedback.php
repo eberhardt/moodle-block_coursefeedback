@@ -10,21 +10,15 @@ $string['categorypath'] = 'Kategoriepfad';
 $string['adminpage_link_feedbackedit'] = 'Umfragen erstellen/bearbeiten';
 $string['adminpage_html_fbactiveforcoursesa'] = 'Vergangene Zeit seit Kursstart max. ';
 $string['adminpage_html_fbactiveforcoursesb'] = 'Diese Einstellung ermöglicht es Feedbackumfragen nur in akutellen Kursen zu schalten bei welchen das Startdatum nicht zu lange her ist ';
-$string['adminpage_html_periodsfeedbacka'] = 'Feedbackzeiträume:';
-$string['adminpage_html_periodsfeedbackb'] = 'Zeiträume in denen die aktuelle Umfrage geschaltet wird. Wenn leer, dann ist die Umfrage dauerhaft aktiv. Pro Zeile ein Zeitraum im Format: "04.12-24.12" (exakt 11 Zeichen; Bindestrich in der Mitte; Nur Zahlen, Punkte und Bindestrich). Es werden jeweils die Zeitstempel von 00:00:01 Uhr (GMT) benutzt';
 $string['adminpage_html_defaultlanguagea'] = 'Standard Sprache';
 $string['adminpage_html_defaultlanguageb'] = 'Fragen werden immer in der Standard-Sprache angezeigt, sollten keine Fragen in einer vom Nutzer pr&auml;ferierten Sprache vorhanden sein. Daher m&uuml;ssen alle Fragen mindestens in der Standard-Sprache angelegt sein!';
 $string['adminpage_html_allowhidinga'] = 'Verstecken erlauben';
 $string['adminpage_html_allowhidingb'] = 'Wenn aktiviert, k&ouml;nnen Trainer/innen die Sichtbarkeit des Blockes bearbeiten.';
 $string['adminpage_html_notinstalled'] = '\'{$a}\' (nicht installiert)';
-$string['adminpage_html_periodtolong'] = 'Falsche Länge oder mitlerer Bindestrich Fehler';
-$string['adminpage_html_perioderrora'] = 'Zu viele Bindestriche';
-$string['adminpage_html_perioderrorb'] = 'Falsches Datenpaar, bitte beachten Sie das gewünschte Format';
 
 /* Infopage */
 $string['infopage_html_coursestartcountd'] = 'Die Umfrage ist nur aktiv, wenn seit Kursstart maximal {$a} Tage vergangen sind.';
 $string['infopage_headline_feedbackinfo'] = 'Feedbackinfo';
-$string['infopage_html_activeperiods'] = 'Dieses Feedback ist in folgenden Zeiträumen aktiv: ';
 $string['infopage_link_feedbackinfo'] = 'Weitere Informationen';
 
 /* Notification */
