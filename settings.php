@@ -47,11 +47,6 @@ $setting = new admin_setting_configduration("block_coursefeedback/since_coursest
 $setting->set_enabled_flag_options(admin_setting_flag::ENABLED, false);
 $settings->add($setting);
 
-$settings->add(new admin_setting_configtextarea_time_period("block_coursefeedback/periods_feedback",
-    get_string("adminpage_html_periodsfeedbacka", "block_coursefeedback"),
-    get_string("adminpage_html_periodsfeedbackb", "block_coursefeedback"), "",
-    PARAM_TEXT, "30", "4" ));
-
 $settings->add(new admin_setting_configcheckbox("block_coursefeedback/allow_hiding",
     get_string("adminpage_html_allowhidinga", "block_coursefeedback"),
     get_string("adminpage_html_allowhidingb", "block_coursefeedback"),

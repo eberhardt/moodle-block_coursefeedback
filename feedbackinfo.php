@@ -44,8 +44,7 @@ $config = get_config("block_coursefeedback");
 $feedback = $DB->get_record("block_coursefeedback", array("id" => $feedbackid));
 
 // Only show site if the given feedback is also active right now.
-$period = block_coursefeedback_period_is_active();
-if ($config->active_feedback != $feedbackid && $period) {
+if ($config->active_feedback != $feedbackid && $config->active_feedback != 0) {
     redirect(new moodle_url($CFG->wwwroot));
 }
 
@@ -58,17 +57,6 @@ $PAGE->set_heading(get_string("infopage_headline_feedbackinfo", "block_coursefee
 $PAGE->navbar->add(get_string("pluginname", "block_coursefeedback"));
 
 $infotext = '';
-if ($period && is_array($period)) {
-    // Only show if there are specific period settings.
-
-    $infotext .= html_writer::tag("p", get_string("infopage_html_activeperiods", "block_coursefeedback"));
-    $infotext .= html_writer::start_tag('ul');
-
-    $periodstr = date('d M', $period['begin']) . ' - ' . date('d M', $period['end']);
-    $infotext .= html_writer::tag('li', $periodstr);
-
-    $infotext .= html_writer::end_tag('ul');
-}
 
 if ($config->since_coursestart_enabled) {
     // Only show if "since_coursestart" setting is enabled.
