@@ -26,7 +26,6 @@
 defined("MOODLE_INTERNAL") || die();
 
 require_once(__DIR__ . "/lib.php");
-require_once(__DIR__ . "/settingslib.php");
 
 // Ensure that default_language can only be changed into a valid language!
 $afid = clean_param(get_config("block_coursefeedback", "active_feedback"), PARAM_INT);
@@ -45,11 +44,6 @@ $setting = new admin_setting_configduration("block_coursefeedback/since_coursest
     0);
 $setting->set_enabled_flag_options(admin_setting_flag::ENABLED, false);
 $settings->add($setting);
-
-$settings->add(new admin_setting_configtextarea_time_period("block_coursefeedback/periods_feedback",
-    get_string("adminpage_html_periodsfeedbacka", "block_coursefeedback"),
-    get_string("adminpage_html_periodsfeedbackb", "block_coursefeedback"), "",
-    PARAM_TEXT, "30", "4" ));
 
 $settings->add(new admin_setting_configcheckbox("block_coursefeedback/allow_hiding",
     get_string("adminpage_html_allowhidinga", "block_coursefeedback"),
