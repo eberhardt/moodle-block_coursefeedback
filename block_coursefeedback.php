@@ -69,8 +69,8 @@ class block_coursefeedback extends block_base {
         $feedback = $DB->get_record("block_coursefeedback", array("id" => $config->active_feedback));
         $list = array();
 
-        // Check if there is an active FB  and if there are questions
-        // Check if the feedback should be active in this course depending on the startdate (since_coursestart) setting.
+        // Check if an active FB with valid questions exist. Also verify if the FB should be displayed
+        // in this course, depending on the course start date and the 'since_coursestart' setting of the FB-block.
         if (isset($config->active_feedback) && block_coursefeedback_questions_exist()
                 && block_coursefeedbck_coursestartcheck_good($config, $this->page->course->id)) {
             // Feedback with questions is active.
