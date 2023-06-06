@@ -55,14 +55,12 @@ if ($form->is_submitted() && $form->is_validated()) {
         $message = get_string("form_select_question", "block_coursefeedback");
         \core\notification::add($message, \core\output\notification::NOTIFY_ERROR);
     } else {
+        $rankingexport = new ranking_exporter();
         if (isset($data->downloadfb)) {
-            $export = new rankingexport($data->feedback);
+            $rankingexport->create_file($data->feedback);
         } else if (isset($data->downloadqu)) {
-            $export = new rankingexport($data->feedback, $data->question);
+            $rankingexport->create_file($data->feedback, $data->question);
         }
-        $lang = current_language();
-        $export->export();
-        exit(0);
     }
 }
 
