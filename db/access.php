@@ -44,8 +44,9 @@ $capabilities = array(
         "archetypes" => array(
             "manager" => CAP_ALLOW,
             "editingteacher" => CAP_ALLOW,
-            "teacher" => CAP_ALLOW
-        )
+            "teacher" => CAP_ALLOW,
+            "student" => CAP_PREVENT,
+        ),
     ),
 
     "block/coursefeedback:download" => array(
@@ -54,7 +55,9 @@ $capabilities = array(
         "contextlevel" => CONTEXT_COURSE,
         "archetypes" => array(
             "manager" => CAP_ALLOW,
-            "editingteacher" => CAP_ALLOW
+            "editingteacher" => CAP_ALLOW,
+            "teacher" => CAP_PREVENT,
+            "student" => CAP_PREVENT
         )
     ),
 
@@ -64,7 +67,8 @@ $capabilities = array(
         "contextlevel" => CONTEXT_COURSE,
         "archetypes" => array(
             "manager" => CAP_ALLOW,
-            "teacher" => CAP_PREVENT,
+            "editingteacher" => CAP_PROHIBIT,
+            "teacher" => CAP_PROHIBIT,
             "student" => CAP_ALLOW
         )
     ),

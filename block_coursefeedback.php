@@ -75,12 +75,13 @@ class block_coursefeedback extends block_base {
                 && block_coursefeedbck_coursestartcheck_good($config, $this->page->course->id)) {
             // Feedback with questions is active.
             if (has_capability("block/coursefeedback:viewanswers", $context)) {
+                // For Trainer show the informative notification
                 $message = $renderer->render_notif_message_teacher($feedback, $this->page->course->id);
                 \core\notification::add($message, \core\output\notification::NOTIFY_INFO);
             }
             if ((has_capability("block/coursefeedback:evaluate", $context)
                     && !has_capability("block/coursefeedback:viewanswers", $context))
-                || has_capability("block/coursefeedback:managefeedbacks", $context)) {
+                    || has_capability("block/coursefeedback:managefeedbacks", $context)) {
                 // A feedback is currently active.
                 if (null !== ($openquestions = block_coursefeedback_get_open_question())) {
                     // There are unanswered questions (for this course and this user) in the currently active feedback.
