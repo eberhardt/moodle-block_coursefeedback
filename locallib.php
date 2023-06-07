@@ -49,7 +49,7 @@ function block_coursefeedback_get_courserankings($questionid, $coursefeedbackid,
     $sql = "
         SELECT course.courseid, cenrol.enroleduserssum, c.shortname, c.category, cc.path,  
             answer.one, answer.two, answer.three, answer.four, answer.five, answer.six, 
-            (answer.answersum / ( NULLIF (course.anstotal, 0))) as average, 
+            ROUND((answer.answersum::decimal / (NULLIF(course.anstotal, 0))), 3) as average,
             course.anstotal
         FROM ( SELECT course as courseid, count(*) as anstotal 
                 FROM {block_coursefeedback_answers}
