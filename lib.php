@@ -922,7 +922,8 @@ function block_coursefeedback_answers_exist($feedbackid) {
 
 /**
  * Checks feedback on useableness
- *
+ * (all fbquestions 1. defined in at least one lang.  2. defined in defaultlang.)
+ * (3. There must be at least one question)
  * @param int $feedbackid
  * @param boolean $returnerrors
  * @return multitype:array boolean
@@ -931,15 +932,23 @@ function block_coursefeedback_validate($feedbackid, $returnerrors = false) {
     $notifications = array();
     $feedbackid = intval($feedbackid);
     if ($feedbackid > 0) {
-        $langs = block_coursefeedback_get_combined_languages($feedbackid);
-        if (empty($langs)) {
-            $notifications[] = get_string("page_html_norelations", "block_coursefeedback");
-        }
         $count = block_coursefeedback_get_questionid($feedbackid) - 1;
-        if ($count !== count(block_coursefeedback_get_questions($feedbackid))) {
-            $notifications[] = get_string("page_html_servedefaultlang",
-                "block_coursefeedback",
-                get_config("block_coursefeedback", "default_language"));
+        if ($questions = block_coursefeedback_get_questions($feedbackid) or $count != 0) {
+            $langs = block_coursefeedback_get_combined_languages($feedbackid);
+
+            if (empty($langs)) {
+                // Not all fbquestions are defined in at least one lang.
+                $notifications[] = get_string("page_html_norelations", "block_coursefeedback");
+            }
+            if ($count !== count($questions)) {
+                // Not all fbquestions are defined in the default lang.
+                $notifications[] = get_string("page_html_servedefaultlang",
+                    "block_coursefeedback",
+                    get_config("block_coursefeedback", "default_language"));
+            }
+        } else {
+            // No questions are defined yet
+            $notifications[] = get_string("page_link_noquestion", "block_coursefeedback");
         }
     }
     if ($returnerrors) {
