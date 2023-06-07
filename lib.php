@@ -879,10 +879,9 @@ function block_coursefeedback_get_language($langcode) {
  * @return String - Language code
  */
 // TODO only used in exportlib?
-function block_coursefeedback_find_language($feednackid, $lang = null) {
-
+function block_coursefeedback_find_language($feedbackid, $lang = null) {
     global $USER, $COURSE;
-    $langs = block_coursefeedback_get_combined_languages($feednackid);
+    $langs = block_coursefeedback_get_combined_languages($feedbackid);
 
     if ($lang !== null && in_array($lang, $langs)) {
         return $lang;
