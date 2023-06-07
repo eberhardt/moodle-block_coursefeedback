@@ -19,7 +19,9 @@
  *
  * @package    block
  * @subpackage coursefeedback
- * @copyright  2011-2014 onwards Jan Eberhardt / Felix Di Lenarda (@ innoCampus, TU Berlin)
+ * @copyright  innoCampus, TU Berlin)
+ * @author Jan Eberhardt
+ * @author Felix Di Lenarda
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -28,134 +30,58 @@ defined("MOODLE_INTERNAL") || die();
 require_once($CFG->dirroot . "/blocks/coursefeedback/lib.php");
 require_once($CFG->libdir . '/csvlib.class.php');
 
-class feedbackexport {
-    protected $course = 0;
-    protected $feedback = 0;
-    protected $filetypes = array("csv");
-    private $content = "";
-    private $format;
-
-    public function __construct($course = 0, $feedback = 0, $seperator = "\t") {
-        global $DB;
-
-        if ($DB->record_exists("course", array("id" => $course))) {
-            $this->course = $course;
-            $this->feedback = $feedback;
-        } else {
-            print_error("courseidnotfound", "error");
-            exit(0);
-        }
-    }
-
-    public function get_filetypes() {
-        return $this->filetypes;
-    }
-
-    public function init_format($format) {
-        if (in_array($format, $this->get_filetypes())) {
-            $exportformatclass = "exportformat_" . $format;
-            $this->format = new $exportformatclass();
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public function create_file($lang) {
-        global $CFG, $DB;
-
-        if (!isset($this->format)) {
-            print_error("format not initialized", "block_coursefeedback");
-        } else {
-            $answers = block_coursefeedback_get_answers($this->course, $this->feedback);
-            $this->reset();
-            $this->content = $this->format->build($answers, $lang);
-        }
-    }
-
-    public function get_content() {
-        return $this->content;
-    }
-
-    public function reset() {
-        $this->content = "";
-    }
-}
 
 /**
- * @author Jan Eberhardt
- * Generell format class. Doesn"t contain very much so far, but should provide basics.
+ * Export feedback data for a course.
+ *
+ * @package block
+ * @subpackage coursefeedback
+ * @copyright innoCampus, TU Berlin
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-abstract class exportformat {
-    private $type = "unknown";
+class feedback_exporter {
+    protected $csvexportwriter;
 
-    public final function get_type() {
-        return $this->type;
-    }
-
-    public abstract function build($arg1);
-}
-
-/**
- * @author Jan Eberhardt
- * CSV export class
- */
-class exportformat_csv extends exportformat {
-    public $seperator;
-    public $newline;
-    public $quotes;
-
-    /**
-     * Set CSV options.
-     *
-     * TODO Choosable values.
-     */
     public function __construct() {
-        $this->type = "csv";
-        $this->seperator = ";";
-        $this->newline = "\n";
-        $this->quotes = "\"";
+        $this->csvexportwriter = new csv_export_writer();
     }
 
-    /**
-     * (non-PHPdoc)
-     * @see exportformat::build()
-     */
-    public function build($answers, $lang = null) {
+    public function create_file($lang, $courseid, $feedbackid) {
         global $DB;
-        $config = get_config("block_coursefeedback");
-        $content = $this->quote(get_string("download_thead_questions", "block_coursefeedback"))
-            . $this->seperator
-            . $this->quote(get_string("table_html_nochoice", "block_coursefeedback"));
-        for ($i = 1; $i < 7; $i++) {
-            $content .= $this->seperator . $i;
-        }
-        $content .= $this->newline;
+        $this->csvexportwriter->set_filename(get_string("download_html_filename", "block_coursefeedback")
+            . date("_Y-m-d-H-i"));
+        $headrow = [
+            get_string("download_thead_questions", "block_coursefeedback"),
+            get_string('notif_emoji_super', 'block_coursefeedback'),
+            get_string('notif_emoji_good', 'block_coursefeedback'),
+            get_string('notif_emoji_ok', 'block_coursefeedback'),
+            get_string('notif_emoji_neutral', 'block_coursefeedback'),
+            get_string('notif_emoji_bad', 'block_coursefeedback'),
+            get_string('notif_emoji_superbad', 'block_coursefeedback'),
+            get_string('table_html_average', 'block_coursefeedback'),
+            get_string('table_html_votes', 'block_coursefeedback'),
+        ];
+        $this->csvexportwriter->add_data($headrow);
 
-        $lang = block_coursefeedback_find_language($lang);
+        // Get the counted answers for each question and each answer possibility
+        $qanswercounts = block_coursefeedback_get_qanswercounts($courseid, $feedbackid);
+        $lang = block_coursefeedback_find_language($feedbackid, $lang);
 
-        foreach ($answers as $questionid => $values) {
-            $conditions = array("coursefeedbackid" => $config->active_feedback,
-                    "language" => $lang,
-                    "questionid" => $questionid);
+        foreach ($qanswercounts as $questionid => $answersdata) {
+            // Get question, put it  in front of $answerdata and add the data to the csv file
+            $conditions = array("coursefeedbackid" => $feedbackid,
+                "language" => $lang,
+                "questionid" => $questionid);
             if ($question = $DB->get_field("block_coursefeedback_questns", "question", $conditions)) {
-                $question = $this->quote(format_text(trim($question, " \""), FORMAT_PLAIN));
-                $content .= $question . $this->seperator . join($this->seperator, $values) . $this->newline;
+                $question = format_text(trim($question, " \""), FORMAT_PLAIN);
+                array_unshift($answersdata, $question);
+                $this->csvexportwriter->add_data($answersdata);
             }
         }
-
-        return $content;
+        // Start the download
+        $this->csvexportwriter->download_file();
     }
 
-    /**
-     * Quotes a field value.
-     *
-     * @param string $str
-     * @return string
-     */
-    private function quote($str) {
-        return $this->quotes . $str . $this->quotes;
-    }
 }
 
 /**

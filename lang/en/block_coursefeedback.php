@@ -70,7 +70,6 @@ $string['table_header_languages'] = 'Available languages';
 $string['table_header_questions'] = 'Questions';
 $string['table_html_votes'] = ' Number of votes : ';
 $string['table_html_average'] = 'Average';
-$string['table_html_nochoice'] = 'Abstentions';
 $string['table_html_nofeedback'] = 'No survey';
 $string['table_html_undefinedlang'] = 'Translation missing. Language \'{$a}\' unavailable.'; // 50 chars max
 
