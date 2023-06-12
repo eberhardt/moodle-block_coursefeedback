@@ -20,4 +20,4 @@ For version 2, all existing blocks will be deleted as the rendering is now achie
 Therefore, individual "Course Context" blocks are no longer allowed as they could conflict with the system block.
 Also for this reason only managers are allowed to add or delete the block. There can only be exactly one block in each course.
 
-"To make things as easy as possible, the necessary system block can now be added to, and removed from, all courses through the adminsettings of the block.
+To make things as easy as possible, the necessary system block can now be added to, and removed from, all courses through the adminsettings of the block.

@@ -16,7 +16,7 @@ $string['adminpage_html_allowhidinga'] = 'Allow hiding';
 $string['adminpage_html_allowhidingb'] = 'If enabled, teachers can edit the visibility of the block.';
 $string['adminpage_html_notinstalled'] = '\'{$a}\' (not installed)';
 $string['adminpage_html_globalenablea'] = 'If enabled, the block will appear in every course';
-$string['adminpage_html_globalenableb'] = 'If disabled , the block will be removed from every course';
+$string['adminpage_html_globalenableb'] = 'If disabled, the block will be removed from every course';
 
 /* Infopage */
 $string['infopage_html_coursestartcountd'] = 'Feedback is active if  not more time than {$a} days since coursestart have past.';
