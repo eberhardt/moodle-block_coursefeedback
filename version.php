@@ -19,14 +19,16 @@
  *
  * @package    block
  * @subpackage coursefeedback
- * @copyright  2011-2014 onwards Jan Eberhardt (@ innoCampus, TU Berlin)
+ * @copyright  2023 innoCampus, Technische Universität Berlin
+ * @author     2011-2023 onwards Jan Eberhardt
+ * @author     2022 onwards Felix Di Lenarda
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined("MOODLE_INTERNAL") || die();
 
-$plugin->version = 2023052501;
+$plugin->version = 2023060600;
 $plugin->requires = 2014051200;
-$plugin->maturity = MATURITY_STABLE;
-$plugin->release = "2.1.0 (Build: 2015020910)";
+$plugin->maturity = MATURITY_BETA;
+$plugin->release = "3.1.0 (Build: 2023060600)";
 $plugin->component = "block_coursefeedback";

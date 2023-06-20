@@ -17,9 +17,12 @@
 /**
  * External service definitions for the coursefeedback block.
  *
- * @package     block_coursefeedback
- * @copyright   2022 onwards Felix Di Lenarda (@ innoCampus, TU Berlin)
- * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package    block
+ * @subpackage coursefeedback
+ * @copyright  2023 innoCampus, Technische Universität Berlin
+ * @author     2011-2023 onwards Jan Eberhardt
+ * @author     2022 onwards Felix Di Lenarda
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();

@@ -20,9 +20,12 @@
  *
  * @package    block
  * @subpackage coursefeedback
- * @copyright  2022 Felix Di Lenarda (@ innoCampus, TU Berlin)
+ * @copyright  2023 innoCampus, Technische Universität Berlin
+ * @author     2011-2023 onwards Jan Eberhardt
+ * @author     2022 onwards Felix Di Lenarda
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 require_once(__DIR__ . "/../../config.php");
 require_once(__DIR__ . "/lib.php");
 require_once($CFG->libdir . "/completionlib.php");
