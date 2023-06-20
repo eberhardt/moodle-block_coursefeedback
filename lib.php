@@ -1081,7 +1081,7 @@ function block_coursefeedbck_coursestartcheck_good($config, $courseid) {
 }
 
 /**
- * Return the all feedbacks with answers for this course
+ * Return all feedbacks with answers for this course
  *
  * @param int $courseid
  * @return array
@@ -1096,3 +1096,30 @@ function block_coursefeedbck_get_fbsfor_course($courseid) {
 
     return $answerredfbs;
 }
+
+/**
+ * This function extends the course navigation with a coursefeeedbackresults link
+ *
+ * @param navigation_node $navigation The navigation node to extend
+ * @param stdClass $course The course
+ * @param stdClass $context The context of the course
+ */
+function block_coursefeedback_extend_navigation_course(
+        navigation_node $parentnode,
+        stdClass $course,
+        context_course $context) {
+    # Only Trainers and only if there are feedbacks to display
+    if (has_capability('block/coursefeedback:viewanswers', $context)
+            && !empty($fbs =  block_coursefeedbck_get_fbsfor_course($course->id))) {
+        // Add Coursefeedbacksnode to the "more" navigation dropdown
+        $parentnode->add(
+            get_string('resultspage_nav_extension', 'block_coursefeedback'),
+            $url = new moodle_url('/blocks/coursefeedback/results.php',
+                array('course' => $course->id)),
+            navigation_node::TYPE_CUSTOM,
+            'block_coursefeedback',
+            'feedback_results',
+            new pix_icon('i/courseevent', '')
+        );
+    }
+};

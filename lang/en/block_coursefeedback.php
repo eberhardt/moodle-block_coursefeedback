@@ -15,11 +15,19 @@ $string['adminpage_html_defaultlanguageb'] = 'Questions in the default language 
 $string['adminpage_html_allowhidinga'] = 'Allow hiding';
 $string['adminpage_html_allowhidingb'] = 'If enabled, teachers can edit the visibility of the block.';
 $string['adminpage_html_notinstalled'] = '\'{$a}\' (not installed)';
+$string['adminpage_html_globalenablea'] = 'If enabled, the block will appear in every course';
+$string['adminpage_html_globalenableb'] = 'If disabled, the block will be removed from every course';
 
 /* Infopage */
 $string['infopage_html_coursestartcountd'] = 'Feedback is active if  not more time than {$a} days since coursestart have past.';
 $string['infopage_headline_feedbackinfo'] = 'Feedback info';
 $string['infopage_link_feedbackinfo'] = 'More information';
+
+/* Results page */
+$string['resultspage_headline'] = 'List of all answered feedbacks for this course';
+$string['resultspage_title'] = 'Feedbackresults';
+$string['resultspage_howto'] = 'Click on the name of the feedback to display questions and results.';
+$string['resultspage_nav_extension'] = 'Coursefeedback results';
 
 /* Notification */
 $string['notif_question'] = 'Question ';
