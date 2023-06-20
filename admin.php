@@ -19,9 +19,9 @@
  *
  * @package    block
  * @subpackage coursefeedback
- * @copyright  2023 Technische Universität Berlin
+ * @copyright  2023 innoCampus, Technische Universität Berlin
  * @author     2011-2023 onwards Jan Eberhardt
- * @author     2023 onwards Felix Di Lenarda
+ * @author     2022 onwards Felix Di Lenarda
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -354,7 +354,8 @@ if ($action === "view") {
             . html_writer::link($slink, get_string("page_link_backtoconfig", "block_coursefeedback")) . "</div>");
         $active = get_config("block_coursefeedback", "active_feedback");
         $table = new html_table();
-        $table->head = array("ID",
+        $table->head = array(
+            get_string("idnumber"),
             get_string("name"),
             get_string("modified"),
             get_string("action"),

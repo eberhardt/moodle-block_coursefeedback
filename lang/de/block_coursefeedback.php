@@ -15,11 +15,19 @@ $string['adminpage_html_defaultlanguageb'] = 'Fragen werden immer in der Standar
 $string['adminpage_html_allowhidinga'] = 'Verstecken erlauben';
 $string['adminpage_html_allowhidingb'] = 'Wenn aktiviert, k&ouml;nnen Trainer/innen die Sichtbarkeit des Blockes bearbeiten.';
 $string['adminpage_html_notinstalled'] = '\'{$a}\' (nicht installiert)';
+$string['adminpage_html_globalenablea'] = 'Wenn aktiviert, wird der Block in jeden Kurs ausgerollt.';
+$string['adminpage_html_globalenableb'] = 'Wenn deaktiviert, wird der Block aus allen Kursen entfernt.';
 
 /* Infopage */
 $string['infopage_html_coursestartcountd'] = 'Die Umfrage ist nur aktiv, wenn seit Kursstart maximal {$a} Tage vergangen sind.';
 $string['infopage_headline_feedbackinfo'] = 'Feedbackinfo';
 $string['infopage_link_feedbackinfo'] = 'Weitere Informationen';
+
+/* Results page */
+$string['resultspage_headline'] = 'Liste aller beantworteten Feedbacks in diesem Kurs';
+$string['resultspage_title'] = 'Feedbackergebnisse';
+$string['resultspage_howto'] = 'Klicken sie auf den Namen des Feedbacks um Fragen und Ergebnisse anzuzeigen.';
+$string['resultspage_nav_extension'] = 'Kursfeedbackergebnisse';
 
 /* Notification */
 $string['notif_question'] = 'Frage ';

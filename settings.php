@@ -19,13 +19,17 @@
  *
  * @package    block
  * @subpackage coursefeedback
- * @copyright  2011-2014 onwards Jan Eberhardt / Felix Di Lenarda (@ innoCampus, TU Berlin)
+ * @copyright  2023 innoCampus, Technische Universität Berlin
+ * @author     2011-2023 onwards Jan Eberhardt
+ * @author     2022 onwards Felix Di Lenarda
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined("MOODLE_INTERNAL") || die();
 
 require_once(__DIR__ . "/lib.php");
+require_once(__DIR__ . "/settingslib.php");
+require_once(__DIR__ . "/locallib.php");
 
 // Ensure that default_language can only be changed into a valid language!
 $afid = clean_param(get_config("block_coursefeedback", "active_feedback"), PARAM_INT);
@@ -49,6 +53,14 @@ $settings->add(new admin_setting_configcheckbox("block_coursefeedback/allow_hidi
     get_string("adminpage_html_allowhidinga", "block_coursefeedback"),
     get_string("adminpage_html_allowhidingb", "block_coursefeedback"),
     false));
+
+$globalenablesetting = new admin_setting_configcheckbox("block_coursefeedback/global_enable",
+    get_string("adminpage_html_globalenablea", "block_coursefeedback"),
+    get_string("adminpage_html_globalenableb", "block_coursefeedback"),
+    false);
+$globalenablesetting->set_updatedcallback('install_and_remove_block');
+$settings->add($globalenablesetting);
+
 
 /* Create/Edit survey link */
 $url = new moodle_url("/blocks/coursefeedback/admin.php", array("mode" => "feedback", "action" => "view"));
