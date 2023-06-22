@@ -28,7 +28,6 @@
 defined("MOODLE_INTERNAL") || die();
 
 require_once(__DIR__ . "/lib.php");
-require_once(__DIR__ . "/settingslib.php");
 require_once(__DIR__ . "/locallib.php");
 
 // Ensure that default_language can only be changed into a valid language!
