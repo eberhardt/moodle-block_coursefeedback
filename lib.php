@@ -647,6 +647,9 @@ function block_coursefeedback_get_editerrors($feedbackid) {
 }
 
 /**
+ * Sets the feedback with the given ID as active by updating the configuration setting.
+ * Deletes the user-ID answers of the previously active feedback if they exist.
+ *
  * @param int $feedbackid
  * @return bool - false, if specified feedback doesn"t exists
  */
