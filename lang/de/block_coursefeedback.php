@@ -76,7 +76,7 @@ $string['page_html_courserating'] = 'Kursbewertung';
 /* Tables */
 $string['table_header_languages'] = 'Verf&uuml;gbare Sprachen';
 $string['table_header_questions'] = 'Fragen';
-$string['table_html_votes'] = 'Anzahl der Stimmen:';
+$string['table_html_votes'] = 'Anzahl der Stimmen';
 $string['table_html_average'] = 'Durchschnitt';
 $string['table_html_nochoice'] = 'Enthaltungen';
 $string['table_html_nofeedback'] = 'Keine Umfrage';
@@ -138,6 +138,7 @@ $string['perm_html_wasactive'] = 'Die Umfrage war bereits aktive, erneutes aktiv
 $string['eventviewed'] = 'Ergebnisse angezeigt';
 
 /* Exceptions */
+$string['except_invalid_courseid'] = 'Ungültige Kurs-ID';
 $string['except_no_question'] = 'Umfrage oder Frage existiert nicht';
 $string['except_answer_exist'] = 'Antwort für diese Frage existiert bereits';
 $string['except_not_active'] = 'Die Umfrage ist nicht aktiv im Moment';
