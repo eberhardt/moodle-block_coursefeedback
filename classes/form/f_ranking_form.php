@@ -70,23 +70,4 @@ class f_ranking_form extends moodleform {
         }
         return $options;
     }
-
-    public function definition_after_data() {
-        parent::definition_after_data();
-        $mform = $this->_form;
-
-        $feedback = $mform->getElementValue('feedback');
-        if (is_null($feedback)) {
-            return;
-        }
-        $feedback = $feedback[0];
-        if ($feedback === '' || $feedback === null) {
-            return;
-        }
-        $currentlang = [current_language()];
-        $choices = block_coursefeedback_get_questions_by_language($feedback, $currentlang);
-        $q = $mform->getElement('question');
-        $q->loadArray($choices);;
-    }
 }
-
