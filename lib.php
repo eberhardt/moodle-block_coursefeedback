@@ -565,7 +565,7 @@ function block_coursefeedback_get_qanswercounts($course, $feedbackid) {
  *
  * @param int $coursfeedback_id - Feedback Id of questions to be shown
  * @param array $languages - array of language codes (sorted by priority)
- * @return array - Returns an array of strings (should be questions)
+ * @return array - array of question objects
  */
 function block_coursefeedback_get_questions_by_language($feedbackid,
         $languages,
