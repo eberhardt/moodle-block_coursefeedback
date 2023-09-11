@@ -517,44 +517,39 @@ function block_coursefeedback_get_qanswercounts($course, $feedbackid) {
     // Get all the questions of the feedback
     $questions = block_coursefeedback_get_questions_by_language($feedbackid, [current_language()]);
     $params = array("fid" => $feedbackid, "course" => $course);
-    if (!empty($questions)) {
-        // For each question and each answerpossibility, count the amount of the given answers
-        foreach ($questions as $question) {
-            $choicessum = 0;
-            $avsum = 0;
-            $questionid = $question->questionid;
-            $params["qid"] = $questionid;
-            $sql = "SELECT answer,COUNT(*) AS count
-                      FROM {block_coursefeedback_answers}
-                     WHERE coursefeedbackid = :fid 
-                           AND questionid = :qid 
-                           AND course = :course
-                  GROUP BY answer";
+    // For each question and each answerpossibility, count the amount of the given answers
+    foreach ($questions as $question) {
+        $choicessum = 0;
+        $avsum = 0;
+        $questionid = $question->questionid;
+        $params["qid"] = $questionid;
+        $sql = "SELECT answer,COUNT(*) AS count
+                  FROM {block_coursefeedback_answers}
+                 WHERE coursefeedbackid = :fid 
+                       AND questionid = :qid 
+                       AND course = :course
+              GROUP BY answer";
 
-            // Create array for the question and fill in zeros for each answeroption
-            $answers[$questionid] = array_fill(1, 6, 0);
+        // Create array for the question and fill in zeros for each answeroption
+        $answers[$questionid] = array_fill(1, 6, 0);
 
-            $answers[$questionid]['average'] = "x";
-            $answers[$questionid]['choicessum'] = 0;
-            $answers[$questionid]['abstentions'] = 0;
-            // If answers for question exist, replace the zero at the right index and calculate average and choicessum
-            if ($results = $DB->get_records_sql($sql, $params)) {
-                foreach ($results as $answer) {
-                    // Abstentions are not counted for average and choicessum
-                    if ($answer->answer == 0) {
-                        $answers[$questionid]['abstentions'] = $answer->count;
-                    } else {
-                        $answers[$questionid][$answer->answer] = $answer->count;
-                        $choicessum += $answer->count;
-                        $avsum += $answer->answer * $answer->count;
-                    }
-                }
-                // Calculate choices and average for each question
-                $average = $choicessum > 0 ? ($avsum / $choicessum) : 0;
-                $answers[$questionid]['average'] = $average;
-                $answers[$questionid]['choicessum'] = $choicessum;
+        $answers[$questionid]['abstentions'] = 0;
+        // If answers for question exist, replace the zero at the right index and calculate average and choicessum
+        $results = $DB->get_records_sql($sql, $params);
+        foreach ($results as $answer) {
+            // Abstentions are not counted for average and choicessum
+            if ($answer->answer == 0) {
+                $answers[$questionid]['abstentions'] = $answer->count;
+            } else {
+                $answers[$questionid][$answer->answer] = $answer->count;
+                $choicessum += $answer->count;
+                $avsum += $answer->answer * $answer->count;
             }
         }
+        // Calculate choices and average for each question
+        $average = $choicessum > 0 ? ($avsum / $choicessum) : null;
+        $answers[$questionid]['average'] = $average;
+        $answers[$questionid]['choicessum'] = $choicessum;
     }
     return $answers;
 }
