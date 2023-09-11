@@ -525,11 +525,11 @@ function block_coursefeedback_get_qanswercounts($course, $feedbackid) {
             $questionid = $question->questionid;
             $params["qid"] = $questionid;
             $sql = "SELECT answer,COUNT(*) AS count
-                    FROM {block_coursefeedback_answers}
-                    WHERE coursefeedbackid = :fid 
-                        AND questionid = :qid 
-                        AND course = :course
-                    GROUP BY answer";
+                      FROM {block_coursefeedback_answers}
+                     WHERE coursefeedbackid = :fid 
+                           AND questionid = :qid 
+                           AND course = :course
+                  GROUP BY answer";
 
             // Create array for the question and fill in zeros for each answeroption
             $answers[$questionid] = array_fill(1, 6, 0);
