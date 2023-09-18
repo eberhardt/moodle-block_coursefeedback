@@ -32,10 +32,9 @@ require_once(__DIR__ . "/exportlib.php");
 $courseid = required_param("course", PARAM_INT);
 $feedbackid = required_param("feedback", PARAM_INT);
 $download = optional_param("download", null, PARAM_ALPHA);
-$lang = optional_param("lang", null, PARAM_ALPHA);
 
 if (!($course = $DB->get_record("course", array("id" => $courseid)))) {
-    error("Invalid course id");
+    throw new moodle_exception(get_string("except_invalid_courseid","block_coursefeedback"));
 }
 
 require_login($course);
@@ -48,18 +47,8 @@ $errormsg = "";
 
 if (!empty($download)) {
     require_capability("block/coursefeedback:download", $context);
-    $export = new feedbackexport($course->id, $feedbackid);
-    if ($export->init_format($download)) {
-        $filename = get_string("download_html_filename", "block_coursefeedback")
-            . date("_Y-m-d-H-i") . ".csv";
-        $export->create_file($lang);
-        header("Content-Type: text/csv");
-        header("Content-Disposition: attachment; filename=" . $filename);
-        echo $export->get_content();
-        exit(0);
-    } else {
-        $errormsg = "wrong format";
-    }
+    $export = new feedback_exporter($course->id, $feedbackid);
+    $export->create_file($courseid, $feedbackid);
 }
 
 if ($course->id == SITEID) {
@@ -82,7 +71,7 @@ $currentlang = current_language();
 $questions = block_coursefeedback_get_questions_by_language($feedbackid, $currentlang);
 
 if ($questions) {
-    $answers = block_coursefeedback_get_answers($courseid, $feedbackid);
+    $answers = block_coursefeedback_get_qanswercounts($courseid, $feedbackid);
     $table = new html_table();
     $table->id = "coursefeedback_table";
     $table->size = array_fill(0, 8, "10%");
@@ -143,24 +132,19 @@ if ($questions) {
         $table->data[$j++]->cells = array($c31, $c32, $c33, $c34, $c35, $c36, $c37, $c38, $c39);
 
         $question->answers = $answers[$question->questionid];
-        $vsum = 0;
         $table->data[$j] = new html_table_row();
         $table->data[$j]->attributes = array("class" => "coursefeedback_table_graderow");
         for ($i = 1; $i <= 6; $i++) {
             $cn = "c4" . $i;
             ${$cn} = new html_table_cell();
             ${$cn}->text = $question->answers[$i];
-            $vsum += $i * $question->answers[$i];
         }
-        $choices = array_sum($question->answers);
-        $ksum = $choices - $question->answers[0];
-        $average = $ksum > 0 ? ($vsum / $ksum) : 0;
         $c47 = new html_table_cell();
         $c48 = new html_table_cell();
         $c49 = new html_table_cell();
-        $c47->text = number_format($average, 2);
-        $c48->text = $choices;
-        $c49->text = $question->answers[0];
+        $c47->text = $question->answers['average'];
+        $c48->text = $question->answers['choicessum'];
+        $c49->text = $question->answers['abstentions'];
         $table->data[$j++]->cells = array($c41, $c42, $c43, $c44, $c45, $c46, $c47, $c48, $c49);
         $table->data[$j] = new html_table_row();
         $table->data[$j]->attributes = array("class" => "coursefeedback_table_blankrow");
@@ -169,9 +153,6 @@ if ($questions) {
 
     $html = html_writer::table($table);
     $params = array("course" => $course->id, "feedback" => $feedbackid, "download" => "csv");
-    if ($lang !== null) {
-        $params["lang"] = $lang;
-    }
     $link = html_writer::link(new moodle_url("/blocks/coursefeedback/view.php", $params),
         get_string("page_link_download", "block_coursefeedback", "CSV"));
 } else if ($feedbackid > 0) {

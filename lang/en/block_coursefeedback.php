@@ -76,7 +76,7 @@ $string['page_html_courserating'] = 'Course rating';
 /* Tables */
 $string['table_header_languages'] = 'Available languages';
 $string['table_header_questions'] = 'Questions';
-$string['table_html_votes'] = ' Number of votes : ';
+$string['table_html_votes'] = ' Number of votes';
 $string['table_html_average'] = 'Average';
 $string['table_html_nochoice'] = 'Abstentions';
 $string['table_html_nofeedback'] = 'No survey';
@@ -138,6 +138,7 @@ $string['perm_html_wasactive'] = 'The feedback was active before -> reactivation
 $string['eventviewed'] = 'Results viewed';
 
 /* Exceptions */
+$string['except_invalid_courseid'] = 'Invalid course id';
 $string['except_no_question'] = 'Feedback or question does not exist';
 $string['except_answer_exist'] = 'Answer for this question already exist';
 $string['except_not_active'] = 'Given feedback not active at the monent';
