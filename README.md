@@ -14,9 +14,9 @@ Make it sticky
 Since version 1.0.6. there is an option in the plugin settings, to create a global sticky instance.
 It will be shown in all course main pages.
 
-Upgrade to Version 2
+Upgrade to Version 3
 ==============
-For version 2, all existing blocks will be deleted as the rendering is now achieved via a "system context" block that is visible in all courses.
+Since version 3.1.0, all existing blocks will be deleted as the rendering is now achieved via a "system context" block that is visible in all courses.
 Therefore, individual "Course Context" blocks are no longer allowed as they could conflict with the system block.
 Also for this reason only managers are allowed to add or delete the block. There can only be exactly one block in each course.
 
