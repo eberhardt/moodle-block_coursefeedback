@@ -533,13 +533,13 @@ function block_coursefeedback_get_qanswercounts($course, $feedbackid) {
         // Create array for the question and fill in zeros for each answeroption
         $answers[$questionid] = array_fill(1, 6, 0);
 
-        $answers[$questionid]['abstentions'] = 0;
+        $abstentions = 0;
         // If answers for question exist, replace the zero at the right index and calculate average and choicessum
         $results = $DB->get_records_sql($sql, $params);
         foreach ($results as $answer) {
             // Abstentions are not counted for average and choicessum
             if ($answer->answer == 0) {
-                $answers[$questionid]['abstentions'] = $answer->count;
+                $abstentions = $answer->count;
             } else {
                 $answers[$questionid][$answer->answer] = $answer->count;
                 $choicessum += $answer->count;
@@ -548,8 +548,9 @@ function block_coursefeedback_get_qanswercounts($course, $feedbackid) {
         }
         // Calculate choices and average for each question
         $average = $choicessum > 0 ? ($avsum / $choicessum) : null;
-        $answers[$questionid]['average'] = $average;
+        $answers[$questionid]['average'] = number_format($average, 2);
         $answers[$questionid]['choicessum'] = $choicessum;
+        $answers[$questionid]['abstentions'] = $abstentions;
     }
     return $answers;
 }
