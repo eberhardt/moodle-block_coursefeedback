@@ -70,4 +70,24 @@ class f_ranking_form extends moodleform {
         }
         return $options;
     }
+
+    /**
+     * Is necessesary because the form validation throws an error if not all choice options are made public
+     */
+    public function definition_after_data() {
+        parent::definition_after_data();
+        $mform = $this->_form;
+
+        $feedback = $mform->getElementValue('feedback');
+        if (is_null($feedback)) {
+            return;
+        }
+        $feedback = $feedback[0];
+        if ($feedback === '' || $feedback === null) {
+            return;
+        }
+        $choices = block_coursefeedback_get_questions_by_language($feedback, current_language());
+        $q = $mform->getElement('question');
+        $q->loadArray($choices);;
+    }
 }

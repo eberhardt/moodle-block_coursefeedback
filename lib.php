@@ -968,63 +968,6 @@ function block_coursefeedback_get_open_question() {
 }
 
 /**
- * Returns the courserankings
- *
- * @param TODO
- * @return array
- * @throws \moodle_exception
- */
-function block_coursefeedback_get_courserankings($questionid, $coursefeedbackid, $answerlimit, $showperpage, $page) {
-    global $DB;
-    $params = array(
-        'questionid' => $questionid,
-        'feedbackid' => $coursefeedbackid,
-        'answerlimit' => $answerlimit
-    );
-    // Kursids und die Anzahl der jeweiligen Antworten in dem Kurs für die übergebene Frage(id) holen
-    $sql = "SELECT course, count(*) 
-              FROM {block_coursefeedback_answers}
-             WHERE questionid = :questionid 
-                   AND coursefeedbackid = :feedbackid
-          GROUP BY course
-            HAVING count(*) >= :answerlimit";
-    $courses = $DB->get_records_sql($sql, $params);
-    $coursearray = array();
-    //TODO calculate rankings
-    foreach ($courses as $course) {
-        $answers = $DB->get_records('block_coursefeedback_answers', array(
-            'course' => $course->course,
-            'coursefeedbackid' => $coursefeedbackid,
-            'questionid' => $questionid,
-        ));
-        // TODO wenn wir nur die courseid ausgeben brauchen wir das kursobjekt nicht holen -> ladezeit???
-        //$courseobj = get_course($course->course);
-        $courseanswerstotal = count($answers);
-        $answersum = 0;
-        // TODO logik in DB querry auslagern
-        foreach ($answers as $answer) {
-            $answersum += $answer->answer;
-        }
-        // TODO enthaltungen rausrechnen
-        $average = $answersum / $courseanswerstotal;
-        array_push($coursearray, array(
-            'courseid' => $course->course,
-            'answerstotal' => $courseanswerstotal,
-            'avfeedbackresult' => $average
-        ));
-    }
-    if (count($coursearray) > $showperpage) {
-        //TODO pagination
-    }
-    // sort for the average feedbackresult
-    usort($coursearray, function($course1, $course2) {
-        return $course1['avfeedbackresult'] <=> $course2['avfeedbackresult'];
-    });
-
-    return $coursearray;
-}
-
-/**
  * Check if since_coursestart setting is enabled and if the coursesatart was to long ago
  *
  * @param object $config

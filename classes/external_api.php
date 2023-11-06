@@ -29,6 +29,8 @@ defined('MOODLE_INTERNAL') || die();
 require_once("$CFG->libdir/externallib.php");
 require_once("$CFG->dirroot/webservice/externallib.php");
 require_once(__DIR__ . "/../lib.php");
+require_once(__DIR__ . "/../locallib.php");
+
 
 use external_value;
 use external_single_structure;
@@ -374,7 +376,7 @@ class external_api extends \external_api {
         require_capability('block/coursefeedback:managefeedbacks', $context);
 
         // TODO hole alle kurse mit mehr antworten als answerlimit
-        $courses = block_coursefeedback_get_courserankings($params['questionid'], $params['feedback'],
+        $courses = block_coursefeedback_get_courserankings($params['questionid'], $params['feedback'], 0,
             $params['answerlimit'], $params['showperpage'], $params['page']);
         $result = ['ranking' => $courses];
         return $result;
@@ -390,9 +392,19 @@ class external_api extends \external_api {
         $ranking = new external_multiple_structure (
             new external_single_structure([
                 'courseid' => new external_value(PARAM_INT, 'courseid'),
-                //'shortname'    => new external_value(PARAM_TEXT, 'shortname'),
-                'answerstotal' => new external_value(PARAM_INT, 'answersum'),
+                'enroleduserssum' => new external_value(PARAM_INT, 'enroleduserssum'),
+                'shortname'    => new external_value(PARAM_TEXT, 'shortname'),
+                'category' => new external_value(PARAM_INT, 'category'),
+                'path' => new external_value(PARAM_TEXT, 'category path'),
+                'one' => new external_value(PARAM_INT, 'one'),
+                'two' => new external_value(PARAM_INT, 'two'),
+                'three' => new external_value(PARAM_INT, 'three'),
+                'four' => new external_value(PARAM_INT, 'four'),
+                'five' => new external_value(PARAM_INT, 'five'),
+                'six' => new external_value(PARAM_INT, 'six'),
                 'avfeedbackresult' => new external_value(PARAM_FLOAT, 'Average feedback result '),
+                'adjanswerstotal' => new external_value(PARAM_INT, 'Answers total without abstentions'),
+                'abstentions' => new external_value(PARAM_INT, 'Abstentions'),
             ])
         );
         $params = new external_single_structure([
