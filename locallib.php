@@ -66,10 +66,21 @@ function install_and_remove_block() {
  *
  * @param int $questionid
  * @param int $coursefeedbackid
- * @param int $answerlimit
- * @param int $showperpage
- * @param int $page
- * @return array of objects
+ * @param int $answerlimit Minimum of answers given to the specific question (courses with less are not returned)
+ * @param int $showperpage Limits the results to a specific number
+ * @param int $page Defines together with $showperpage which part of the results is returned
+ * @return array of objects of courses and the results for the given $questionid as follows:
+ * [ obj1 { ["courseid"]=>int
+ *          ["enroleduserssum"]=>int    - Users enrolled in the course
+ *          ["shortname"]=>string       - Shortname of the Course
+ *          ["category"]=>int           - Categoryid of the course
+ *          ["path"]=>string            - Categorpath of the course
+ *           --- Following the amount of votes for each option (1 to 6, where one is the best and 6 the worst) ----
+ *          ["one"]=>int ["two"]=>int ["three"]=>int ["four"]=>int ["five"]=>int ["six"]=>int
+ *          ["avfeedbackresult"]=>int   - The average of all counted votes (excludes abstentions)
+ *          ["adjanswerstotal"]=>int    - The Amount of counted votes (excludes abstentions)
+ *          ["abstentions"]=>int }      - The Amount of abstentions
+ * ... ]
  * @throws \moodle_exception
  */
 function block_coursefeedback_get_courserankings(
