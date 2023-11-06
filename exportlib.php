@@ -84,7 +84,7 @@ class feedback_exporter {
 }
 
 /**
- * Export feedback data for an entire feedbacj.
+ * Export feedback data for an entire feedback.
  *
  * @package block
  * @subpackage coursefeedback
@@ -92,18 +92,17 @@ class feedback_exporter {
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class ranking_exporter {
-    protected $feedback = null;
-    protected $questionid = null;
     protected $csvexportwriter;
 
-    public function __construct($feedback = null, $question = null) {
+    public function __construct() {
         $this->csvexportwriter = new csv_export_writer();
     }
-    public function create_file($feedbackid, $questionid = 0 )
-    {
+
+    public function create_file($feedbackid, $questionid = 0) {
         global $DB;
-        $this->csvexportwriter->set_filename(get_string("download_html_filename", "block_coursefeedback")
-            . date("_Y-m-d-H-i"));
+        $filename = clean_param(get_string("download_html_filename", "block_coursefeedback")
+            . date("_Y-m-d-H-i"), PARAM_FILE);
+        $this->csvexportwriter->set_filename($filename);
 
         $feedback = $DB->get_record("block_coursefeedback", ["id" => $feedbackid]);
         $this->csvexportwriter->add_data([
@@ -116,12 +115,8 @@ class ranking_exporter {
         $questions = null;
 
         if ($questionid != 0) {
-            // Only display one question.
-            foreach ($qus as $qu) {
-                if ($qu->questionid == $questionid) {
-                    $questions = array($qu);
-                }
-            }
+            // Only display one question....
+            $questions = array_filter($qus, function ($q) use ($questionid) { return $q->questionid == $questionid; });
         } else {
             // Display all questions.
             $questions = $qus;
