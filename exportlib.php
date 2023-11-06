@@ -110,16 +110,14 @@ class ranking_exporter {
             'Feedbackname: ' . $feedback->name
         ]);
 
-        // Get questions
-        $qus = block_coursefeedback_get_questions_by_language($feedback->id, [current_language()]);
-        $questions = null;
+        // Get all questions
+        $questions = block_coursefeedback_get_questions_by_language($feedback->id, [current_language()]);
 
         if ($questionid != 0) {
             // Only display one question....
-            $questions = array_filter($qus, function ($q) use ($questionid) { return $q->questionid == $questionid; });
-        } else {
-            // Display all questions.
-            $questions = $qus;
+            $questions = array_filter($questions, function ($q) use ($questionid) {
+                return $q->questionid == $questionid;
+            });
         }
 
         foreach ($questions as $question) {
