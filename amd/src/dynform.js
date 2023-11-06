@@ -128,9 +128,11 @@ export const init = () => {
                 var cell1 = row.insertCell(0);
                 var cell2 = row.insertCell(1);
                 var cell3 = row.insertCell(2);
-                cell1.innerHTML = course.courseid;
-                cell2.innerHTML = course.answerstotal;
-                cell3.innerHTML = course.avfeedbackresult;
+                var cell4 = row.insertCell(3);
+                cell1.innerHTML = course.shortname;
+                cell2.innerHTML = course.courseid;
+                cell3.innerHTML = course.adjanswerstotal;
+                cell4.innerHTML = course.avfeedbackresult;
             });
 
             return;
