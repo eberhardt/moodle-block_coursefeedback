@@ -69,12 +69,21 @@ class block_coursefeedback extends block_base {
         $config = get_config("block_coursefeedback");
         $renderer = $this->page->get_renderer("block_coursefeedback");
         $feedback = $DB->get_record("block_coursefeedback", array("id" => $config->active_feedback));
+        $coursestartgood = block_coursefeedbck_coursestartcheck_good($config, $this->page->course->id);
         $list = array();
+
+        // Show information banner if enabled and the coursestart is in range so a FB would be triggered.
+        // TODO extra einstellung um die Zeit des Vorabbanners bis max coursestart zu überbrücken?
+        if ($config->global_enable && $config->enable_infobanner && $coursestartgood
+                && has_capability("block/coursefeedback:viewanswers", $context) ) {
+            $infomessage = format_text($config->infobanner, FORMAT_MOODLE);
+            \core\notification::add($infomessage, \core\output\notification::NOTIFY_INFO);
+        }
 
         // Check if an active FB with valid questions exist. Also verify if the FB should be displayed
         // in this course, depending on the course start date and the 'since_coursestart' setting of the FB-block.
         if (isset($config->active_feedback) && block_coursefeedback_questions_exist()
-                && block_coursefeedbck_coursestartcheck_good($config, $this->page->course->id)) {
+                && $coursestartgood) {
             // Feedback with questions is active.
             if (has_capability("block/coursefeedback:viewanswers", $context)) {
                 // For Trainer show the informative notification
