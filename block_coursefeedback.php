@@ -73,7 +73,6 @@ class block_coursefeedback extends block_base {
         $list = array();
 
         // Show information banner if enabled and the coursestart is in range so a FB would be triggered.
-        // TODO extra einstellung um die Zeit des Vorabbanners bis max coursestart zu überbrücken?
         if ($config->global_enable && $config->enable_infobanner && $coursestartgood
                 && has_capability("block/coursefeedback:viewanswers", $context) ) {
             $infomessage = format_text($config->infobanner, FORMAT_MOODLE);
