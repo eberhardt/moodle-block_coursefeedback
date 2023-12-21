@@ -21,8 +21,8 @@ $string['adminpage_html_globalenableb'] = 'Wenn deaktiviert, wird der Block aus 
 $string['adminpage_html_headinginfobannera'] = 'Informationsbanner';
 $string['adminpage_html_headinginfobannerb'] = 'Wird (wenn aktiv) Trainer:innen in Kursen angezeigt, in denen die Umfrage aktiviert werden soll. Wird nur angezeigt wenn der Block über "global_enable" aktivgechaltet sowie der jeweilige Kursstart nach "since_coursestart" ist.';
 $string['adminpage_html_infobannera'] = 'Infobanner';
-$string['adminpage_html_infobannerb'] = 'Schreiben Sie Ihre Inforamtionsbanner-nachricht. Sie können "multilanguage filter" nutzen.';
-$string['adminpage_html_enable_infobannera'] =  'Wenn aktiviert, wird das Infobanner angezeigt.';
+$string['adminpage_html_infobannerb'] = 'Schreiben Sie Ihre Informationsbannernachricht. Sie können "multilanguage filter" nutzen.';
+$string['adminpage_html_enable_infobannera'] = 'Wenn aktiviert, wird das Infobanner angezeigt.';
 $string['adminpage_html_enable_infobannerb'] = 'Wenn deaktiviert, wird das Infobanner nicht angezeigt.';
 
 /* Infopage */

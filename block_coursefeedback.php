@@ -72,8 +72,8 @@ class block_coursefeedback extends block_base {
         $coursestartgood = block_coursefeedbck_coursestartcheck_good($config, $this->page->course->id);
         $list = array();
 
-        // Show information banner if enabled and the coursestart is in range so a FB would be triggered.
-        if ($config->global_enable && $config->enable_infobanner && $coursestartgood
+        // Show information banner in Course if enabled and the coursestart is in range so a FB would be triggered.
+        if ($config->enable_infobanner && $coursestartgood
                 && has_capability("block/coursefeedback:viewanswers", $context) ) {
             $infomessage = format_text($config->infobanner, FORMAT_MOODLE);
             \core\notification::add($infomessage, \core\output\notification::NOTIFY_INFO);
@@ -107,22 +107,25 @@ class block_coursefeedback extends block_base {
                 }
             }
         }
-
+        // Prepare block content.
         if (has_capability("block/coursefeedback:managefeedbacks", $context)) {
+            // Managelinks.
             $list[] = $renderer->render_manage_link();
             $list[] = $renderer->render_ranking_link();
         }
         if (has_capability("block/coursefeedback:viewanswers", $context)) {
             $fbsforcourse = block_coursefeedbck_get_fbsfor_course($this->page->course->id);
+            // Viewanswerlink.
             if (!empty($results = $renderer->render_result_links($fbsforcourse))) {
                 $list[] = get_string("page_link_viewresults", "block_coursefeedback") . ':';
                 $list = array_merge($list, $results);
             }
         }
         if (empty($list)) {
-            // Don't show the Block
+            // Don't show the block.
             $this->content->text = null;
         } else {
+            // Save block content.
             $this->content->text = html_writer::alist($list, array("style" => "list-style:none"));
         }
         $this->content->footer = "";
