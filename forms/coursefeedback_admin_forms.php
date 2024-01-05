@@ -27,6 +27,8 @@
 
 require_once(__DIR__ . "/coursefeedbackform.php");
 require_once(__DIR__ . "/../lib.php");
+require_once(__DIR__ . "/../locallib.php");
+
 
 /**
  * CLASS COURSEFEEDBACK_FEEDBACK_NEW_FORM
@@ -199,9 +201,12 @@ class coursefeedback_questions_new_form extends coursefeedbackform {
         $form = &$this->_form;
 
         $form->addElement("header", "newquestion", get_string("form_header_newquestion", "block_coursefeedback"));
-        $form->addElement("hidden", "template", $this->fid);
+        $form->addElement("hidden", "feedbackid", $this->fid);
         $form->addElement("hidden", "questionid", block_coursefeedback_get_questionid($this->fid));
 
+        $form->addElement("select",
+            "questiontype", get_string("questiontype", "block_coursefeedback"),
+            get_question_types());
         $form->addElement("select",
             "newlang",
             get_string("form_select_newlang", "block_coursefeedback"),
@@ -221,9 +226,11 @@ class coursefeedback_questions_new_form extends coursefeedbackform {
         $form->getElement("newlang")->setSelected($CFG->lang);
 
         // Types.
-        $form->setType("template", PARAM_INT);
+        $form->setType("feedbackid", PARAM_INT);
         $form->setType("questionid", PARAM_INT);
+        $form->setType("questiontype", PARAM_INT);
         $form->setType("questiontext", PARAM_TEXT);
+
     }
 }
 
@@ -339,8 +346,10 @@ class coursefeedback_question_edit_form extends coursefeedbackform {
         $form->addElement("hidden", "template", $this->fid);
         $form->addElement("hidden", "questionid", $this->qid);
         $form->addElement("hidden", "language", $this->lang);
+        $form->addElement("hidden", "questiontype", $question->questiontype);
 
         $form->addElement("header", "editquestion", get_string("form_header_editquestion", "block_coursefeedback"));
+
         $html = html_writer::tag("p",
             get_string("form_html_currentlang", "block_coursefeedback", block_coursefeedback_get_language($this->lang)),
             array("style" => "margin-left:3em;margin-right:3em;"));
@@ -364,6 +373,7 @@ class coursefeedback_question_edit_form extends coursefeedbackform {
         $form->setType("template", PARAM_INT);
         $form->setType("questionid", PARAM_INT);
         $form->setType("language", PARAM_ALPHAEXT);
+        $form->setType("questiontype", PARAM_INT);
         $form->setType("questiontext", PARAM_TEXT);
     }
 }

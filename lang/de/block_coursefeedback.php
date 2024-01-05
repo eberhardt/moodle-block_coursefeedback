@@ -151,3 +151,9 @@ $string['except_answer_exist'] = 'Antwort für diese Frage existiert bereits';
 $string['except_not_active'] = 'Die Umfrage ist nicht aktiv im Moment';
 $string['except_block_duplicate'] = 'Es existieren mehrere Kursfeedbackblöcke im Kurs';
 $string['except_block_hidden'] = 'Der Kursfeedbackblock in diesem Kurs ist versteckt';
+
+/* Questiontypes */
+$string['questiontype'] = 'Fragetyp';
+$string['questiontype_schoolgrades'] = 'Schulnoten eins bis sechs';
+$string['questiontype_essay'] = 'Freitext';
+

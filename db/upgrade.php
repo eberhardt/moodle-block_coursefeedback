@@ -190,6 +190,26 @@ function xmldb_block_coursefeedback_upgrade($oldversion = 0) {
 
         upgrade_block_savepoint(true, 2023011800, 'coursefeedback');
     }
+
+    if ($oldversion < 2023122200) {
+        // Add 'questiontype' field to table 'block_coursefeedback_questns'
+        $table = new xmldb_table('block_coursefeedback_questns');
+        $field = new xmldb_field('questiontype', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, 1, 'questionid');
+
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Add 'textanswer' field to table 'block_coursefeedback_answers'
+        $table2 = new xmldb_table('block_coursefeedback_answers');
+        $field2 = new xmldb_field('textanswer', XMLDB_TYPE_TEXT, 'medium', null, null, null, null, 'answer');
+
+        if (!$dbman->field_exists($table2, $field2)) {
+            $dbman->add_field($table2, $field2);
+        }
+
+        upgrade_block_savepoint(true, 2023122000, 'coursefeedback');
+    }
     return true;
 }
 

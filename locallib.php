@@ -25,6 +25,23 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+
+
+define("COURSEFEEDBACK_QUESTIONTYPE_SCHOOLGRADE", 1);
+define("COURSEFEEDBACK_QUESTIONTYPE_ESSAY", 2);
+
+/**
+ * Gets the list of questiontypes.
+ * @return array of questiontypes.
+ * @throws \coding_exception
+ */
+function get_question_types() {
+    return array(
+        COURSEFEEDBACK_QUESTIONTYPE_SCHOOLGRADE => get_string('questiontype_schoolgrades', 'block_coursefeedback'),
+        COURSEFEEDBACK_QUESTIONTYPE_ESSAY => get_string('questiontype_essay', 'block_coursefeedback')
+    );
+}
+
 /**
  * Adds or removes the coursefeedbackblock in all courses
  */

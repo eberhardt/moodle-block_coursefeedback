@@ -20,7 +20,8 @@
     <TABLE NAME="block_coursefeedback_questns" COMMENT="questions defined by admins" PREVIOUS="block_coursefeedback" NEXT="block_coursefeedback_answers">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="questionid"/>
-        <FIELD NAME="questionid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="id" NEXT="coursefeedbackid"/>
+        <FIELD NAME="questionid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="id" NEXT="questiontype"/>
+        <FIELD NAME="questiontype" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="questionid" NEXT="coursefeedbackid"/>
         <FIELD NAME="coursefeedbackid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="questionid" NEXT="language"/>
         <FIELD NAME="language" TYPE="char" LENGTH="8" NOTNULL="true" SEQUENCE="false" PREVIOUS="coursefeedbackid" NEXT="question"/>
         <FIELD NAME="question" TYPE="text" LENGTH="small" NOTNULL="true" SEQUENCE="false" PREVIOUS="language" NEXT="timemodified"/>
@@ -40,7 +41,8 @@
         <FIELD NAME="course" TYPE="int" LENGTH="20" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="id" NEXT="coursefeedbackid"/>
         <FIELD NAME="coursefeedbackid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="course" NEXT="questionid"/>
         <FIELD NAME="questionid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="coursefeedbackid" NEXT="answer"/>
-        <FIELD NAME="answer" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="questionid" NEXT="timemodified"/>
+        <FIELD NAME="answer" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="questionid" NEXT="textanswer"/>
+        <FIELD NAME="textanswer" TYPE="text" LENGTH="medium" NOTNULL="false" SEQUENCE="false" PREVIOUS="answer" NEXT="timemodified"/>
         <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" DEFAULT="0" PREVIOUS="answer"/>
       </FIELDS>
       <KEYS>

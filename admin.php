@@ -190,11 +190,12 @@ if (isset($form) && get_parent_class($form) === "coursefeedbackform" && $form->i
             break;
         case "questionsadd":
             if ($form->is_validated()) {
-                if ($data->questiontext && $data->newlang && isset($data->template) && isset($data->questionid)) {
+                if ($data->questiontext && $data->newlang && isset($data->template, $data->questionid, $data->questiontype)) {
                     if (block_coursefeedback_insert_question($data->questiontext,
                             $data->template,
                             $data->questionid,
-                            $data->newlang)) {
+                            $data->newlang,
+                            $data->questiontype)) {
                         $statusmsg = get_string("changessaved");
                     } else {
                         $errormsg = get_string("error");
@@ -253,9 +254,9 @@ if (isset($form) && get_parent_class($form) === "coursefeedbackform" && $form->i
             break;
         case "questionadd":
             if ($form->is_validated()) {
-                if ($data->questiontext && $data->newlanguage && $data->template && $data->questionid) {
+                if ($data->questiontext && $data->newlanguage && $data->template && $data->questionid && data->questiontype) {
                     if (block_coursefeedback_insert_question($data->questiontext, $data->template, $data->questionid,
-                            $data->newlanguage)) {
+                            $data->newlanguage, $data->questiontype)) {
                         $statusmsg = get_string("changessaved");
                     } else {
                         $errormsg = get_string("therewereerrors", "admin");

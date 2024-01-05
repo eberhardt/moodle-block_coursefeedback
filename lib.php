@@ -187,14 +187,16 @@ function block_coursefeedback_delete_feedback($feedbackid) {
  * @param int $feedbackid
  * @param int $questionid
  * @param string $language
+ * @param int $questiontype
  * @param bool $returnid Return the id of the newly created record? If false, a boolean is returned.
  * @return bool|int
  */
-function block_coursefeedback_insert_question($question, $feedbackid, $questionid, $language, $returnid = true) {
+function block_coursefeedback_insert_question($question, $feedbackid, $questionid, $language, $questiontype, $returnid = true) {
     global $DB;
 
     $feedbackid = intval($feedbackid);
     $questionid = intval($questionid);
+    $questiontype = intval($questiontype);
     $language = preg_replace("/[^a-z\_]/", "", strtolower($language));
 
     if (!$DB->record_exists("block_coursefeedback_questns",
@@ -208,6 +210,7 @@ function block_coursefeedback_insert_question($question, $feedbackid, $questioni
             $record->questionid = $questionid;
             $record->language = $language;
             $record->timemodified = time();
+            $record->questiontype = $questiontype;
             return $DB->insert_record("block_coursefeedback_questns", $record);
         }
     }
@@ -285,18 +288,19 @@ function block_coursefeedback_swap_questions($feedbackid, $oldpos, $newpos) {
  * @param bool $deleteanswers
  * @return bool Success of operation
  */
-function block_coursefeedback_update_question($feedbackid, $questionid, $question, $language) {
+function block_coursefeedback_update_question($feedbackid, $questionid, $question, $language, $questiontype) {
     global $DB;
 
     $feedbackid = intval($feedbackid);
     $questionid = intval($questionid);
-
+    $questiontype = intval($questiontype);
     if (in_array($language, block_coursefeedback_get_implemented_languages($feedbackid, $questionid))) {
         $record = $DB->get_record("block_coursefeedback_questns", array("coursefeedbackid" => $feedbackid,
             "questionid" => $questionid,
             "language" => $language));
         $record->question = $question;
         $record->timemodified = time();
+        $record->questiontype = $questiontype;
         return clean_param($DB->update_record("block_coursefeedback_questns", $record), PARAM_BOOL);
     }
 
