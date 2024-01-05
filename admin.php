@@ -253,8 +253,9 @@ if (isset($form) && get_parent_class($form) === "coursefeedbackform" && $form->i
             }
             break;
         case "questionadd":
+            // Adding a new language translation to an existing question.
             if ($form->is_validated()) {
-                if ($data->questiontext && $data->newlanguage && $data->template && $data->questionid && data->questiontype) {
+                if ($data->questiontext && $data->newlanguage && $data->template && $data->questionid && $data->questiontype) {
                     if (block_coursefeedback_insert_question($data->questiontext, $data->template, $data->questionid,
                             $data->newlanguage, $data->questiontype)) {
                         $statusmsg = get_string("changessaved");
