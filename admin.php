@@ -419,24 +419,40 @@ if ($action === "view") {
                 . "</h4>";
 
             $table = new html_table();
-            $table->head = array("ID", get_string("language"), get_string("question"), get_string("action"));
-            $table->align = array("left", "left", "left", "left");
-            $table->size = array("5%", "10%", "*", "*");
+            $table->head = [
+                get_string("idnumber"),
+                get_string("questiontype", "block_coursefeedback"),
+                get_string("language"),
+                get_string("question"),
+                get_string("action")
+            ];
+            $table->align = array("left", "left", "left", "left", "left");
+            $table->size = array("5%", "*", "*", "*", "*");
             $table->data = array();
 
             foreach ($questions as $questionid) {
                 $listing = "";
                 $languages = "";
                 $links = "";
+                $questiontypestr = "";
 
                 if ($requiredlangs) {
                     foreach ($requiredlangs as $language) {
-                        if ($question = $DB->get_field("block_coursefeedback_questns","question", [
+                        if ($question = $DB->get_record("block_coursefeedback_questns", [
                                 "coursefeedbackid" => $fid,
                                 "questionid" => $questionid,
                                 "language" => $language
                             ])) {
-                            $question = format_string($question);
+                            // If not defined yet, get the questiontype
+                            if (empty($questiontypestr)) {
+                                echo "Empty";
+                                $questiontypearray = get_question_types($question->questiontype);
+                                // Extract the questiontype string from the array
+                                if (isset($questiontypearray[$question->questiontype])) {
+                                    $questiontypestr = $questiontypearray[$question->questiontype];
+                                }
+                            }
+                            $question = format_string($question->question);
                             $listing .= "<div>";
                             if (strlen($question) > 50 && $p = strpos($question, " ", 50)) {
                                 $listing .= str_replace(" ", "&nbsp;", substr($question, 0, $p) . "&nbsp;[...]");
@@ -483,7 +499,7 @@ if ($action === "view") {
                     . html_writer::link($url2, get_string("delete"))
                     . " &#124; "
                     . html_writer::link($url3, get_string("page_link_newlanguage", "block_coursefeedback"));
-                $table->data[] = array($questionid, $languages, $listing, $links);
+                $table->data[] = array($questionid, $questiontypestr, $languages, $listing, $links);
             }
             $html .= html_writer::table($table);
         } else if (!$editable) {

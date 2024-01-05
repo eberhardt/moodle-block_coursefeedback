@@ -339,14 +339,14 @@ class coursefeedback_question_edit_form extends coursefeedbackform {
         global $DB;
 
         $form =& $this->_form;
-        $question = $DB->get_field("block_coursefeedback_questns", "question", array("coursefeedbackid" => $this->fid,
+        $question = $DB->get_record("block_coursefeedback_questns",  [
+            "coursefeedbackid" => $this->fid,
             "questionid" => $this->qid,
-            "language" => $this->lang));
+            "language" => $this->lang ]);
 
         $form->addElement("hidden", "template", $this->fid);
         $form->addElement("hidden", "questionid", $this->qid);
         $form->addElement("hidden", "language", $this->lang);
-        $form->addElement("hidden", "questiontype", $question->questiontype);
 
         $form->addElement("header", "editquestion", get_string("form_header_editquestion", "block_coursefeedback"));
 
@@ -354,11 +354,19 @@ class coursefeedback_question_edit_form extends coursefeedbackform {
             get_string("form_html_currentlang", "block_coursefeedback", block_coursefeedback_get_language($this->lang)),
             array("style" => "margin-left:3em;margin-right:3em;"));
         $form->addElement("html", $html);
+        $form->addElement("select",
+            "questiontype", get_string("questiontype", "block_coursefeedback"),
+            get_question_types());
         $form->addElement("textarea",
             "questiontext",
             get_string("form_area_questiontext", "block_coursefeedback"),
             "rows=\"20\" cols=\"50\"");
-        $form->getElement("questiontext")->setValue($question);
+
+        // Do not try to get question fields i when initially loading the form
+        if ($question) {
+            $form->getElement("questiontext")->setValue($question->question);
+            $form->getElement("questiontype")->setValue($question->questiontype);
+        }
 
         $submits = array();
         $submits[] = &$form->createElement("submit", "edit", get_string("confirm"));
