@@ -402,12 +402,12 @@ class coursefeedback_question_new_form extends coursefeedbackform {
         $form->addElement("hidden", "template", $this->fid);
         $form->addElement("hidden", "questionid", $this->qid);
 
-        // Adding hidden questiontype (Translation questions inherit the question type from the parent question with default language).
-        $defaultlang = get_config('block_coursefeedback', 'default_language');
-        $form->addElement("hidden", "questiontype", $DB->get_field("block_coursefeedback_questns", "questiontype", [
+        // Adding hidden questiontype (IGNORE_MULTIPLE, just take the first question found and look for questiontype).
+        $form->addElement("hidden", "questiontype", $DB->get_field("block_coursefeedback_questns", "questiontype",
+            [
             "coursefeedbackid" => $this->fid,
             "questionid" => $this->qid,
-            "language" => $defaultlang ]));
+            ], IGNORE_MULTIPLE));
 
         $implemented = block_coursefeedback_get_implemented_languages($this->fid, $this->qid, false, true);
         if (count($implemented) > 0) {

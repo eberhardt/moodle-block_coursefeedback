@@ -190,9 +190,9 @@ if (isset($form) && get_parent_class($form) === "coursefeedbackform" && $form->i
             break;
         case "questionsadd":
             if ($form->is_validated()) {
-                if ($data->questiontext && $data->newlang && isset($data->template, $data->questionid, $data->questiontype)) {
+                if ($data->questiontext && $data->newlang && isset($data->feedbackid, $data->questionid, $data->questiontype)) {
                     if (block_coursefeedback_insert_question($data->questiontext,
-                            $data->template,
+                            $data->feedbackid,
                             $data->questionid,
                             $data->newlang,
                             $data->questiontype)) {
