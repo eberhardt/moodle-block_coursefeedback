@@ -69,12 +69,20 @@ class block_coursefeedback extends block_base {
         $config = get_config("block_coursefeedback");
         $renderer = $this->page->get_renderer("block_coursefeedback");
         $feedback = $DB->get_record("block_coursefeedback", array("id" => $config->active_feedback));
+        $coursestartgood = block_coursefeedbck_coursestartcheck_good($config, $this->page->course->id);
         $list = array();
+
+        // Show information banner in Course if enabled and the coursestart is in range so a FB would be triggered.
+        if ($config->enable_infobanner && $coursestartgood
+                && has_capability("block/coursefeedback:viewanswers", $context) ) {
+            $infomessage = format_text($config->infobanner, FORMAT_MOODLE);
+            \core\notification::add($infomessage, \core\output\notification::NOTIFY_INFO);
+        }
 
         // Check if an active FB with valid questions exist. Also verify if the FB should be displayed
         // in this course, depending on the course start date and the 'since_coursestart' setting of the FB-block.
         if (isset($config->active_feedback) && block_coursefeedback_questions_exist()
-                && block_coursefeedbck_coursestartcheck_good($config, $this->page->course->id)) {
+                && $coursestartgood) {
             // Feedback with questions is active.
             if (has_capability("block/coursefeedback:viewanswers", $context)) {
                 // For Trainer show the informative notification
@@ -99,22 +107,25 @@ class block_coursefeedback extends block_base {
                 }
             }
         }
-
+        // Prepare block content.
         if (has_capability("block/coursefeedback:managefeedbacks", $context)) {
+            // Managelinks.
             $list[] = $renderer->render_manage_link();
             $list[] = $renderer->render_ranking_link();
         }
         if (has_capability("block/coursefeedback:viewanswers", $context)) {
             $fbsforcourse = block_coursefeedbck_get_fbsfor_course($this->page->course->id);
+            // Viewanswerlink.
             if (!empty($results = $renderer->render_result_links($fbsforcourse))) {
                 $list[] = get_string("page_link_viewresults", "block_coursefeedback") . ':';
                 $list = array_merge($list, $results);
             }
         }
         if (empty($list)) {
-            // Don't show the Block
+            // Don't show the block.
             $this->content->text = null;
         } else {
+            // Save block content.
             $this->content->text = html_writer::alist($list, array("style" => "list-style:none"));
         }
         $this->content->footer = "";

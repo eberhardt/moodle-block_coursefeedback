@@ -36,6 +36,9 @@ $langs = $afid > 0
     ? block_coursefeedback_get_combined_languages($afid, false)
     : get_string_manager()->get_list_of_translations();
 
+$settings->add(new admin_setting_heading('block_coursefeedback/headinggeneral',
+    get_string("adminpage_html_headinggeneral", "block_coursefeedback"), ''));
+
 $settings->add(new admin_setting_configselect("block_coursefeedback/default_language",
     get_string("adminpage_html_defaultlanguagea", "block_coursefeedback"),
     get_string("adminpage_html_defaultlanguageb", "block_coursefeedback"),
@@ -60,6 +63,21 @@ $globalenablesetting = new admin_setting_configcheckbox("block_coursefeedback/gl
 $globalenablesetting->set_updatedcallback('install_and_remove_block');
 $settings->add($globalenablesetting);
 
+$settings->add(new admin_setting_heading('block_coursefeedback/headinginfobanner',
+    get_string("adminpage_html_headinginfobannera", "block_coursefeedback"),
+    get_string("adminpage_html_headinginfobannerb", "block_coursefeedback")));
+
+$settings->add(new admin_setting_configtextarea('block_coursefeedback/infobanner',
+    get_string("adminpage_html_infobannera", "block_coursefeedback"),
+    get_string("adminpage_html_infobannerb", "block_coursefeedback"),
+    ''));
+$settings->hide_if('block_coursefeedback/infobanner', 'block_coursefeedback/global_enable');
+
+$settings->add(new admin_setting_configcheckbox("block_coursefeedback/enable_infobanner",
+    get_string("adminpage_html_enable_infobannera", "block_coursefeedback"),
+    get_string("adminpage_html_enable_infobannerb", "block_coursefeedback"),
+    false));
+$settings->hide_if('block_coursefeedback/enable_infobanner', 'block_coursefeedback/global_enable');
 
 /* Create/Edit survey link */
 $url = new moodle_url("/blocks/coursefeedback/admin.php", array("mode" => "feedback", "action" => "view"));

@@ -7,6 +7,7 @@ $string['untitled'] = 'Untitled';
 $string['categorypath'] = 'Category path';
 
 /* Adminpage */
+$string['adminpage_html_headinggeneral'] = 'General configuration';
 $string['adminpage_link_feedbackedit'] = 'edit/create survey';
 $string['adminpage_html_fbactiveforcoursesa'] = 'Max. time past since coursestart.';
 $string['adminpage_html_fbactiveforcoursesb'] = 'Determines the time boundary pperiod since coursestart.';
@@ -15,8 +16,14 @@ $string['adminpage_html_defaultlanguageb'] = 'Questions in the default language 
 $string['adminpage_html_allowhidinga'] = 'Allow hiding';
 $string['adminpage_html_allowhidingb'] = 'If enabled, teachers can edit the visibility of the block.';
 $string['adminpage_html_notinstalled'] = '\'{$a}\' (not installed)';
-$string['adminpage_html_globalenablea'] = 'If enabled, the block will appear in every course';
-$string['adminpage_html_globalenableb'] = 'If disabled, the block will be removed from every course';
+$string['adminpage_html_globalenablea'] = 'If enabled, the block will appear in every course.';
+$string['adminpage_html_globalenableb'] = 'If disabled, the block will be removed from every course.';
+$string['adminpage_html_headinginfobannera'] = 'Information banner configuration';
+$string['adminpage_html_headinginfobannerb'] = 'The Information banner, if enabled, will be displayed to trainer in courses in which the survey will be conducted. The Information banner can only be activated if the block is active through "global_enable" setting and the coursestart is later than "since_coursestart" indicates.';
+$string['adminpage_html_infobannera'] = 'Infobanner';
+$string['adminpage_html_infobannerb'] = 'Write your information message, you can use "multilanguage filter".';
+$string['adminpage_html_enable_infobannera'] = 'If enabled the infobanner is displayed.';
+$string['adminpage_html_enable_infobannerb'] = 'If disabled the infobanner is not displayed.';
 
 /* Infopage */
 $string['infopage_html_coursestartcountd'] = 'Feedback is active if  not more time than {$a} days since coursestart have past.';

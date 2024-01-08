@@ -7,6 +7,7 @@ $string['untitled'] = 'Unbenannt';
 $string['categorypath'] = 'Kategoriepfad';
 
 /* Adminpage */
+$string['adminpage_html_headinggeneral'] = 'Allgemeines';
 $string['adminpage_link_feedbackedit'] = 'Umfragen erstellen/bearbeiten';
 $string['adminpage_html_fbactiveforcoursesa'] = 'Vergangene Zeit seit Kursstart max. ';
 $string['adminpage_html_fbactiveforcoursesb'] = 'Diese Einstellung ermöglicht es Feedbackumfragen nur in akutellen Kursen zu schalten bei welchen das Startdatum nicht zu lange her ist ';
@@ -17,6 +18,12 @@ $string['adminpage_html_allowhidingb'] = 'Wenn aktiviert, k&ouml;nnen Trainer/in
 $string['adminpage_html_notinstalled'] = '\'{$a}\' (nicht installiert)';
 $string['adminpage_html_globalenablea'] = 'Wenn aktiviert, wird der Block in jeden Kurs ausgerollt.';
 $string['adminpage_html_globalenableb'] = 'Wenn deaktiviert, wird der Block aus allen Kursen entfernt.';
+$string['adminpage_html_headinginfobannera'] = 'Informationsbanner';
+$string['adminpage_html_headinginfobannerb'] = 'Wird (wenn aktiv) Trainer:innen in Kursen angezeigt, in denen die Umfrage aktiviert werden soll. Wird nur angezeigt wenn der Block über "global_enable" aktivgechaltet sowie der jeweilige Kursstart nach "since_coursestart" ist.';
+$string['adminpage_html_infobannera'] = 'Infobanner';
+$string['adminpage_html_infobannerb'] = 'Schreiben Sie Ihre Informationsbannernachricht. Sie können "multilanguage filter" nutzen.';
+$string['adminpage_html_enable_infobannera'] = 'Wenn aktiviert, wird das Infobanner angezeigt.';
+$string['adminpage_html_enable_infobannerb'] = 'Wenn deaktiviert, wird das Infobanner nicht angezeigt.';
 
 /* Infopage */
 $string['infopage_html_coursestartcountd'] = 'Die Umfrage ist nur aktiv, wenn seit Kursstart maximal {$a} Tage vergangen sind.';
