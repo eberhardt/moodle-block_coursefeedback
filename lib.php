@@ -570,7 +570,7 @@ function block_coursefeedback_get_qanswercounts($course, $feedbackid) {
 function block_coursefeedback_get_questions_by_language($feedbackid,
         $languages,
         $sort = "questionid",
-        $fields = "questionid,question,coursefeedbackid") {
+        $fields = "questionid,question,coursefeedbackid,questiontype") {
     global $DB, $USER, $COURSE, $CFG;
     $feedbackid = intval($feedbackid);
 

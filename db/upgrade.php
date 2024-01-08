@@ -210,6 +210,33 @@ function xmldb_block_coursefeedback_upgrade($oldversion = 0) {
 
         upgrade_block_savepoint(true, 2023122000, 'coursefeedback');
     }
+
+    if ($oldversion < 2024010800) {
+        // Accept 'null' in field 'answer' of table 'block_coursefeedback_answers'
+        $table = new xmldb_table('block_coursefeedback_answers');
+        $field = new xmldb_field('answer', XMLDB_TYPE_INTEGER, '4');
+
+        // Drop index first to allow the changes.
+        $index = new xmldb_index('block_cfb_coufbidqidans_i', XMLDB_INDEX_NOTUNIQUE, ['course', 'coursefeedbackid', 'questionid', 'answer']);
+        if ($dbman->index_exists($table, $index)) {
+            // Entfernen des Index
+            $dbman->drop_index($table, $index);
+        }
+
+        // Do changes.
+        if ($dbman->field_exists($table, $field)) {
+            $field->set_attributes(XMLDB_TYPE_INTEGER, '4', true, null, null, null, 'questionid');
+            $dbman->change_field_notnull($table, $field);
+        }
+
+        // Create index again.
+        if (!$dbman->index_exists($table, $index)) {
+            $dbman->add_index($table, $index);
+        }
+
+        upgrade_block_savepoint(true, 2024010800, 'coursefeedback');
+    }
+
     return true;
 }
 

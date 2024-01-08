@@ -101,6 +101,7 @@ class block_coursefeedback extends block_base {
                         $this->page->course->id,
                         $feedback->id,
                         $openquestions['currentopenqstn']->questionid,
+                        $openquestions['currentopenqstn']->questiontype,
                         $openquestions['questionsum'],
                     ];
                     $this->page->requires->js_call_amd('block_coursefeedback/notif', 'initialise', $args);

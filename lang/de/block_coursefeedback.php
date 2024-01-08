@@ -39,6 +39,8 @@ $string['resultspage_nav_extension'] = 'Kursfeedbackergebnisse';
 /* Notification */
 $string['notif_question'] = 'Frage ';
 $string['notif_pleaseclick'] = 'Bitte wählen Sie einen der Emojis. Ihre Antwort wird anonym gespeichert.';
+$string['notif_pleasewriteessay'] = 'Bitte schreiben Sie eine Antwort in das Textfeld und klicken auf "Absenden". Ihre Antwort wird anonym gespeichert.';
+$string['notif_submit'] = 'Absenden';
 $string['notif_emoji_super'] = 'sehr gut';
 $string['notif_emoji_good'] = 'gut';
 $string['notif_emoji_ok'] = 'befriedigend';

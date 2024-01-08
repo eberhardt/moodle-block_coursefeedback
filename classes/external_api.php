@@ -31,7 +31,6 @@ require_once("$CFG->dirroot/webservice/externallib.php");
 require_once(__DIR__ . "/../lib.php");
 require_once(__DIR__ . "/../locallib.php");
 
-
 use external_value;
 use external_single_structure;
 use external_multiple_structure;
@@ -46,7 +45,6 @@ use stdClass;
  * @copyright   2022 onwards Felix Di Lenarda (@ innoCampus, TU Berlin)
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-// TODO  self::validate_parameters() externallib Zeile 324
 class external_api extends \external_api {
 
     /**
@@ -63,7 +61,12 @@ class external_api extends \external_api {
         $feedback = new external_value(
             PARAM_INT,
             'Feedback',
-            VALUE_REQUIRED
+            VALUE_OPTIONAL
+        );
+        $essay = new external_value(
+            PARAM_TEXT,
+            'Feedback',
+            VALUE_OPTIONAL
         );
         $feedbackid = new external_value(
             PARAM_INT,
@@ -78,6 +81,7 @@ class external_api extends \external_api {
         $params = array(
             'courseid' => $courseid,
             'feedback' => $feedback,
+            'essay' => $essay,
             'feedbackid' => $feedbackid,
             'questionid' => $questionid
         );
@@ -89,19 +93,21 @@ class external_api extends \external_api {
      * Saves Feedback answer and returns the next feedback question if there is one.
      *
      * @param int $courseid
-     * @param int $feedback given answer
+     * @param int $feedback given schoolgrade answer
+     * @param string $essay given essay answer
      * @param int $feedbackid
      * @param int $questionid
      * @returns array The next questiondetails
      */
-    public static function answer_question_and_get_new($courseid, $feedback, $feedbackid, $questionid) {
-        global $DB, $USER, $COURSE;
+    public static function answer_question_and_get_new($courseid, $feedback, $essay, $feedbackid, $questionid) {
+        global $DB, $USER;
 
         // Validate parameter
         $params = self::validate_parameters(self::answer_question_and_get_new_parameters(),
             array(
                 'courseid' => $courseid,
                 'feedback' => $feedback,
+                'essay' => $essay,
                 'feedbackid' => $feedbackid,
                 'questionid' => $questionid
             )
@@ -162,6 +168,7 @@ class external_api extends \external_api {
         $record->coursefeedbackid = $params['feedbackid'];
         $record->questionid = $params['questionid'];
         $record->answer = $params['feedback'];
+        $record->textanswer = $params['essay'];
         $record->timemodified = time();
 
         $uidtoans = new stdClass();
@@ -182,11 +189,13 @@ class external_api extends \external_api {
             $result['questionstotal'] = $openquestions['questionsum'];
             $result['nextquestion'] = $openquestions['currentopenqstn']->question;
             $result['nextquestionid'] = $openquestions['currentopenqstn']->questionid;
+            $result['nextquestiontype'] = $openquestions['currentopenqstn']->questiontype;
             $result['feedbackid'] = $openquestions['currentopenqstn']->coursefeedbackid;
         } else {
             $result['questionstotal'] = null;
             $result['nextquestion'] = null;
             $result['nextquestionid'] = null;
+            $result['nextquestiontype'] = null;
             $result['feedbackid'] = null;
         }
         return $result;
@@ -218,6 +227,11 @@ class external_api extends \external_api {
             'How many questions are in this feedback',
             VALUE_REQUIRED
         );
+        $nextquestiontype = new external_value(
+            PARAM_INT,
+            'What question type is next',
+            VALUE_REQUIRED
+        );
         $feedbackid = new external_value(
             PARAM_INT,
             'FeedbackID',
@@ -228,6 +242,7 @@ class external_api extends \external_api {
             'questionstotal' =>$questionstotal,
             'nextquestion' => $nextquestion,
             'nextquestionid' => $nextquestionid,
+            'nextquestiontype' => $nextquestiontype,
             'feedbackid' => $feedbackid
         ]);
         return $params;

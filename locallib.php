@@ -27,8 +27,8 @@
 
 
 
-define("COURSEFEEDBACK_QUESTIONTYPE_SCHOOLGRADE", 1);
-define("COURSEFEEDBACK_QUESTIONTYPE_ESSAY", 2);
+define("CFB_QUESTIONTYPE_SCHOOLGRADE", 1);
+define("CFB_QUESTIONTYPE_ESSAY", 2);
 
 /**
  * Gets a list of questiontypes.
@@ -38,8 +38,8 @@ define("COURSEFEEDBACK_QUESTIONTYPE_ESSAY", 2);
  */
 function get_question_types($type = 0) {
     $questiontypes = [
-        COURSEFEEDBACK_QUESTIONTYPE_SCHOOLGRADE => get_string('questiontype_schoolgrades', 'block_coursefeedback'),
-        COURSEFEEDBACK_QUESTIONTYPE_ESSAY => get_string('questiontype_essay', 'block_coursefeedback')
+        CFB_QUESTIONTYPE_SCHOOLGRADE => get_string('questiontype_schoolgrades', 'block_coursefeedback'),
+        CFB_QUESTIONTYPE_ESSAY => get_string('questiontype_essay', 'block_coursefeedback')
     ];
     if ($type === 0) {
         // The $type is not specified in funcion call -> all questiontypes are returned

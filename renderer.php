@@ -91,8 +91,12 @@ class block_coursefeedback_renderer extends plugin_renderer_base {
             'qid' => $openquestions['currentopenqstn']->questionid,
             'qsum' => $openquestions['questionsum'],
             'qtext' => $openquestions['currentopenqstn']->question,
-            'link' => new moodle_url("/blocks/coursefeedback/feedbackinfo.php", $urlparams)
+            'link' => new moodle_url("/blocks/coursefeedback/feedbackinfo.php", $urlparams),
+            'questiontype' => intval($openquestions['currentopenqstn']->questiontype)
+
         ];
+
+        $questiontype = intval($openquestions['currentopenqstn']->questiontype);
         return parent::render_from_template('block_coursefeedback/questionnotif', $data);
     }
 

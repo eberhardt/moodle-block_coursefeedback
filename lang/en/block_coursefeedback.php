@@ -39,6 +39,8 @@ $string['resultspage_nav_extension'] = 'Coursefeedback results';
 /* Notification */
 $string['notif_question'] = 'Question ';
 $string['notif_pleaseclick'] = 'Please choose one of the emojis. Your answer is anonymous.';
+$string['notif_pleasewriteessay'] = 'Please write a response in the text field and click "Submit". Your answer will be stored anonymously.';
+$string['notif_submit'] = 'Submit';
 $string['notif_emoji_super'] = 'very good';
 $string['notif_emoji_good'] = 'good';
 $string['notif_emoji_ok'] = 'satisfactory';

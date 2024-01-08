@@ -26,15 +26,21 @@
 import Ajax from 'core/ajax';
 import * as Str from 'core/str';
 
-// Initiate the needed  global vars through an ajax call.
+// Initiate the needed  global vars.
+const CFB_QUESTIONTYPE_SCHOOLGRADE = 1;
+const CFB_QUESTIONTYPE_ESSAY = 2;
 let courseId;
 let feedbackId;
 let questionId;
+let questionType;
 let questionSum;
+let textarea;
 let sendingActive = false;
+let essayContainer;
+let schoolgradesContainer;
 
 /**
- * fadeOut element
+ * FadeOut element
  * @param {Object} element
  * @returns {Promise}
  */
@@ -58,7 +64,7 @@ function fadeOut(element) {
 }
 
 /**
- * fadeIn element
+ * FadeIn element
  *
  * @param {Object} element
  */
@@ -68,7 +74,7 @@ function fadeIn(element) {
     if (isNaN(opacity)) {
         opacity = 0;
     }
-    let fadingIn = setInterval(function () {
+    let fadingIn = setInterval(function() {
         if (opacity >= 1) {
             clearInterval(fadingIn);
         } else {
@@ -79,11 +85,12 @@ function fadeIn(element) {
 }
 
 /**
- * send and receive feedback after answer was given
+ * Send and receive feedback after answer was given
  *
- * @param {number} feedback (given answer)
+ * @param {number} feedback (given schoolgrade answer)
+ * @param {text} essay (given essay answer)
  */
-const sendAndReceiveFeedback = (feedback) => {
+const sendAndReceiveFeedback = (feedback, essay) => {
     // Prevent doubleclicking for the same question.
     if (sendingActive == true) {
         return;
@@ -107,6 +114,7 @@ const sendAndReceiveFeedback = (feedback) => {
         args: {
             courseid: courseId,
             feedback: feedback,
+            essay: essay,
             feedbackid: feedbackId,
             questionid: questionId,
         }
@@ -124,8 +132,25 @@ const sendAndReceiveFeedback = (feedback) => {
             } else {
                 // A following question was returned.
                 questionId = data.nextquestionid;
+                // Delete textarea value.
+                textarea.value = '';
+                // Check if we need to swap questiontypes.
+                let nextQuestionType = data.nextquestiontype;
+                if (questionType !== nextQuestionType) {
+                    // Choose which questiontype needs to be visible.
+                    if (nextQuestionType === CFB_QUESTIONTYPE_SCHOOLGRADE) {
+                        schoolgradesContainer.classList.remove('d-none');
+                        essayContainer.classList.add('d-none');
+                    } else if (nextQuestionType === CFB_QUESTIONTYPE_ESSAY) {
+                        schoolgradesContainer.classList.add('d-none');
+                        essayContainer.classList.remove('d-none');
+                    }
+                    // Update current questiontype.
+                    questionType = nextQuestionType;
+                }
+                // Update questionInfo and question and show.
                 let qStr = Str.get_string('notif_question', 'block_coursefeedback');
-                qStr.done(function (string) {
+                qStr.done(function(string) {
                     questionInfo.innerHTML = string.concat(questionId).concat('/').concat(questionSum).concat(': ');
                     question.innerHTML = data.nextquestion;
                     sendingActive = false;
@@ -133,7 +158,7 @@ const sendAndReceiveFeedback = (feedback) => {
                 });
             }
         });
-    }).fail(function (ex) {
+    }).fail(function(ex) {
         window.console.error(ex);
     });
 };
@@ -144,13 +169,15 @@ const sendAndReceiveFeedback = (feedback) => {
  * @param {number} cid courseId
  * @param {number} fbid feedbackId
  * @param {number} quid questionId
+ * @param {number} qutype questionType
  * @param {number} qusum how many question in total in this FB
  */
-export const initialise = (cid, fbid, quid, qusum) => {
+export const initialise = (cid, fbid, quid, qutype, qusum) => {
     // Set global vars.
     courseId = cid;
     feedbackId = fbid;
     questionId = quid;
+    questionType = qutype;
     questionSum = qusum;
 
     let notifikations = document.getElementById("user-notifications");
@@ -160,22 +187,45 @@ export const initialise = (cid, fbid, quid, qusum) => {
     // We need to remove the 'role' attribute from this notification.
     feedbackNotif.parentElement.removeAttribute("role");
 
-    // Add click listener to our fbemoji-buttons.
+    // Add click listener to our fbemoji-buttons for potential schoolgrade type questions.
     const emojis = [...notifikations.getElementsByClassName("cfb-fbemoji")];
     emojis.map((emoji) => {
         let answer = emojis.indexOf(emoji) + 1;
         emoji.onclick = () => {
-            sendAndReceiveFeedback(answer, courseId, feedbackId, questionId, questionSum);
+            sendAndReceiveFeedback(answer, null);
         };
     });
+
+    // Add click listener to our essaysendbtn-button for potential essay type questions.
+    let div = document.getElementsByClassName('cfb-essaytextarea')[0];
+    textarea = document.createElement('textarea');
+    textarea.classList.add('w-100', 'rounded');
+    textarea.id = 'cfb-essay-textarea';
+    div.appendChild(textarea);
+    let sendButton = document.getElementsByClassName('cfb-essaysendbtn')[0];
+    sendButton.onclick = () => {
+        let essayanswer = textarea.value;
+        sendAndReceiveFeedback(null, essayanswer,);
+    };
 
     // Bootstrap 4 does not have opacity classes, inline styles are filtered out for some reason.
     // Therefore we use invisible class and then switch to opacity to fade in.
     let overlayIcon = notifikations.getElementsByClassName("cfb-overlay-icon")[0];
-    let buttonContainer = notifikations.getElementsByClassName("cfb-button-containaer")[0];
-    buttonContainer.style.opacity = 0;
-    buttonContainer.classList.remove('invisible');
-    // Fase out the loadingspinner and fade in the fbemoji-buttons.
+
+    // Choose which questiontype needs to be visible.
+    schoolgradesContainer = notifikations.getElementsByClassName("cfb-schoolgrades-containaer")[0];
+    essayContainer = notifikations.getElementsByClassName("cfb-essay-containaer")[0];
+    let buttonContainer;
+    if (questionType == CFB_QUESTIONTYPE_SCHOOLGRADE) {
+        buttonContainer = schoolgradesContainer;
+        buttonContainer.style.opacity = 0;
+        buttonContainer.classList.remove('d-none');
+    } else if (questionType == CFB_QUESTIONTYPE_ESSAY) {
+        buttonContainer = essayContainer;
+        buttonContainer.style.opacity = 0;
+        buttonContainer.classList.remove('d-none');
+    }
+    // Fade out the loadingspinner and fade in the fbemoji-buttons.
     let foPromise = fadeOut(overlayIcon);
     foPromise.then(() => {
         fadeIn(buttonContainer);
