@@ -81,6 +81,7 @@ $string['page_html_intronotifications'] = 'Dieses Feedback muss folgende Konditi
 $string['page_html_servedefaultlang'] = 'Alle Fragen sollten in der eingestellte Standardsprache ({$a}) vorhanden sein.';
 $string['page_html_norelations'] = 'Alle Fragen müssen in mindestens einer gemeinsamen Sprache vorhanden sein.';
 $string['page_html_courserating'] = 'Kursbewertung';
+$string['page_html_totalanscountinfo'] = 'Insgesamt {$a->totalcount} Antworten, Sie befinden sich auf Seie {$a->page} von {$a->totalpages}.';
 
 /* Tables */
 $string['table_header_languages'] = 'Verf&uuml;gbare Sprachen';
@@ -90,6 +91,7 @@ $string['table_html_average'] = 'Durchschnitt';
 $string['table_html_nochoice'] = 'Enthaltungen';
 $string['table_html_nofeedback'] = 'Keine Umfrage';
 $string['table_html_undefinedlang'] = '&Uuml;bersetzung fehlt. Sprache \'{$a}\' nicht verf&uuml;gbar.'; // maximal 50 Zeichen
+$string['table_html_showanswers'] = 'Antworten anzeigen';
 
 /* Forms */
 $string['form_notif_heading'] = 'Notifikationsüberschrift';
@@ -153,6 +155,7 @@ $string['except_answer_exist'] = 'Antwort für diese Frage existiert bereits';
 $string['except_not_active'] = 'Die Umfrage ist nicht aktiv im Moment';
 $string['except_block_duplicate'] = 'Es existieren mehrere Kursfeedbackblöcke im Kurs';
 $string['except_block_hidden'] = 'Der Kursfeedbackblock in diesem Kurs ist versteckt';
+$string['except_invalid_questionid'] = 'Ungültige Frage-ID';
 
 /* Questiontypes */
 $string['questiontype'] = 'Fragetyp';

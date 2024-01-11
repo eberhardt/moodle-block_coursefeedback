@@ -42,7 +42,6 @@
         <FIELD NAME="coursefeedbackid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="course" NEXT="questionid"/>
         <FIELD NAME="questionid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="coursefeedbackid" NEXT="answer"/>
         <FIELD NAME="answer" TYPE="int" LENGTH="4" NOTNULL="false" UNSIGNED="true" SEQUENCE="false" PREVIOUS="questionid" NEXT="textanswer"/>
-        <FIELD NAME="textanswer" TYPE="text" LENGTH="medium" NOTNULL="false" SEQUENCE="false" PREVIOUS="answer" NEXT="timemodified"/>
         <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" DEFAULT="0" PREVIOUS="answer"/>
       </FIELDS>
       <KEYS>
@@ -53,6 +52,21 @@
       <INDEXES>
         <INDEX NAME="block_cfb_coufbidqidans_i" UNIQUE="false" FIELDS="course, coursefeedbackid, questionid, answer"/>
       </INDEXES>
+    </TABLE>
+    <TABLE NAME="block_coursefeedback_textans" COMMENT="textanswers given by participants" PREVIOUS="block_coursefeedback_answers">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="20" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="course"/>
+        <FIELD NAME="course" TYPE="int" LENGTH="20" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="id" NEXT="coursefeedbackid"/>
+        <FIELD NAME="coursefeedbackid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="course" NEXT="questionid"/>
+        <FIELD NAME="questionid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="coursefeedbackid" NEXT="answer"/>
+        <FIELD NAME="textanswer" TYPE="text" LENGTH="medium" NOTNULL="false" SEQUENCE="false" PREVIOUS="answer" NEXT="timemodified"/>
+        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" DEFAULT="0" PREVIOUS="answer"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id" NEXT="coursefeedbackid"/>
+        <KEY NAME="coursefeedbackid" TYPE="foreign" REFTABLE="block_coursefeedback" REFFIELDS="id" FIELDS="coursefeedbackid"/>
+        <KEY NAME="courseid" TYPE="foreign" FIELDS="course" REFTABLE="course" REFFIELDS="id"/>
+      </KEYS>
     </TABLE>
     <TABLE NAME="block_coursefeedback_uidansw" COMMENT="Saves if a question is answered by the user without linkin it to the given answer">
       <FIELDS>

@@ -86,7 +86,8 @@ class f_ranking_form extends moodleform {
         if ($feedback === '' || $feedback === null) {
             return;
         }
-        $choices = block_coursefeedback_get_questions_by_language($feedback, current_language());
+        $choices = block_coursefeedback_get_questions_by_language($feedback, current_language(),
+                CFB_QUESTIONTYPE_SCHOOLGRADE);
         $q = $mform->getElement('question');
         $q->loadArray($choices);;
     }

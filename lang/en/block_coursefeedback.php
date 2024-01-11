@@ -81,6 +81,7 @@ $string['page_html_intronotifications'] = 'This feedback has to fullfill the fol
 $string['page_html_servedefaultlang'] = 'All questions should be defined in default language.';
 $string['page_html_norelations'] = 'All questions have to be defined in at least one common language.';
 $string['page_html_courserating'] = 'Course rating';
+$string['page_html_totalanscountinfo'] = '{$a->totalcount} answers in total, you are on page {$a->page} of {$a->totalpages}.';
 
 /* Tables */
 $string['table_header_languages'] = 'Available languages';
@@ -90,6 +91,7 @@ $string['table_html_average'] = 'Average';
 $string['table_html_nochoice'] = 'Abstentions';
 $string['table_html_nofeedback'] = 'No survey';
 $string['table_html_undefinedlang'] = 'Translation missing. Language \'{$a}\' unavailable.'; // 50 chars max
+$string['table_html_showanswers'] = 'Show answers';
 
 /* Forms */
 $string['form_notif_heading'] = 'Notification heading';
@@ -153,6 +155,7 @@ $string['except_answer_exist'] = 'Answer for this question already exist';
 $string['except_not_active'] = 'Given feedback not active at the monent';
 $string['except_block_duplicate'] = 'More than one coursefeedbackblock in the course';
 $string['except_block_hidden'] = 'Coursefeedback block in this course is hidden';
+$string['except_invalid_questionid'] = 'Invalid question id';
 
 /* Questiontypes */
 $string['questiontype'] = 'Questiontype';

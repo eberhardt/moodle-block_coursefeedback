@@ -28,6 +28,7 @@
 require_once(__DIR__ . "/../../config.php");
 require_once(__DIR__ . "/lib.php");
 require_once(__DIR__ . "/exportlib.php");
+require_once(__DIR__ . "/locallib.php");
 
 $courseid = required_param("course", PARAM_INT);
 $feedbackid = required_param("feedback", PARAM_INT);
@@ -47,7 +48,7 @@ $errormsg = "";
 
 if (!empty($download)) {
     require_capability("block/coursefeedback:download", $context);
-    $export = new feedback_exporter($course->id, $feedbackid);
+    $export = new feedback_exporter();
     $export->create_file($courseid, $feedbackid);
 }
 
@@ -62,13 +63,16 @@ $PAGE->set_url(new moodle_url("/blocks/coursefeedback/view.php", array("course" 
 $PAGE->set_context($context);
 $PAGE->set_pagelayout("standard");
 $PAGE->set_title(get_string("page_link_viewresults", "block_coursefeedback"));
-$PAGE->set_heading(get_string("page_link_viewresults", "block_coursefeedback"));
+$PAGE->set_heading($course->fullname);
 $PAGE->navbar->add(get_string("page_html_viewnavbar", "block_coursefeedback"));
 
 $link = "";
 
 $currentlang = current_language();
-$questions = block_coursefeedback_get_questions_by_language($feedbackid, $currentlang);
+
+// Get only schoolgrade questions for now.
+$questions = block_coursefeedback_get_questions_by_language($feedbackid, $currentlang,
+        CFB_QUESTIONTYPE_SCHOOLGRADE);
 
 if ($questions) {
     $answers = block_coursefeedback_get_qanswercounts($courseid, $feedbackid);
@@ -162,9 +166,19 @@ if ($questions) {
         get_string("page_html_nofeedbackactive", "block_coursefeedback"));
 }
 
+// Process Essayquestions if there are any.
+if ($essayquestions = block_coursefeedback_get_questions_by_language($feedbackid, $currentlang,
+    CFB_QUESTIONTYPE_ESSAY)) {
+    // Render the essay answers
+    $renderer = $PAGE->get_renderer('block_coursefeedback');
+    $essayhtml = $renderer->render_essay_questions($essayquestions, $courseid, $feedbackid);
+}
+
 // Start output.
 echo $OUTPUT->header();
-echo $OUTPUT->heading(get_string("pluginname", "block_coursefeedback") . ": " . format_string($feedback->name));
+echo $OUTPUT->heading(get_string("pluginname", "block_coursefeedback") . ": "
+        . format_string($feedback->name) . ", "
+        . get_string("page_link_viewresults", "block_coursefeedback"));
 
 if ($errormsg !== "") {
     echo $OUTPUT->notification($errormsg);
@@ -172,10 +186,20 @@ if ($errormsg !== "") {
     echo $OUTPUT->notification($statusmsg, "notifysuccess");
 }
 echo $OUTPUT->box_start("generalbox coursefeedbackbox");
+
+// Output schoolgrade quetions section.
+echo html_writer::tag('h3',get_string("questiontype", "block_coursefeedback") . ": "
+        . get_string("questiontype_schoolgrades", "block_coursefeedback"));
 if ($link > "") {
     echo $link . "<br/>";
 }
 echo html_writer::tag("span", get_string("page_html_viewintro", "block_coursefeedback"), array("id" => "viewintro"))
     . $OUTPUT->box_end()
-    . $OUTPUT->box($html)
-    . $OUTPUT->footer();
+    . $OUTPUT->box($html);
+
+// Output Essay qustions section.
+echo html_writer::tag('h3',get_string("questiontype", "block_coursefeedback") . ": "
+    . get_string("questiontype_essay", "block_coursefeedback"));
+echo $OUTPUT->box($essayhtml);
+
+echo $OUTPUT->footer();

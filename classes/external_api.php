@@ -161,28 +161,38 @@ class external_api extends \external_api {
             }
         }
 
-        // Answer received -> save in DB.
-        $result = ['saved' => false];
-        $record = new stdClass();
-        $record->course = $params['courseid'];
-        $record->coursefeedbackid = $params['feedbackid'];
-        $record->questionid = $params['questionid'];
-        $record->answer = $params['feedback'];
-        $record->textanswer = $params['essay'];
-        $record->timemodified = time();
-
         $uidtoans = new stdClass();
         $uidtoans->userid = $USER->id;
         $uidtoans->course = $params['courseid'];
         $uidtoans->coursefeedbackid = $params['feedbackid'];
         $uidtoans->questionid = $params['questionid'];
 
-        $dbtrans = $DB->start_delegated_transaction();
-        if ($DB->insert_record("block_coursefeedback_answers", $record, false, false)
+        // TODO Answer received,d ecide which answer type and then save in DB.
+        $result = ['saved' => false];
+        $record = new stdClass();
+        $record->course = $params['courseid'];
+        $record->coursefeedbackid = $params['feedbackid'];
+        $record->questionid = $params['questionid'];
+        $record->timemodified = time();
+
+        // Decide which answer type and then save in respective DB-table.
+        if ( isset($params['essay'])) {
+            $record->textanswer = $params['essay'];
+            $dbtrans = $DB->start_delegated_transaction();
+            if ($DB->insert_record("block_coursefeedback_textans", $record, false, false)
                 && $DB->insert_record("block_coursefeedback_uidansw", $uidtoans, false, false)) {
-            $result['saved'] = true;
+                $result['saved'] = true;
+            }
+            $dbtrans->allow_commit();
+        } elseif ( isset($params['feedback'])) {
+            $record->answer = $params['feedback'];
+            $dbtrans = $DB->start_delegated_transaction();
+            if ($DB->insert_record("block_coursefeedback_answers", $record, false, false)
+                && $DB->insert_record("block_coursefeedback_uidansw", $uidtoans, false, false)) {
+                $result['saved'] = true;
+            }
+            $dbtrans->allow_commit();
         }
-        $dbtrans->allow_commit();
 
         // Check if there are questions left and return the resulting infos.
         if (null !== ($openquestions = block_coursefeedback_get_open_question())) {
@@ -288,8 +298,10 @@ class external_api extends \external_api {
         require_capability('block/coursefeedback:managefeedbacks', $context);
 
         $currentlang = [current_language()];
-        $questions = block_coursefeedback_get_questions_by_language($params['feedbackid'], $currentlang, "questionid",
-            "id,questionid,question,coursefeedbackid,language");
+        $questions = block_coursefeedback_get_questions_by_language($params['feedbackid'], $currentlang,
+                CFB_QUESTIONTYPE_SCHOOLGRADE,
+                "questionid",
+                "id,questionid,question,coursefeedbackid,language");
         $result = ['questions' => array()];
         foreach ($questions as $question) {
             array_push($result['questions'], (array) $question);

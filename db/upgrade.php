@@ -211,32 +211,30 @@ function xmldb_block_coursefeedback_upgrade($oldversion = 0) {
         upgrade_block_savepoint(true, 2023122000, 'coursefeedback');
     }
 
-    if ($oldversion < 2024010800) {
-        // Accept 'null' in field 'answer' of table 'block_coursefeedback_answers'
-        $table = new xmldb_table('block_coursefeedback_answers');
-        $field = new xmldb_field('answer', XMLDB_TYPE_INTEGER, '4');
+    if ($oldversion < 2024010900) {
+        // Create new table 'block_coursefeedback_essayanswers'.
+        $table = new xmldb_table('block_coursefeedback_textans');
 
-        // Drop index first to allow the changes.
-        $index = new xmldb_index('block_cfb_coufbidqidans_i', XMLDB_INDEX_NOTUNIQUE, ['course', 'coursefeedbackid', 'questionid', 'answer']);
-        if ($dbman->index_exists($table, $index)) {
-            // Entfernen des Index
-            $dbman->drop_index($table, $index);
+        // Add fields.
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '20', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('course', XMLDB_TYPE_INTEGER, '20', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('coursefeedbackid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('questionid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('textanswer', XMLDB_TYPE_TEXT, 'medium', null, null, null, null);
+        $table->add_field('timemodified', XMLDB_TYPE_INTEGER, '10', null, null, null, '0');
+
+        // Add keys.
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+        $table->add_key('coursefeedbackid', XMLDB_KEY_FOREIGN, ['coursefeedbackid'], 'block_coursefeedback', ['id']);
+        $table->add_key('courseid', XMLDB_KEY_FOREIGN, ['course'], 'course', ['id']);
+
+        // Conditionally create table.
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
         }
 
-        // Do changes.
-        if ($dbman->field_exists($table, $field)) {
-            $field->set_attributes(XMLDB_TYPE_INTEGER, '4', true, null, null, null, 'questionid');
-            $dbman->change_field_notnull($table, $field);
-        }
-
-        // Create index again.
-        if (!$dbman->index_exists($table, $index)) {
-            $dbman->add_index($table, $index);
-        }
-
-        upgrade_block_savepoint(true, 2024010800, 'coursefeedback');
+        upgrade_block_savepoint(true, 2024010900, 'coursefeedback');
     }
-
     return true;
 }
 
