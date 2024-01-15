@@ -617,7 +617,7 @@ function block_coursefeedback_get_questions_by_language($feedbackid,
     // If the search is for a specific questionid, only one entry is allowed to be found.
     if (isset($questionid)) {
         if (count($questions) != 1) {
-            throw new moodle_exception(get_string("except_invalid_courseid","block_coursefeedback"));
+            throw new moodle_exception(get_string("except_invalid_questionid","block_coursefeedback"));
         }
     }
 

@@ -156,6 +156,7 @@ $string['except_not_active'] = 'Given feedback not active at the monent';
 $string['except_block_duplicate'] = 'More than one coursefeedbackblock in the course';
 $string['except_block_hidden'] = 'Coursefeedback block in this course is hidden';
 $string['except_invalid_questionid'] = 'Invalid question id';
+$string['except_wrong_questiontype'] = 'Invalid answertype received';
 
 /* Questiontypes */
 $string['questiontype'] = 'Questiontype';

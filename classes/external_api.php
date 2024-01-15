@@ -119,10 +119,21 @@ class external_api extends \external_api {
         require_capability('block/coursefeedback:evaluate', $context);
         $config = get_config("block_coursefeedback");
 
-        // Check if FB and question exist
-        if (!$DB->record_exists("block_coursefeedback_questns",
-                ['questionid' => $params['questionid'], 'coursefeedbackid' => $params['feedbackid']])) {
+        // Check if FB and question exist and given questiontype answer matches.
+        $question = block_coursefeedback_get_questions_by_language(
+                $params['feedbackid'],
+                current_language(),
+                null,
+                'questionid',
+                'questionid,questiontype',
+                $params['questionid']);
+        // There must be exactly one matching question.
+        if (count($question) != 1) {
             throw new \moodle_exception('except_no_question', 'block_coursefeedback');
+        } elseif ((isset($params['essay']) && reset($question)->questiontype != CFB_QUESTIONTYPE_ESSAY)
+                || (isset($params['feedback']) && reset($question)->questiontype != CFB_QUESTIONTYPE_SCHOOLGRADE)) {
+            // The given answerparam has to match the questiontype.
+            throw new \moodle_exception('except_wrong_questiontype', 'block_coursefeedback');
         }
 
         // Check if answer exist already
@@ -167,7 +178,7 @@ class external_api extends \external_api {
         $uidtoans->coursefeedbackid = $params['feedbackid'];
         $uidtoans->questionid = $params['questionid'];
 
-        // TODO Answer received,d ecide which answer type and then save in DB.
+        // Answer received, decide which answer type and then save in DB.
         $result = ['saved' => false];
         $record = new stdClass();
         $record->course = $params['courseid'];

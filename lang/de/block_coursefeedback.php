@@ -156,6 +156,7 @@ $string['except_not_active'] = 'Die Umfrage ist nicht aktiv im Moment';
 $string['except_block_duplicate'] = 'Es existieren mehrere Kursfeedbackblöcke im Kurs';
 $string['except_block_hidden'] = 'Der Kursfeedbackblock in diesem Kurs ist versteckt';
 $string['except_invalid_questionid'] = 'Ungültige Frage-ID';
+$string['except_wrong_questiontype'] = 'Ungültiger Antworttyp übermittelt';
 
 /* Questiontypes */
 $string['questiontype'] = 'Fragetyp';
