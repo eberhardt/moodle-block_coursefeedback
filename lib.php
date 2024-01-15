@@ -152,7 +152,8 @@ function block_coursefeedback_copy_feedback($oldfbid, $fbname, $heading = null, 
     } else if ($newid > 0 && $questions = $DB->get_records("block_coursefeedback_questns", array("coursefeedbackid" => $oldfbid))) {
         $a = $newid;
         foreach ($questions as $question) {
-            if (!block_coursefeedback_insert_question($question->question, $newid, $question->questionid, $question->language)) {
+            if (!block_coursefeedback_insert_question(
+                    $question->question, $newid, $question->questionid, $question->language, $question->questiontype)) {
                 // If one fails the whole operation fails.
                 $a = false;
                 // Remove inserted and not correctly duplicated fb.
