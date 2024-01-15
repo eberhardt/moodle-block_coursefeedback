@@ -225,6 +225,13 @@ export const initialise = (cid, fbid, quid, qutype, qusum) => {
         buttonContainer.style.opacity = 0;
         buttonContainer.classList.remove('d-none');
     }
+
+    // Remove overlay container, it was breaking the link and is not needed anymore.
+    let element = document.querySelector('.cfb-overlay-icon');
+    if (element) {
+        element.remove();
+    }
+
     // Fade out the loadingspinner and fade in the fbemoji-buttons.
     let foPromise = fadeOut(overlayIcon);
     foPromise.then(() => {
