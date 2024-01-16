@@ -446,7 +446,6 @@ if ($action === "view") {
                             ])) {
                             // If not defined yet, get the questiontype
                             if (empty($questiontypestr)) {
-                                echo "Empty";
                                 $questiontypearray = get_question_types($question->questiontype);
                                 // Extract the questiontype string from the array
                                 if (isset($questiontypearray[$question->questiontype])) {
