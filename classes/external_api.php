@@ -98,6 +98,7 @@ class external_api extends \external_api {
      * @param int $feedbackid
      * @param int $questionid
      * @returns array The next questiondetails
+     * @throws moodle_exception If question doesn't exist or the wron questiontypeanswer was given
      */
     public static function answer_question_and_get_new($courseid, $feedback, $essay, $feedbackid, $questionid) {
         global $DB, $USER;

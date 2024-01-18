@@ -570,6 +570,7 @@ function block_coursefeedback_get_qanswercounts($course, $feedbackid) {
  * @param int|null $questiontype - Which questiontype to get, null if all questions wanted
  * @param string $sort
  * @param string $fields
+ * @param int|null $questionid
  * @return array - array of question objects
  */
 function block_coursefeedback_get_questions_by_language($feedbackid,

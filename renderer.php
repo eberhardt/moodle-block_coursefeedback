@@ -147,9 +147,11 @@ class block_coursefeedback_renderer extends plugin_renderer_base {
             $questiontext = format_string($essayquestion->question);
 
             //Cell 3 "Show answers" (lnk).
-            $params = [ 'course' => $courseid,
-                    'feedback' => $essayquestion->coursefeedbackid,
-                    'question' => $essayquestion->questionid ];
+            $params = [
+                'course' => $courseid,
+                'feedback' => $essayquestion->coursefeedbackid,
+                'question' => $essayquestion->questionid
+            ];
             $answerlink = html_writer::link(new moodle_url("/blocks/coursefeedback/essayanswers.php", $params),
                 get_string("table_html_showanswers", "block_coursefeedback"));
 
@@ -160,7 +162,7 @@ class block_coursefeedback_renderer extends plugin_renderer_base {
 
         }
         $essayhtml .= html_writer::table($table);
-        return $essayhtml; //$html;
+        return $essayhtml;
     }
 
     /**
