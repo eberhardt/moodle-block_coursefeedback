@@ -29,10 +29,7 @@ import * as Str from 'core/str';
 // Initiate the needed  global vars.
 const CFB_QUESTIONTYPE_SCHOOLGRADE = 1;
 const CFB_QUESTIONTYPE_ESSAY = 2;
-let textarea;
 let sendingActive = false;
-let essayContainer;
-let schoolgradesContainer;
 
 /**
  * FadeOut element
@@ -84,14 +81,18 @@ function fadeIn(element) {
  *
  * @param {number} feedback (given schoolgrade answer)
  * @param {text} essay (given essay answer)
- * @param {object} cfbParams all needed parameters: {}
- *         courseId: cid,
- *         feedbackId: fbid,
- *         questionId: quid,
- *         questionType: qutype,
- *         questionSum: qusum
- */
-const sendAndReceiveFeedback = (feedback, essay, cfbParams) => {
+ * @param {object} cfbParams all needed parameters:
+ *      courseId: cid,
+ *      feedbackId: fbid,
+ *      questionId: quid,
+ *      questionType: qutype,
+ *      questionSum: qusum
+ * @param {object} domElements all needed domElements:
+ *      schoolgradesContainer: Container of the schoolgrade answer elements
+ *      essayContainer: Container of the essay answer elemnts
+ *      textarea: Textarea element of the essay answer
+ * */
+const sendAndReceiveFeedback = (feedback, essay, cfbParams, domElements) => {
     // Prevent doubleclicking for the same question.
     if (sendingActive == true) {
         return;
@@ -100,10 +101,9 @@ const sendAndReceiveFeedback = (feedback, essay, cfbParams) => {
     }
 
     // Get needed elements/nodes.
-    let notifikations = document.getElementById("user-notifications");
-    let feedbackNotif = notifikations.getElementsByClassName("cfb-notification-container")[0];
-    let questionInfo = notifikations.getElementsByClassName("cfb-question-info")[0];
-    let question = notifikations.getElementsByClassName("cfb-question")[0];
+    let feedbackNotif = domElements.notifikations.getElementsByClassName("cfb-notification-container")[0];
+    let questionInfo = domElements.notifikations.getElementsByClassName("cfb-question-info")[0];
+    let question = domElements.notifikations.getElementsByClassName("cfb-question")[0];
     let notif = feedbackNotif.parentElement;
 
     // Fading out notification after clicking an emoji.
@@ -134,17 +134,17 @@ const sendAndReceiveFeedback = (feedback, essay, cfbParams) => {
                 // A following question was returned.
                 cfbParams.questionId = data.nextquestionid;
                 // Delete textarea value.
-                textarea.value = '';
+                domElements.textarea.value = '';
                 // Check if we need to swap questiontypes.
                 let nextQuestionType = data.nextquestiontype;
                 if (cfbParams.questionType !== nextQuestionType) {
                     // Choose which questiontype needs to be visible.
                     if (nextQuestionType === CFB_QUESTIONTYPE_SCHOOLGRADE) {
-                        schoolgradesContainer.classList.remove('d-none');
-                        essayContainer.classList.add('d-none');
+                        domElements.schoolgradesContainer.classList.remove('d-none');
+                        domElements.essayContainer.classList.add('d-none');
                     } else if (nextQuestionType === CFB_QUESTIONTYPE_ESSAY) {
-                        schoolgradesContainer.classList.add('d-none');
-                        essayContainer.classList.remove('d-none');
+                        domElements.schoolgradesContainer.classList.add('d-none');
+                        domElements.essayContainer.classList.remove('d-none');
                     }
                     // Update current questiontype.
                     cfbParams.questionType = nextQuestionType;
@@ -175,7 +175,7 @@ const sendAndReceiveFeedback = (feedback, essay, cfbParams) => {
  * @param {number} qusum how many question in total in this FB
  */
 export const initialise = (cid, fbid, quid, qutype, qusum) => {
-    // Create param object.
+    // Create CFB param object.
     const cfbParams = {
         courseId: cid,
         feedbackId: fbid,
@@ -184,48 +184,54 @@ export const initialise = (cid, fbid, quid, qutype, qusum) => {
         questionSum: qusum
     };
 
+    // Initiallize DOM-elements object
     let notifikations = document.getElementById("user-notifications");
-    let feedbackNotif = notifikations.getElementsByClassName("cfb-notification-container")[0];
+    let div = document.getElementsByClassName('cfb-essaytextarea')[0];
+    let textarea = document.createElement('textarea');
+    textarea.classList.add('w-100', 'rounded');
+    textarea.id = 'cfb-essay-textarea';
+    div.appendChild(textarea);
+    const domElements = {
+        notifikations: notifikations,
+        textarea: textarea,
+        schoolgradesContainer: notifikations.getElementsByClassName("cfb-schoolgrades-container")[0],
+        essayContainer: notifikations.getElementsByClassName("cfb-essay-container")[0]
+    };
+
+    let feedbackNotif = domElements.notifikations.getElementsByClassName("cfb-notification-container")[0];
 
     // To prevent the destruction of our click events from bootsrap.
     // We need to remove the 'role' attribute from this notification.
     feedbackNotif.parentElement.removeAttribute("role");
 
     // Add click listener to our fbemoji-buttons for potential schoolgrade type questions.
-    const emojis = [...notifikations.getElementsByClassName("cfb-fbemoji")];
+    const emojis = [...domElements.notifikations.getElementsByClassName("cfb-fbemoji")];
     emojis.map((emoji) => {
         let answer = emojis.indexOf(emoji) + 1;
         emoji.onclick = () => {
-            sendAndReceiveFeedback(answer, null, cfbParams);
+            sendAndReceiveFeedback(answer, null, cfbParams, domElements);
         };
     });
 
     // Add click listener to our essaysendbtn-button for potential essay type questions.
-    let div = document.getElementsByClassName('cfb-essaytextarea')[0];
-    textarea = document.createElement('textarea');
-    textarea.classList.add('w-100', 'rounded');
-    textarea.id = 'cfb-essay-textarea';
-    div.appendChild(textarea);
     let sendButton = document.getElementsByClassName('cfb-essaysendbtn')[0];
     sendButton.onclick = () => {
-        let essayanswer = textarea.value;
-        sendAndReceiveFeedback(null, essayanswer, cfbParams);
+        let essayanswer = domElements.textarea.value;
+        sendAndReceiveFeedback(null, essayanswer, cfbParams, domElements);
     };
 
     // Bootstrap 4 does not have opacity classes, inline styles are filtered out for some reason.
     // Therefore we use invisible class and then switch to opacity to fade in.
-    let overlayIcon = notifikations.getElementsByClassName("cfb-overlay-icon")[0];
+    let overlayIcon = domElements.notifikations.getElementsByClassName("cfb-overlay-icon")[0];
 
     // Choose which questiontype needs to be visible.
-    schoolgradesContainer = notifikations.getElementsByClassName("cfb-schoolgrades-containaer")[0];
-    essayContainer = notifikations.getElementsByClassName("cfb-essay-containaer")[0];
     let buttonContainer;
     if (cfbParams.questionType == CFB_QUESTIONTYPE_SCHOOLGRADE) {
-        buttonContainer = schoolgradesContainer;
+        buttonContainer = domElements.schoolgradesContainer;
         buttonContainer.style.opacity = 0;
         buttonContainer.classList.remove('d-none');
     } else if (cfbParams.questionType == CFB_QUESTIONTYPE_ESSAY) {
-        buttonContainer = essayContainer;
+        buttonContainer = domElements.essayContainer;
         buttonContainer.style.opacity = 0;
         buttonContainer.classList.remove('d-none');
     }
