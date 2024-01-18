@@ -137,18 +137,17 @@ const sendAndReceiveFeedback = (feedback, essay, cfbParams, domElements) => {
                 domElements.textarea.value = '';
                 // Check if we need to swap questiontypes.
                 let nextQuestionType = data.nextquestiontype;
-                if (cfbParams.questionType !== nextQuestionType) {
-                    // Choose which questiontype needs to be visible.
-                    if (nextQuestionType === CFB_QUESTIONTYPE_SCHOOLGRADE) {
-                        domElements.schoolgradesContainer.classList.remove('d-none');
-                        domElements.essayContainer.classList.add('d-none');
-                    } else if (nextQuestionType === CFB_QUESTIONTYPE_ESSAY) {
-                        domElements.schoolgradesContainer.classList.add('d-none');
-                        domElements.essayContainer.classList.remove('d-none');
-                    }
-                    // Update current questiontype.
-                    cfbParams.questionType = nextQuestionType;
+                // Choose which questiontype needs to be visible.
+                if (nextQuestionType === CFB_QUESTIONTYPE_SCHOOLGRADE) {
+                    domElements.essayContainer.classList.add('d-none');
+                    domElements.schoolgradesContainer.classList.remove('d-none');
+                } else if (nextQuestionType === CFB_QUESTIONTYPE_ESSAY) {
+                    domElements.schoolgradesContainer.classList.add('d-none');
+                    domElements.essayContainer.classList.remove('d-none');
                 }
+                // Update current questiontype.
+                cfbParams.questionType = nextQuestionType;
+
                 // Update questionInfo and question and show.
                 let qStr = Str.get_string('notif_question', 'block_coursefeedback');
                 qStr.done(function(string) {
