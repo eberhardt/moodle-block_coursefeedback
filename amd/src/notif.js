@@ -29,11 +29,6 @@ import * as Str from 'core/str';
 // Initiate the needed  global vars.
 const CFB_QUESTIONTYPE_SCHOOLGRADE = 1;
 const CFB_QUESTIONTYPE_ESSAY = 2;
-let courseId;
-let feedbackId;
-let questionId;
-let questionType;
-let questionSum;
 let textarea;
 let sendingActive = false;
 let essayContainer;
@@ -51,7 +46,7 @@ function fadeOut(element) {
         if (isNaN(opacity)) {
             opacity = 0;
         }
-        let fadingOut = setInterval(function () {
+        let fadingOut = setInterval(function() {
             if (opacity <= 0) {
                 clearInterval(fadingOut);
                 resolve();
@@ -89,8 +84,14 @@ function fadeIn(element) {
  *
  * @param {number} feedback (given schoolgrade answer)
  * @param {text} essay (given essay answer)
+ * @param {object} cfbParams all needed parameters: {}
+ *         courseId: cid,
+ *         feedbackId: fbid,
+ *         questionId: quid,
+ *         questionType: qutype,
+ *         questionSum: qusum
  */
-const sendAndReceiveFeedback = (feedback, essay) => {
+const sendAndReceiveFeedback = (feedback, essay, cfbParams) => {
     // Prevent doubleclicking for the same question.
     if (sendingActive == true) {
         return;
@@ -112,11 +113,11 @@ const sendAndReceiveFeedback = (feedback, essay) => {
     let promises = Ajax.call([{
         methodname: 'block_coursefeedback_answer_question_and_get_new',
         args: {
-            courseid: courseId,
+            courseid: cfbParams.courseId,
             feedback: feedback,
             essay: essay,
-            feedbackid: feedbackId,
-            questionid: questionId,
+            feedbackid: cfbParams.feedbackId,
+            questionid: cfbParams.questionId,
         }
     }]);
     promises[0].done(function (data) {
@@ -131,12 +132,12 @@ const sendAndReceiveFeedback = (feedback, essay) => {
                 });
             } else {
                 // A following question was returned.
-                questionId = data.nextquestionid;
+                cfbParams.questionId = data.nextquestionid;
                 // Delete textarea value.
                 textarea.value = '';
                 // Check if we need to swap questiontypes.
                 let nextQuestionType = data.nextquestiontype;
-                if (questionType !== nextQuestionType) {
+                if (cfbParams.questionType !== nextQuestionType) {
                     // Choose which questiontype needs to be visible.
                     if (nextQuestionType === CFB_QUESTIONTYPE_SCHOOLGRADE) {
                         schoolgradesContainer.classList.remove('d-none');
@@ -146,12 +147,13 @@ const sendAndReceiveFeedback = (feedback, essay) => {
                         essayContainer.classList.remove('d-none');
                     }
                     // Update current questiontype.
-                    questionType = nextQuestionType;
+                    cfbParams.questionType = nextQuestionType;
                 }
                 // Update questionInfo and question and show.
                 let qStr = Str.get_string('notif_question', 'block_coursefeedback');
                 qStr.done(function(string) {
-                    questionInfo.innerHTML = string.concat(questionId).concat('/').concat(questionSum).concat(': ');
+                    questionInfo.innerHTML = string.concat(cfbParams.questionId).concat('/')
+                        .concat(cfbParams.questionSum).concat(': ');
                     question.innerHTML = data.nextquestion;
                     sendingActive = false;
                     fadeIn(notif);
@@ -173,12 +175,14 @@ const sendAndReceiveFeedback = (feedback, essay) => {
  * @param {number} qusum how many question in total in this FB
  */
 export const initialise = (cid, fbid, quid, qutype, qusum) => {
-    // Set global vars.
-    courseId = cid;
-    feedbackId = fbid;
-    questionId = quid;
-    questionType = qutype;
-    questionSum = qusum;
+    // Create param object.
+    const cfbParams = {
+        courseId: cid,
+        feedbackId: fbid,
+        questionId: quid,
+        questionType: qutype,
+        questionSum: qusum
+    };
 
     let notifikations = document.getElementById("user-notifications");
     let feedbackNotif = notifikations.getElementsByClassName("cfb-notification-container")[0];
@@ -192,7 +196,7 @@ export const initialise = (cid, fbid, quid, qutype, qusum) => {
     emojis.map((emoji) => {
         let answer = emojis.indexOf(emoji) + 1;
         emoji.onclick = () => {
-            sendAndReceiveFeedback(answer, null);
+            sendAndReceiveFeedback(answer, null, cfbParams);
         };
     });
 
@@ -205,7 +209,7 @@ export const initialise = (cid, fbid, quid, qutype, qusum) => {
     let sendButton = document.getElementsByClassName('cfb-essaysendbtn')[0];
     sendButton.onclick = () => {
         let essayanswer = textarea.value;
-        sendAndReceiveFeedback(null, essayanswer,);
+        sendAndReceiveFeedback(null, essayanswer, cfbParams);
     };
 
     // Bootstrap 4 does not have opacity classes, inline styles are filtered out for some reason.
@@ -216,11 +220,11 @@ export const initialise = (cid, fbid, quid, qutype, qusum) => {
     schoolgradesContainer = notifikations.getElementsByClassName("cfb-schoolgrades-containaer")[0];
     essayContainer = notifikations.getElementsByClassName("cfb-essay-containaer")[0];
     let buttonContainer;
-    if (questionType == CFB_QUESTIONTYPE_SCHOOLGRADE) {
+    if (cfbParams.questionType == CFB_QUESTIONTYPE_SCHOOLGRADE) {
         buttonContainer = schoolgradesContainer;
         buttonContainer.style.opacity = 0;
         buttonContainer.classList.remove('d-none');
-    } else if (questionType == CFB_QUESTIONTYPE_ESSAY) {
+    } else if (cfbParams.questionType == CFB_QUESTIONTYPE_ESSAY) {
         buttonContainer = essayContainer;
         buttonContainer.style.opacity = 0;
         buttonContainer.classList.remove('d-none');
