@@ -91,6 +91,7 @@ function fadeIn(element) {
  *      schoolgradesContainer: Container of the schoolgrade answer elements
  *      essayContainer: Container of the essay answer elemnts
  *      textarea: Textarea element of the essay answer
+ *      notifications: User notifications element
  * */
 const sendAndReceiveFeedback = (feedback, essay, cfbParams, domElements) => {
     // Prevent doubleclicking for the same question.
@@ -101,9 +102,9 @@ const sendAndReceiveFeedback = (feedback, essay, cfbParams, domElements) => {
     }
 
     // Get needed elements/nodes.
-    let feedbackNotif = domElements.notifikations.getElementsByClassName("cfb-notification-container")[0];
-    let questionInfo = domElements.notifikations.getElementsByClassName("cfb-question-info")[0];
-    let question = domElements.notifikations.getElementsByClassName("cfb-question")[0];
+    let feedbackNotif = domElements.notifications.getElementsByClassName("cfb-notification-container")[0];
+    let questionInfo = domElements.notifications.getElementsByClassName("cfb-question-info")[0];
+    let question = domElements.notifications.getElementsByClassName("cfb-question")[0];
     let notif = feedbackNotif.parentElement;
 
     // Fading out notification after clicking an emoji.
@@ -184,27 +185,27 @@ export const initialise = (cid, fbid, quid, qutype, qusum) => {
     };
 
     // Initiallize DOM-elements object
-    let notifikations = document.getElementById("user-notifications");
+    let notifications = document.getElementById("user-notifications");
     let div = document.getElementsByClassName('cfb-essaytextarea')[0];
     let textarea = document.createElement('textarea');
     textarea.classList.add('w-100', 'rounded');
     textarea.id = 'cfb-essay-textarea';
     div.appendChild(textarea);
     const domElements = {
-        notifikations: notifikations,
+        notifications: notifications,
         textarea: textarea,
-        schoolgradesContainer: notifikations.getElementsByClassName("cfb-schoolgrades-container")[0],
-        essayContainer: notifikations.getElementsByClassName("cfb-essay-container")[0]
+        schoolgradesContainer: notifications.getElementsByClassName("cfb-schoolgrades-container")[0],
+        essayContainer: notifications.getElementsByClassName("cfb-essay-container")[0]
     };
 
-    let feedbackNotif = domElements.notifikations.getElementsByClassName("cfb-notification-container")[0];
+    let feedbackNotif = domElements.notifications.getElementsByClassName("cfb-notification-container")[0];
 
     // To prevent the destruction of our click events from bootsrap.
     // We need to remove the 'role' attribute from this notification.
     feedbackNotif.parentElement.removeAttribute("role");
 
     // Add click listener to our fbemoji-buttons for potential schoolgrade type questions.
-    const emojis = [...domElements.notifikations.getElementsByClassName("cfb-fbemoji")];
+    const emojis = [...domElements.notifications.getElementsByClassName("cfb-fbemoji")];
     emojis.map((emoji) => {
         let answer = emojis.indexOf(emoji) + 1;
         emoji.onclick = () => {
@@ -221,7 +222,7 @@ export const initialise = (cid, fbid, quid, qutype, qusum) => {
 
     // Bootstrap 4 does not have opacity classes, inline styles are filtered out for some reason.
     // Therefore we use invisible class and then switch to opacity to fade in.
-    let overlayIcon = domElements.notifikations.getElementsByClassName("cfb-overlay-icon")[0];
+    let overlayIcon = domElements.notifications.getElementsByClassName("cfb-overlay-icon")[0];
 
     // Choose which questiontype needs to be visible.
     let buttonContainer;
