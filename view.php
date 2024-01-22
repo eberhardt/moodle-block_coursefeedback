@@ -198,8 +198,10 @@ echo html_writer::tag("span", get_string("page_html_viewintro", "block_coursefee
     . $OUTPUT->box($html);
 
 // Output Essay qustions section.
-echo html_writer::tag('h3',get_string("questiontype", "block_coursefeedback") . ": "
-    . get_string("questiontype_essay", "block_coursefeedback"));
-echo $OUTPUT->box($essayhtml);
+if (isset($essayhtml)) {
+    echo html_writer::tag('h3',get_string("questiontype", "block_coursefeedback")
+        . ": " . get_string("questiontype_essay", "block_coursefeedback"));
+    echo $OUTPUT->box($essayhtml);
+}
 
 echo $OUTPUT->footer();
