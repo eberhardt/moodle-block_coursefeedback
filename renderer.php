@@ -87,7 +87,7 @@ class block_coursefeedback_renderer extends plugin_renderer_base {
             'course' => $this->page->course->id
         ];
         $data = [
-            'fbheading' => $feedback->heading,
+            'fbheading' => format_text($feedback->heading, FORMAT_HTML),
             'qid' => $openquestions['currentopenqstn']->questionid,
             'qsum' => $openquestions['questionsum'],
             'qtext' => $openquestions['currentopenqstn']->question,
