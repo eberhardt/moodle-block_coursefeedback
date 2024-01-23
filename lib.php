@@ -379,11 +379,17 @@ function block_coursefeedback_delete_answers($feedbackid) {
     global $DB;
     $conditions = array("coursefeedbackid" => intval($feedbackid));
     $dbtrans = $DB->start_delegated_transaction();
-    $DB->delete_records("block_coursefeedback_uidansw", array("coursefeedbackid" => $feedbackid));
-    $res = $DB->delete_records("block_coursefeedback_answers", $conditions);
-    $dbtrans->allow_commit();
-
-    return clean_param($res, PARAM_BOOL);
+    try {
+        $DB->delete_records("block_coursefeedback_uidansw", array("coursefeedbackid" => $feedbackid));
+        $DB->delete_records("block_coursefeedback_answers", $conditions);
+        $DB->delete_records("block_coursefeedback_textans", $conditions);
+        $dbtrans->allow_commit();
+        return true;
+    } catch (Exception $e) {
+        // Rollback the transaction in case of an error
+        $dbtrans->rollback($e);
+        return false;
+    }
 }
 
 /**
