@@ -15,9 +15,9 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 {{!
-    @template block_coursefeedback/questionnotif
+    @template block_coursefeedback/questionnotif_schoolgrades
 
-    This template renders the notification message of a feedback question.
+    This template renders the notification message of a feedback question type schoolgrades.
 
     Example context (json):
     {
@@ -25,7 +25,8 @@
         "qid":          24,
         "qsum":         26,
         "qtext":        "Want to ask something",
-        "link":         "https://example.com/blocks/coursefeedback/feedbackinfo.php?feedback=x&course=x"
+        "link":         "https://example.com/blocks/coursefeedback/feedbackinfo.php?feedback=x&course=x",
+        "questiontype": 1
     }
 
 }}
@@ -37,7 +38,7 @@
         </span>
         <b class="cfb-question">{{qtext}}</b>
     </p>
-    <div class="position-relative cfb-loadingblock">
+    <div style="min-height: 50px" class="position-relative cfb-loadingblock">
         <div class="overlay-icon-container cfb-overlay-icon">
             <div class="loading-icon">
                 <div class="spinner-border overlay" role="status">
@@ -46,7 +47,7 @@
             </div>
         </div>
         <div class="block_coursefeedback">
-            <div class="invisible container-fluid pl-sm-1 pl-0 cfb-button-containaer" >
+            <div class="d-none container-fluid pl-sm-1 pl-0 cfb-schoolgrades-container" >
                 <div class="row flex-nowrap" >
                     <div class="col btn btn-secondary btn-sm mx-xl-2  mx-1 rounded cfb-fbemoji" >
                         <span style="font-size: 1.5rem;">&#128515;</span><br>
@@ -85,11 +86,26 @@
                         </span>
                     </div>
                 </div>
+                <div class="mt-2">
+                    {{#str}} notif_pleaseclick, block_coursefeedback {{/str}}
+                    <a href="{{{link}}}">{{#str}} infopage_link_feedbackinfo, block_coursefeedback {{/str}}</a>
+                </div>
+            </div>
+            <div class="d-none container-fluid pl-sm-1 pl-0 cfb-essay-container" >
+                <div class="row flex-nowrap" >
+                    <div class="col  mx-xl-2  mx-1 rounded cfb-essaytextarea" ></div>
+                </div>
+                <div class="row flex-nowrap justify-content-center mt-1" >
+                    <div class="col-auto btn btn-secondary mx-xl-2  mx-1 rounded cfb-essaysendbtn">
+                        <span>{{#str}} notif_submit, block_coursefeedback {{/str}} &#10148;</span>
+                        </span>
+                    </div>
+                </div>
+                <div class="mt-2">
+                    {{#str}} notif_pleasewriteessay, block_coursefeedback {{/str}}
+                    <a href="{{{link}}}">{{#str}} infopage_link_feedbackinfo, block_coursefeedback {{/str}}</a>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="mt-2">
-        {{#str}} notif_pleaseclick, block_coursefeedback {{/str}}
-        <a href="{{{link}}}">{{#str}} infopage_link_feedbackinfo, block_coursefeedback {{/str}}</a>
     </div>
 </div>

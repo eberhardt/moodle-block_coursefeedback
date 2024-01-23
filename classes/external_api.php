@@ -31,7 +31,6 @@ require_once("$CFG->dirroot/webservice/externallib.php");
 require_once(__DIR__ . "/../lib.php");
 require_once(__DIR__ . "/../locallib.php");
 
-
 use external_value;
 use external_single_structure;
 use external_multiple_structure;
@@ -46,7 +45,6 @@ use stdClass;
  * @copyright   2022 onwards Felix Di Lenarda (@ innoCampus, TU Berlin)
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-// TODO  self::validate_parameters() externallib Zeile 324
 class external_api extends \external_api {
 
     /**
@@ -63,7 +61,12 @@ class external_api extends \external_api {
         $feedback = new external_value(
             PARAM_INT,
             'Feedback',
-            VALUE_REQUIRED
+            VALUE_OPTIONAL
+        );
+        $essay = new external_value(
+            PARAM_TEXT,
+            'Feedback',
+            VALUE_OPTIONAL
         );
         $feedbackid = new external_value(
             PARAM_INT,
@@ -78,6 +81,7 @@ class external_api extends \external_api {
         $params = array(
             'courseid' => $courseid,
             'feedback' => $feedback,
+            'essay' => $essay,
             'feedbackid' => $feedbackid,
             'questionid' => $questionid
         );
@@ -89,19 +93,22 @@ class external_api extends \external_api {
      * Saves Feedback answer and returns the next feedback question if there is one.
      *
      * @param int $courseid
-     * @param int $feedback given answer
+     * @param int $feedback given schoolgrade answer
+     * @param string $essay given essay answer
      * @param int $feedbackid
      * @param int $questionid
      * @returns array The next questiondetails
+     * @throws moodle_exception If question doesn't exist or the wron questiontypeanswer was given
      */
-    public static function answer_question_and_get_new($courseid, $feedback, $feedbackid, $questionid) {
-        global $DB, $USER, $COURSE;
+    public static function answer_question_and_get_new($courseid, $feedback, $essay, $feedbackid, $questionid) {
+        global $DB, $USER;
 
         // Validate parameter
         $params = self::validate_parameters(self::answer_question_and_get_new_parameters(),
             array(
                 'courseid' => $courseid,
                 'feedback' => $feedback,
+                'essay' => $essay,
                 'feedbackid' => $feedbackid,
                 'questionid' => $questionid
             )
@@ -113,10 +120,21 @@ class external_api extends \external_api {
         require_capability('block/coursefeedback:evaluate', $context);
         $config = get_config("block_coursefeedback");
 
-        // Check if FB and question exist
-        if (!$DB->record_exists("block_coursefeedback_questns",
-                ['questionid' => $params['questionid'], 'coursefeedbackid' => $params['feedbackid']])) {
+        // Check if FB and question exist and given questiontype answer matches.
+        $question = block_coursefeedback_get_questions_by_language(
+                $params['feedbackid'],
+                current_language(),
+                null,
+                'questionid',
+                'questionid,questiontype',
+                $params['questionid']);
+        // There must be exactly one matching question.
+        if (count($question) != 1) {
             throw new \moodle_exception('except_no_question', 'block_coursefeedback');
+        } elseif ((isset($params['essay']) && reset($question)->questiontype != CFB_QUESTIONTYPE_ESSAY)
+                || (isset($params['feedback']) && reset($question)->questiontype != CFB_QUESTIONTYPE_SCHOOLGRADE)) {
+            // The given answerparam has to match the questiontype.
+            throw new \moodle_exception('except_wrong_questiontype', 'block_coursefeedback');
         }
 
         // Check if answer exist already
@@ -155,38 +173,51 @@ class external_api extends \external_api {
             }
         }
 
-        // Answer received -> save in DB.
-        $result = ['saved' => false];
-        $record = new stdClass();
-        $record->course = $params['courseid'];
-        $record->coursefeedbackid = $params['feedbackid'];
-        $record->questionid = $params['questionid'];
-        $record->answer = $params['feedback'];
-        $record->timemodified = time();
-
         $uidtoans = new stdClass();
         $uidtoans->userid = $USER->id;
         $uidtoans->course = $params['courseid'];
         $uidtoans->coursefeedbackid = $params['feedbackid'];
         $uidtoans->questionid = $params['questionid'];
 
-        $dbtrans = $DB->start_delegated_transaction();
-        if ($DB->insert_record("block_coursefeedback_answers", $record, false, false)
+        // Answer received, decide which answer type and then save in DB.
+        $result = ['saved' => false];
+        $record = new stdClass();
+        $record->course = $params['courseid'];
+        $record->coursefeedbackid = $params['feedbackid'];
+        $record->questionid = $params['questionid'];
+        $record->timemodified = time();
+
+        // Decide which answer type and then save in respective DB-table.
+        if ( isset($params['essay'])) {
+            $record->textanswer = $params['essay'];
+            $dbtrans = $DB->start_delegated_transaction();
+            if ($DB->insert_record("block_coursefeedback_textans", $record, false, false)
                 && $DB->insert_record("block_coursefeedback_uidansw", $uidtoans, false, false)) {
-            $result['saved'] = true;
+                $result['saved'] = true;
+            }
+            $dbtrans->allow_commit();
+        } elseif ( isset($params['feedback'])) {
+            $record->answer = $params['feedback'];
+            $dbtrans = $DB->start_delegated_transaction();
+            if ($DB->insert_record("block_coursefeedback_answers", $record, false, false)
+                && $DB->insert_record("block_coursefeedback_uidansw", $uidtoans, false, false)) {
+                $result['saved'] = true;
+            }
+            $dbtrans->allow_commit();
         }
-        $dbtrans->allow_commit();
 
         // Check if there are questions left and return the resulting infos.
         if (null !== ($openquestions = block_coursefeedback_get_open_question())) {
             $result['questionstotal'] = $openquestions['questionsum'];
             $result['nextquestion'] = $openquestions['currentopenqstn']->question;
             $result['nextquestionid'] = $openquestions['currentopenqstn']->questionid;
+            $result['nextquestiontype'] = $openquestions['currentopenqstn']->questiontype;
             $result['feedbackid'] = $openquestions['currentopenqstn']->coursefeedbackid;
         } else {
             $result['questionstotal'] = null;
             $result['nextquestion'] = null;
             $result['nextquestionid'] = null;
+            $result['nextquestiontype'] = null;
             $result['feedbackid'] = null;
         }
         return $result;
@@ -218,6 +249,11 @@ class external_api extends \external_api {
             'How many questions are in this feedback',
             VALUE_REQUIRED
         );
+        $nextquestiontype = new external_value(
+            PARAM_INT,
+            'What question type is next',
+            VALUE_REQUIRED
+        );
         $feedbackid = new external_value(
             PARAM_INT,
             'FeedbackID',
@@ -228,6 +264,7 @@ class external_api extends \external_api {
             'questionstotal' =>$questionstotal,
             'nextquestion' => $nextquestion,
             'nextquestionid' => $nextquestionid,
+            'nextquestiontype' => $nextquestiontype,
             'feedbackid' => $feedbackid
         ]);
         return $params;
@@ -273,8 +310,10 @@ class external_api extends \external_api {
         require_capability('block/coursefeedback:managefeedbacks', $context);
 
         $currentlang = [current_language()];
-        $questions = block_coursefeedback_get_questions_by_language($params['feedbackid'], $currentlang, "questionid",
-            "id,questionid,question,coursefeedbackid,language");
+        $questions = block_coursefeedback_get_questions_by_language($params['feedbackid'], $currentlang,
+                CFB_QUESTIONTYPE_SCHOOLGRADE,
+                "questionid",
+                "id,questionid,question,coursefeedbackid,language");
         $result = ['questions' => array()];
         foreach ($questions as $question) {
             array_push($result['questions'], (array) $question);

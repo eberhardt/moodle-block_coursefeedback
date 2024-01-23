@@ -25,6 +25,32 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+
+
+define("CFB_QUESTIONTYPE_SCHOOLGRADE", 1);
+define("CFB_QUESTIONTYPE_ESSAY", 2);
+
+/**
+ * Gets a list of questiontypes.
+ *
+ * @param int $type The specific type of question to get. If 0, returns all question types.
+ * @return array Array of all question types, an array with a single type, or an empty array if the type is invalid.
+ */
+function get_question_types($type = 0) {
+    $questiontypes = [
+        CFB_QUESTIONTYPE_SCHOOLGRADE => get_string('questiontype_schoolgrades', 'block_coursefeedback'),
+        CFB_QUESTIONTYPE_ESSAY => get_string('questiontype_essay', 'block_coursefeedback')
+    ];
+    if ($type === 0) {
+        // The $type is not specified in funcion call -> all questiontypes are returned
+        return $questiontypes;
+    } elseif (array_key_exists($type, $questiontypes)) {
+        // Return the specified question $type
+        return [$type => $questiontypes[$type]];
+    }
+    return [];
+}
+
 /**
  * Adds or removes the coursefeedbackblock in all courses
  */

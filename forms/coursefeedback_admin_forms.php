@@ -27,6 +27,8 @@
 
 require_once(__DIR__ . "/coursefeedbackform.php");
 require_once(__DIR__ . "/../lib.php");
+require_once(__DIR__ . "/../locallib.php");
+
 
 /**
  * CLASS COURSEFEEDBACK_FEEDBACK_NEW_FORM
@@ -199,9 +201,12 @@ class coursefeedback_questions_new_form extends coursefeedbackform {
         $form = &$this->_form;
 
         $form->addElement("header", "newquestion", get_string("form_header_newquestion", "block_coursefeedback"));
-        $form->addElement("hidden", "template", $this->fid);
+        $form->addElement("hidden", "feedbackid", $this->fid);
         $form->addElement("hidden", "questionid", block_coursefeedback_get_questionid($this->fid));
 
+        $form->addElement("select",
+            "questiontype", get_string("questiontype", "block_coursefeedback"),
+            get_question_types());
         $form->addElement("select",
             "newlang",
             get_string("form_select_newlang", "block_coursefeedback"),
@@ -221,9 +226,11 @@ class coursefeedback_questions_new_form extends coursefeedbackform {
         $form->getElement("newlang")->setSelected($CFG->lang);
 
         // Types.
-        $form->setType("template", PARAM_INT);
+        $form->setType("feedbackid", PARAM_INT);
         $form->setType("questionid", PARAM_INT);
+        $form->setType("questiontype", PARAM_INT);
         $form->setType("questiontext", PARAM_TEXT);
+
     }
 }
 
@@ -332,24 +339,34 @@ class coursefeedback_question_edit_form extends coursefeedbackform {
         global $DB;
 
         $form =& $this->_form;
-        $question = $DB->get_field("block_coursefeedback_questns", "question", array("coursefeedbackid" => $this->fid,
+        $question = $DB->get_record("block_coursefeedback_questns",  [
+            "coursefeedbackid" => $this->fid,
             "questionid" => $this->qid,
-            "language" => $this->lang));
+            "language" => $this->lang ]);
 
         $form->addElement("hidden", "template", $this->fid);
         $form->addElement("hidden", "questionid", $this->qid);
         $form->addElement("hidden", "language", $this->lang);
 
         $form->addElement("header", "editquestion", get_string("form_header_editquestion", "block_coursefeedback"));
+
         $html = html_writer::tag("p",
             get_string("form_html_currentlang", "block_coursefeedback", block_coursefeedback_get_language($this->lang)),
             array("style" => "margin-left:3em;margin-right:3em;"));
         $form->addElement("html", $html);
+        $form->addElement("select",
+            "questiontype", get_string("questiontype", "block_coursefeedback"),
+            get_question_types());
         $form->addElement("textarea",
             "questiontext",
             get_string("form_area_questiontext", "block_coursefeedback"),
             "rows=\"20\" cols=\"50\"");
-        $form->getElement("questiontext")->setValue($question);
+
+        // Do not try to get question fields i when initially loading the form
+        if ($question) {
+            $form->getElement("questiontext")->setValue($question->question);
+            $form->getElement("questiontype")->setValue($question->questiontype);
+        }
 
         $submits = array();
         $submits[] = &$form->createElement("submit", "edit", get_string("confirm"));
@@ -364,6 +381,7 @@ class coursefeedback_question_edit_form extends coursefeedbackform {
         $form->setType("template", PARAM_INT);
         $form->setType("questionid", PARAM_INT);
         $form->setType("language", PARAM_ALPHAEXT);
+        $form->setType("questiontype", PARAM_INT);
         $form->setType("questiontext", PARAM_TEXT);
     }
 }
@@ -371,18 +389,27 @@ class coursefeedback_question_edit_form extends coursefeedbackform {
 /**
  * CLASS COURSEFEEDBACK_QUESTION_NEW_FORM
  *
- * Formular for adding question text with chooseable language.
+ * Formular for adding a new translation with chooseable language for an existing question.
  */
 class coursefeedback_question_new_form extends coursefeedbackform {
     protected function definition() {
+        global $DB;
+
         $form =& $this->_form;
         $submits = array();
 
         $form->addElement("header", "header_new_language", get_string("form_header_addlang", "block_coursefeedback"));
         $form->addElement("hidden", "template", $this->fid);
         $form->addElement("hidden", "questionid", $this->qid);
-        $implemented = block_coursefeedback_get_implemented_languages($this->fid, $this->qid, false, true);
 
+        // Adding hidden questiontype (IGNORE_MULTIPLE, just take the first question found and look for questiontype).
+        $form->addElement("hidden", "questiontype", $DB->get_field("block_coursefeedback_questns", "questiontype",
+            [
+            "coursefeedbackid" => $this->fid,
+            "questionid" => $this->qid,
+            ], IGNORE_MULTIPLE));
+
+        $implemented = block_coursefeedback_get_implemented_languages($this->fid, $this->qid, false, true);
         if (count($implemented) > 0) {
             $form->addElement("select", "newlanguage", get_string("form_select_newlang", "block_coursefeedback"), $implemented);
             if (!empty($this->lang)) {
@@ -407,6 +434,7 @@ class coursefeedback_question_new_form extends coursefeedbackform {
         // Types.
         $form->setType("template", PARAM_INT);
         $form->setType("questionid", PARAM_INT);
+        $form->setType("questiontype", PARAM_INT);
         $form->setType("questiontext", PARAM_TEXT);
     }
 }

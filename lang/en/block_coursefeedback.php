@@ -39,6 +39,8 @@ $string['resultspage_nav_extension'] = 'Coursefeedback results';
 /* Notification */
 $string['notif_question'] = 'Question ';
 $string['notif_pleaseclick'] = 'Please choose one of the emojis. Your answer is anonymous.';
+$string['notif_pleasewriteessay'] = 'Please write a response in the text field and click "Submit". Your answer will be stored anonymously.';
+$string['notif_submit'] = 'Submit';
 $string['notif_emoji_super'] = 'very good';
 $string['notif_emoji_good'] = 'good';
 $string['notif_emoji_ok'] = 'satisfactory';
@@ -79,6 +81,7 @@ $string['page_html_intronotifications'] = 'This feedback has to fullfill the fol
 $string['page_html_servedefaultlang'] = 'All questions should be defined in default language.';
 $string['page_html_norelations'] = 'All questions have to be defined in at least one common language.';
 $string['page_html_courserating'] = 'Course rating';
+$string['page_html_totalanscountinfo'] = '{$a->totalcount} answers in total, you are on page {$a->page} of {$a->totalpages}.';
 
 /* Tables */
 $string['table_header_languages'] = 'Available languages';
@@ -88,6 +91,7 @@ $string['table_html_average'] = 'Average';
 $string['table_html_nochoice'] = 'Abstentions';
 $string['table_html_nofeedback'] = 'No survey';
 $string['table_html_undefinedlang'] = 'Translation missing. Language \'{$a}\' unavailable.'; // 50 chars max
+$string['table_html_showanswers'] = 'Show answers';
 
 /* Forms */
 $string['form_notif_heading'] = 'Notification heading';
@@ -151,4 +155,11 @@ $string['except_answer_exist'] = 'Answer for this question already exist';
 $string['except_not_active'] = 'Given feedback not active at the monent';
 $string['except_block_duplicate'] = 'More than one coursefeedbackblock in the course';
 $string['except_block_hidden'] = 'Coursefeedback block in this course is hidden';
+$string['except_invalid_questionid'] = 'Invalid question id';
+$string['except_wrong_questiontype'] = 'Invalid answertype received';
+
+/* Questiontypes */
+$string['questiontype'] = 'Questiontype';
+$string['questiontype_schoolgrades'] = 'Schoolgrades one to six';
+$string['questiontype_essay'] = 'Essay';
 

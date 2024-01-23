@@ -26,15 +26,13 @@
 import Ajax from 'core/ajax';
 import * as Str from 'core/str';
 
-// Initiate the needed  global vars through an ajax call.
-let courseId;
-let feedbackId;
-let questionId;
-let questionSum;
+// Initiate the needed  global vars.
+const CFB_QUESTIONTYPE_SCHOOLGRADE = 1;
+const CFB_QUESTIONTYPE_ESSAY = 2;
 let sendingActive = false;
 
 /**
- * fadeOut element
+ * FadeOut element
  * @param {Object} element
  * @returns {Promise}
  */
@@ -45,7 +43,7 @@ function fadeOut(element) {
         if (isNaN(opacity)) {
             opacity = 0;
         }
-        let fadingOut = setInterval(function () {
+        let fadingOut = setInterval(function() {
             if (opacity <= 0) {
                 clearInterval(fadingOut);
                 resolve();
@@ -58,7 +56,7 @@ function fadeOut(element) {
 }
 
 /**
- * fadeIn element
+ * FadeIn element
  *
  * @param {Object} element
  */
@@ -68,7 +66,7 @@ function fadeIn(element) {
     if (isNaN(opacity)) {
         opacity = 0;
     }
-    let fadingIn = setInterval(function () {
+    let fadingIn = setInterval(function() {
         if (opacity >= 1) {
             clearInterval(fadingIn);
         } else {
@@ -79,11 +77,23 @@ function fadeIn(element) {
 }
 
 /**
- * send and receive feedback after answer was given
+ * Send and receive feedback after answer was given
  *
- * @param {number} feedback (given answer)
- */
-const sendAndReceiveFeedback = (feedback) => {
+ * @param {number} feedback (given schoolgrade answer)
+ * @param {text} essay (given essay answer)
+ * @param {object} cfbParams all needed parameters:
+ *      courseId: cid,
+ *      feedbackId: fbid,
+ *      questionId: quid,
+ *      questionType: qutype,
+ *      questionSum: qusum
+ * @param {object} domElements all needed domElements:
+ *      schoolgradesContainer: Container of the schoolgrade answer elements
+ *      essayContainer: Container of the essay answer elemnts
+ *      textarea: Textarea element of the essay answer
+ *      notifications: User notifications element
+ * */
+const sendAndReceiveFeedback = (feedback, essay, cfbParams, domElements) => {
     // Prevent doubleclicking for the same question.
     if (sendingActive == true) {
         return;
@@ -92,10 +102,9 @@ const sendAndReceiveFeedback = (feedback) => {
     }
 
     // Get needed elements/nodes.
-    let notifikations = document.getElementById("user-notifications");
-    let feedbackNotif = notifikations.getElementsByClassName("cfb-notification-container")[0];
-    let questionInfo = notifikations.getElementsByClassName("cfb-question-info")[0];
-    let question = notifikations.getElementsByClassName("cfb-question")[0];
+    let feedbackNotif = domElements.notifications.getElementsByClassName("cfb-notification-container")[0];
+    let questionInfo = domElements.notifications.getElementsByClassName("cfb-question-info")[0];
+    let question = domElements.notifications.getElementsByClassName("cfb-question")[0];
     let notif = feedbackNotif.parentElement;
 
     // Fading out notification after clicking an emoji.
@@ -105,10 +114,11 @@ const sendAndReceiveFeedback = (feedback) => {
     let promises = Ajax.call([{
         methodname: 'block_coursefeedback_answer_question_and_get_new',
         args: {
-            courseid: courseId,
+            courseid: cfbParams.courseId,
             feedback: feedback,
-            feedbackid: feedbackId,
-            questionid: questionId,
+            essay: essay,
+            feedbackid: cfbParams.feedbackId,
+            questionid: cfbParams.questionId,
         }
     }]);
     promises[0].done(function (data) {
@@ -123,17 +133,34 @@ const sendAndReceiveFeedback = (feedback) => {
                 });
             } else {
                 // A following question was returned.
-                questionId = data.nextquestionid;
+                cfbParams.questionId = data.nextquestionid;
+                // Delete textarea value.
+                domElements.textarea.value = '';
+                // Check if we need to swap questiontypes.
+                let nextQuestionType = data.nextquestiontype;
+                // Choose which questiontype needs to be visible.
+                if (nextQuestionType === CFB_QUESTIONTYPE_SCHOOLGRADE) {
+                    domElements.essayContainer.classList.add('d-none');
+                    domElements.schoolgradesContainer.classList.remove('d-none');
+                } else if (nextQuestionType === CFB_QUESTIONTYPE_ESSAY) {
+                    domElements.schoolgradesContainer.classList.add('d-none');
+                    domElements.essayContainer.classList.remove('d-none');
+                }
+                // Update current questiontype.
+                cfbParams.questionType = nextQuestionType;
+
+                // Update questionInfo and question and show.
                 let qStr = Str.get_string('notif_question', 'block_coursefeedback');
-                qStr.done(function (string) {
-                    questionInfo.innerHTML = string.concat(questionId).concat('/').concat(questionSum).concat(': ');
+                qStr.done(function(string) {
+                    questionInfo.innerHTML = string.concat(cfbParams.questionId).concat('/')
+                        .concat(cfbParams.questionSum).concat(': ');
                     question.innerHTML = data.nextquestion;
                     sendingActive = false;
                     fadeIn(notif);
                 });
             }
         });
-    }).fail(function (ex) {
+    }).fail(function(ex) {
         window.console.error(ex);
     });
 };
@@ -144,38 +171,78 @@ const sendAndReceiveFeedback = (feedback) => {
  * @param {number} cid courseId
  * @param {number} fbid feedbackId
  * @param {number} quid questionId
+ * @param {number} qutype questionType
  * @param {number} qusum how many question in total in this FB
  */
-export const initialise = (cid, fbid, quid, qusum) => {
-    // Set global vars.
-    courseId = cid;
-    feedbackId = fbid;
-    questionId = quid;
-    questionSum = qusum;
+export const initialise = (cid, fbid, quid, qutype, qusum) => {
+    // Create CFB param object.
+    const cfbParams = {
+        courseId: cid,
+        feedbackId: fbid,
+        questionId: quid,
+        questionType: qutype,
+        questionSum: qusum
+    };
 
-    let notifikations = document.getElementById("user-notifications");
-    let feedbackNotif = notifikations.getElementsByClassName("cfb-notification-container")[0];
+    // Initiallize DOM-elements object
+    let notifications = document.getElementById("user-notifications");
+    let div = document.getElementsByClassName('cfb-essaytextarea')[0];
+    let textarea = document.createElement('textarea');
+    textarea.classList.add('w-100', 'rounded');
+    textarea.id = 'cfb-essay-textarea';
+    div.appendChild(textarea);
+    const domElements = {
+        notifications: notifications,
+        textarea: textarea,
+        schoolgradesContainer: notifications.getElementsByClassName("cfb-schoolgrades-container")[0],
+        essayContainer: notifications.getElementsByClassName("cfb-essay-container")[0]
+    };
+
+    let feedbackNotif = domElements.notifications.getElementsByClassName("cfb-notification-container")[0];
 
     // To prevent the destruction of our click events from bootsrap.
     // We need to remove the 'role' attribute from this notification.
     feedbackNotif.parentElement.removeAttribute("role");
 
-    // Add click listener to our fbemoji-buttons.
-    const emojis = [...notifikations.getElementsByClassName("cfb-fbemoji")];
+    // Add click listener to our fbemoji-buttons for potential schoolgrade type questions.
+    const emojis = [...domElements.notifications.getElementsByClassName("cfb-fbemoji")];
     emojis.map((emoji) => {
         let answer = emojis.indexOf(emoji) + 1;
         emoji.onclick = () => {
-            sendAndReceiveFeedback(answer, courseId, feedbackId, questionId, questionSum);
+            sendAndReceiveFeedback(answer, null, cfbParams, domElements);
         };
     });
 
+    // Add click listener to our essaysendbtn-button for potential essay type questions.
+    let sendButton = document.getElementsByClassName('cfb-essaysendbtn')[0];
+    sendButton.onclick = () => {
+        let essayanswer = domElements.textarea.value;
+        sendAndReceiveFeedback(null, essayanswer, cfbParams, domElements);
+    };
+
     // Bootstrap 4 does not have opacity classes, inline styles are filtered out for some reason.
     // Therefore we use invisible class and then switch to opacity to fade in.
-    let overlayIcon = notifikations.getElementsByClassName("cfb-overlay-icon")[0];
-    let buttonContainer = notifikations.getElementsByClassName("cfb-button-containaer")[0];
-    buttonContainer.style.opacity = 0;
-    buttonContainer.classList.remove('invisible');
-    // Fase out the loadingspinner and fade in the fbemoji-buttons.
+    let overlayIcon = domElements.notifications.getElementsByClassName("cfb-overlay-icon")[0];
+
+    // Choose which questiontype needs to be visible.
+    let buttonContainer;
+    if (cfbParams.questionType == CFB_QUESTIONTYPE_SCHOOLGRADE) {
+        buttonContainer = domElements.schoolgradesContainer;
+        buttonContainer.style.opacity = 0;
+        buttonContainer.classList.remove('d-none');
+    } else if (cfbParams.questionType == CFB_QUESTIONTYPE_ESSAY) {
+        buttonContainer = domElements.essayContainer;
+        buttonContainer.style.opacity = 0;
+        buttonContainer.classList.remove('d-none');
+    }
+
+    // Remove overlay container, it was breaking the link and is not needed anymore.
+    let element = document.querySelector('.cfb-overlay-icon');
+    if (element) {
+        element.remove();
+    }
+
+    // Fade out the loadingspinner and fade in the fbemoji-buttons.
     let foPromise = fadeOut(overlayIcon);
     foPromise.then(() => {
         fadeIn(buttonContainer);

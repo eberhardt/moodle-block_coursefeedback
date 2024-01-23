@@ -67,7 +67,8 @@ class feedback_exporter {
         // Get the counted answers for each question and each answer possibility
         $qanswercounts = block_coursefeedback_get_qanswercounts($courseid, $feedbackid);
 
-        $questions = block_coursefeedback_get_questions_by_language($feedbackid, [current_language()]);
+        $questions = block_coursefeedback_get_questions_by_language($feedbackid, [current_language()],
+            CFB_QUESTIONTYPE_SCHOOLGRADE);
         foreach ($questions as $question) {
             // Put questionstring in front of $answerdata and add the data to the csv file
             if ($qanswercounts[$question->questionid]) {
@@ -80,8 +81,81 @@ class feedback_exporter {
         // Start the download
         $this->csvexportwriter->download_file();
     }
-
 }
+
+/**
+ * Export essay answers for a given course.
+ *
+ * @package block
+ * @subpackage coursefeedback
+ * @copyright innoCampus, TU Berlin
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+class essay_exporter {
+    protected $csvexportwriter;
+
+    public function __construct() {
+        $this->csvexportwriter = new csv_export_writer();
+    }
+
+    public function create_file($courseid, $feedbackid, $questionid = null) {
+        global $DB;
+        $this->csvexportwriter->set_filename(get_string("download_html_filename", "block_coursefeedback")
+            . "_" . get_string("questiontype_essay", "block_coursefeedback") . date("_Y-m-d-H-i"));
+
+        // Check and get course.
+        if (!($course = $DB->get_record("course", array("id" => $courseid)))) {
+            throw new moodle_exception(get_string("except_invalid_courseid","block_coursefeedback"));
+        }
+
+        // Insert headrow.
+        $headrow = [
+            format_string($course->fullname),
+            get_string("pluginname", "block_coursefeedback"),
+            block_coursefeedback_get_feedbackname($feedbackid),
+            get_string("questiontype_essay", "block_coursefeedback") . " "
+                . get_string("resultspage_title", "block_coursefeedback")
+        ];
+        $this->csvexportwriter->add_data($headrow);
+        $this->csvexportwriter->add_data([]);
+
+        // Get needed questions.
+        $questions = block_coursefeedback_get_questions_by_language(
+                $feedbackid,
+                current_language(),
+                CFB_QUESTIONTYPE_ESSAY,
+                "questionid",
+                "questionid,question",
+                $questionid
+        );
+
+        // Insert all textanswers for each question.
+        foreach ($questions as $question) {
+            $questiondata = [
+                get_string("download_thead_questions", "block_coursefeedback")
+                    . " " . $question->questionid .": ",
+                format_string($question->question)
+            ];
+            $this->csvexportwriter->add_data($questiondata);
+
+            // Get textanswers for question.
+            $answers = $DB->get_records('block_coursefeedback_textans', ['course' => $courseid,
+                'coursefeedbackid' => $feedbackid,
+                'questionid' => $question->questionid], 'id', 'id,textanswer');
+            foreach($answers as $answer) {
+                $answersdata =  [
+                    format_string($answer->textanswer)
+                ];
+                $this->csvexportwriter->add_data($answersdata);
+            }
+            $this->csvexportwriter->add_data([]);
+        }
+
+        // Start the download
+        $this->csvexportwriter->download_file();
+    }
+}
+
 
 /**
  * Export feedback data for an entire feedback.
@@ -111,7 +185,8 @@ class ranking_exporter {
         ]);
 
         // Get all questions
-        $questions = block_coursefeedback_get_questions_by_language($feedback->id, [current_language()]);
+        $questions = block_coursefeedback_get_questions_by_language($feedback->id, [current_language()],
+                CFB_QUESTIONTYPE_SCHOOLGRADE);
 
         if ($questionid != 0) {
             // Only display one question....
