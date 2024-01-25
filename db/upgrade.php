@@ -242,7 +242,7 @@ function xmldb_block_coursefeedback_upgrade($oldversion = 0) {
         // Check if the 'answer' field in the table 'block_coursefeedback_answers' has the correct 'NOTNULL' value.
         $field = new xmldb_field('answer', XMLDB_TYPE_INTEGER, '4', null, XMLDB_NOTNULL, null, null, 'questionid');
         // Drop index temporarily to make field change possible.
-        $index = new xmldb_index('mdl2_bloccouransw_coucouque_ix', XMLDB_INDEX_NOTUNIQUE, ['course', 'coursefeedbackid', 'questionid', 'answer']);
+        $index = new xmldb_index('bloccouransw_coucouque_ix', XMLDB_INDEX_NOTUNIQUE, ['course', 'coursefeedbackid', 'questionid', 'answer']);
         if ($dbman->index_exists($table, $index)) {
             $dbman->drop_index($table, $index);
         }
