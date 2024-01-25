@@ -200,14 +200,6 @@ function xmldb_block_coursefeedback_upgrade($oldversion = 0) {
             $dbman->add_field($table, $field);
         }
 
-        // Add 'textanswer' field to table 'block_coursefeedback_answers'
-        $table2 = new xmldb_table('block_coursefeedback_answers');
-        $field2 = new xmldb_field('textanswer', XMLDB_TYPE_TEXT, 'medium', null, null, null, null, 'answer');
-
-        if (!$dbman->field_exists($table2, $field2)) {
-            $dbman->add_field($table2, $field2);
-        }
-
         upgrade_block_savepoint(true, 2023122000, 'coursefeedback');
     }
 
@@ -235,6 +227,35 @@ function xmldb_block_coursefeedback_upgrade($oldversion = 0) {
 
         upgrade_block_savepoint(true, 2024010900, 'coursefeedback');
     }
+
+    if ($oldversion == 2024015000 ) {
+        // Following changes need to be checked only for version '2024015000'.
+
+        $dbman = $DB->get_manager();
+        $table = new xmldb_table('block_coursefeedback_answers');
+
+        // Drop 'textanswer' field in 'block_coursefeedback_answers'.
+        $field = new xmldb_field('textanswer', XMLDB_TYPE_TEXT, 'medium', null, null, null, null, 'answer');
+        $dbman->drop_field($table, $field);
+
+
+        // Check if the 'answer' field in the table 'block_coursefeedback_answers' has the correct 'NOTNULL' value.
+        $field = new xmldb_field('answer', XMLDB_TYPE_INTEGER, '4', null, XMLDB_NOTNULL, null, null, 'questionid');
+        // Drop index temporarily to make field change possible.
+        $index = new xmldb_index('mdl2_bloccouransw_coucouque_ix', XMLDB_INDEX_NOTUNIQUE, ['course', 'coursefeedbackid', 'questionid', 'answer']);
+        if ($dbman->index_exists($table, $index)) {
+            $dbman->drop_index($table, $index);
+        }
+
+        // Make sure NOTNULL-Option of the 'answer' field is 'true'.
+        $dbman->change_field_notnull($table, $field);
+
+        // Add index again.
+        $dbman->add_index($table, $index);
+
+        upgrade_block_savepoint(true, 2024015001, 'coursefeedback');
+    }
+
     return true;
 }
 
