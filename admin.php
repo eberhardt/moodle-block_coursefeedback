@@ -50,15 +50,6 @@ $language = optional_param("lng", null, PARAM_ALPHA);
 
 $errormsg = "";
 $statusmsg = "";
-global $CFG;
-
-$version = $CFG->version;
-var_dump($version);
-$release = $CFG->release;
-var_dump($release);
-
-$branch = $CFG->branch;
-var_dump($branch);
 
 // Initialize forms.($data->unwantedlang)
 //                        && isset($data->template)
