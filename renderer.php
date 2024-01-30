@@ -196,9 +196,10 @@ class block_coursefeedback_renderer extends plugin_renderer_base {
         $answerhtml .= html_writer::tag('div', $link);
 
         // Get all textanswers for the given $questionid and add them in a table.
+        $limitfrom = $perpage * $page;
         $answers = $DB->get_records('block_coursefeedback_textans', ['course' => $courseid,
                 'coursefeedbackid' => $feedbackid,
-                'questionid' => $questionid], '', 'id,textanswer', $page, $perpage);
+                'questionid' => $questionid], '', 'id,textanswer', $limitfrom, $perpage);
 
         // Get the $question(text) of the given $questionid
         $question = block_coursefeedback_get_questions_by_language($feedbackid, current_language(),
