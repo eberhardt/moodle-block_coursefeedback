@@ -81,7 +81,7 @@ $string['page_html_intronotifications'] = 'Dieses Feedback muss folgende Konditi
 $string['page_html_servedefaultlang'] = 'Alle Fragen sollten in der eingestellte Standardsprache ({$a}) vorhanden sein.';
 $string['page_html_norelations'] = 'Alle Fragen müssen in mindestens einer gemeinsamen Sprache vorhanden sein.';
 $string['page_html_courserating'] = 'Kursbewertung';
-$string['page_html_totalanscountinfo'] = 'Insgesamt {$a->totalcount} Antworten, Sie befinden sich auf Seie {$a->page} von {$a->totalpages}.';
+$string['page_html_totalanscountinfo'] = 'Insgesamt {$a->anscount} nicht leere Antworten, Sie befinden sich auf Seie {$a->page} von {$a->totalpages}.';
 
 /* Tables */
 $string['table_header_languages'] = 'Verf&uuml;gbare Sprachen';
@@ -162,4 +162,5 @@ $string['except_wrong_questiontype'] = 'Ungültiger Antworttyp übermittelt';
 $string['questiontype'] = 'Fragetyp';
 $string['questiontype_schoolgrades'] = 'Schulnoten eins bis sechs';
 $string['questiontype_essay'] = 'Freitext';
+$string['qtype_empty_essayans'] = 'Es gibt insgesamt {$a} leere Freitextantworten.';
 
