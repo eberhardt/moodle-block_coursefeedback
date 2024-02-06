@@ -74,19 +74,17 @@ $baseurl = new moodle_url("/blocks/coursefeedback/essayanswers.php", [
     "perpage" => $perpage]);
 
 // How many non-empty essayanswers for this question?
-$sql = "SELECT COUNT(id) 
-          FROM {block_coursefeedback_textans}
-         WHERE course = :course 
-               AND coursefeedbackid = :coursefeedbackid 
-               AND questionid = :questionid 
-               AND textanswer IS NOT NULL 
-               AND textanswer <> ''";
+$select = "course = :course
+       AND coursefeedbackid = :coursefeedbackid 
+       AND questionid = :questionid 
+       AND textanswer IS NOT NULL 
+       AND textanswer <> ''";
 $params = [
     'course' => $courseid,
     'coursefeedbackid' => $feedbackid,
     'questionid' => $questionid
 ];
-$anscount = $DB->count_records_sql($sql, $params);
+$anscount = $DB->count_records_select('block_coursefeedback_textans', $select, $params);
 
 $PAGE->set_url($baseurl);
 $PAGE->set_context($context);

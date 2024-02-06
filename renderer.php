@@ -206,21 +206,26 @@ class block_coursefeedback_renderer extends plugin_renderer_base {
         $answerhtml .= html_writer::tag('div', $link);
 
         // Get all non-empty textanswers for the given $questionid and add them in a table.
-        $sql = "SELECT id, textanswer 
-                  FROM {block_coursefeedback_textans}
-                 WHERE course = :course AND coursefeedbackid = :feedbackid AND questionid = :questionid 
-                       AND textanswer IS NOT NULL AND textanswer <> '' 
-                 LIMIT :perpage 
-                OFFSET :limitfrom";
-        $limitfrom = $perpage * $page;
+        $select = "course = :courseid
+               AND coursefeedbackid = :coursefeedbackid 
+               AND questionid = :questionid 
+               AND textanswer IS NOT NULL 
+               AND textanswer <> ''";
         $params = [
-            'course' => $courseid,
-            'feedbackid' => $feedbackid,
+            'courseid' => $courseid,
+            'coursefeedbackid' => $feedbackid,
             'questionid' => $questionid,
-            'perpage' => $perpage,
-            'limitfrom' => $limitfrom
         ];
-        $answers = $DB->get_records_sql($sql, $params);
+        $limitfrom = $perpage * $page;
+        $answers = $DB->get_records_select(
+            'block_coursefeedback_textans',
+            $select,
+            $params,
+            '',
+            'id, textanswer',
+            $limitfrom,
+            $perpage,
+        );
 
         // Get the $question(text) of the given $questionid
         $question = block_coursefeedback_get_questions_by_language($feedbackid, current_language(),
