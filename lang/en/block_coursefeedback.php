@@ -81,7 +81,7 @@ $string['page_html_intronotifications'] = 'This feedback has to fullfill the fol
 $string['page_html_servedefaultlang'] = 'All questions should be defined in default language.';
 $string['page_html_norelations'] = 'All questions have to be defined in at least one common language.';
 $string['page_html_courserating'] = 'Course rating';
-$string['page_html_totalanscountinfo'] = '{$a->totalcount} answers in total, you are on page {$a->page} of {$a->totalpages}.';
+$string['page_html_totalanscountinfo'] = '{$a->anscount} non-empty answers in total, you are on page {$a->page} of {$a->totalpages}.';
 
 /* Tables */
 $string['table_header_languages'] = 'Available languages';
@@ -162,4 +162,5 @@ $string['except_wrong_questiontype'] = 'Invalid answertype received';
 $string['questiontype'] = 'Questiontype';
 $string['questiontype_schoolgrades'] = 'Schoolgrades one to six';
 $string['questiontype_essay'] = 'Essay';
+$string['qtype_empty_essayans'] = 'There are a total of {$a} empty essay responses.';
 

@@ -73,12 +73,18 @@ $baseurl = new moodle_url("/blocks/coursefeedback/essayanswers.php", [
     "page" => $page,
     "perpage" => $perpage]);
 
-// How many answers in total for this question?
-$totalcount = $DB->count_records('block_coursefeedback_textans', [
+// How many non-empty essayanswers for this question?
+$select = "course = :course
+       AND coursefeedbackid = :coursefeedbackid 
+       AND questionid = :questionid 
+       AND textanswer IS NOT NULL 
+       AND textanswer <> ''";
+$params = [
     'course' => $courseid,
     'coursefeedbackid' => $feedbackid,
     'questionid' => $questionid
-]);
+];
+$anscount = $DB->count_records_select('block_coursefeedback_textans', $select, $params);
 
 $PAGE->set_url($baseurl);
 $PAGE->set_context($context);
@@ -89,12 +95,12 @@ $PAGE->navbar->add(get_string("page_html_viewnavbar", "block_coursefeedback"));
 
 // Render the answers for this question.
 $renderer = $PAGE->get_renderer('block_coursefeedback');
-$essayhtml = $renderer->render_essay_answers($courseid, $feedbackid, $questionid, $totalcount, $page, $perpage);
+$essayhtml = $renderer->render_essay_answers($courseid, $feedbackid, $questionid, $anscount, $page, $perpage);
 
 // Start output.
 echo $OUTPUT->header();
 echo $OUTPUT->heading(get_string("pluginname", "block_coursefeedback") . ": "
     . format_string($feedback->name));
 echo $OUTPUT->box($essayhtml);
-echo $OUTPUT->paging_bar($totalcount, $page, $perpage, $baseurl);
+echo $OUTPUT->paging_bar($anscount, $page, $perpage, $baseurl);
 echo $OUTPUT->footer();

@@ -146,7 +146,7 @@ class block_coursefeedback_renderer extends plugin_renderer_base {
             // Cell 2: "<questiontext>"
             $questiontext = format_string($essayquestion->question);
 
-            //Cell 3 "Show answers" (lnk).
+            // Cell 3 "Show answers" (lnk).
             $params = [
                 'course' => $courseid,
                 'feedback' => $essayquestion->coursefeedbackid,
@@ -171,20 +171,30 @@ class block_coursefeedback_renderer extends plugin_renderer_base {
      * @param array $essayquestions - array of question objects $essayquestions
      * @return string
      */
-    public function render_essay_answers($courseid, $feedbackid, $questionid, $totalcount, $page=0, $perpage=30) {
+    public function render_essay_answers($courseid, $feedbackid, $questionid, $anscount, $page=0, $perpage=30) {
         global $DB;
 
         // Start output with heading "Essay Feedbackresults"
         $answerhtml = html_writer::tag('h3',get_string("questiontype_essay", "block_coursefeedback")
             . ' ' . get_string("resultspage_title", "block_coursefeedback"));
 
-        // Add infos for $totalcount and current $page.
-        $totalpages = ceil($totalcount / $perpage);
+        // Add infos for $anscount and current $page.
+        $totalpages = ceil($anscount / $perpage);
         $answerhtml .= html_writer::tag('div',
                 get_string("page_html_totalanscountinfo", "block_coursefeedback",
-                    ['totalcount' => $totalcount, 'page' => $page + 1, 'totalpages' => $totalpages ]));
+                    ['anscount' => $anscount, 'page' => $page + 1, 'totalpages' => $totalpages ]));
 
-        // Add download
+        // Count total amount of textanswer DB entries (including empty). Calculate $emptyans and add it.
+        $totalcount = $DB->count_records('block_coursefeedback_textans', [
+            'course' => $courseid,
+            'coursefeedbackid' => $feedbackid,
+            'questionid' => $questionid
+        ]);
+        $emptyans = $totalcount - $anscount;
+        $answerhtml .= html_writer::tag('div',
+            get_string("qtype_empty_essayans", "block_coursefeedback", $emptyans));
+
+        // Add download link.
         $params = [
             "course" => $courseid,
             "feedback" => $feedbackid,
@@ -195,18 +205,34 @@ class block_coursefeedback_renderer extends plugin_renderer_base {
             get_string("page_link_download", "block_coursefeedback", "CSV"));
         $answerhtml .= html_writer::tag('div', $link);
 
-        // Get all textanswers for the given $questionid and add them in a table.
+        // Get all non-empty textanswers for the given $questionid and add them in a table.
+        $select = "course = :courseid
+               AND coursefeedbackid = :coursefeedbackid 
+               AND questionid = :questionid 
+               AND textanswer IS NOT NULL 
+               AND textanswer <> ''";
+        $params = [
+            'courseid' => $courseid,
+            'coursefeedbackid' => $feedbackid,
+            'questionid' => $questionid,
+        ];
         $limitfrom = $perpage * $page;
-        $answers = $DB->get_records('block_coursefeedback_textans', ['course' => $courseid,
-                'coursefeedbackid' => $feedbackid,
-                'questionid' => $questionid], '', 'id,textanswer', $limitfrom, $perpage);
+        $answers = $DB->get_records_select(
+            'block_coursefeedback_textans',
+            $select,
+            $params,
+            '',
+            'id, textanswer',
+            $limitfrom,
+            $perpage,
+        );
 
         // Get the $question(text) of the given $questionid
         $question = block_coursefeedback_get_questions_by_language($feedbackid, current_language(),
             CFB_QUESTIONTYPE_ESSAY, 'questionid', 'questionid,question', $questionid);
         $questiontext = format_string(reset($question)->question);
 
-        // Create and fill table .
+        // Create and fill table.
         $table = new html_table();
         $table->head = [get_string("notif_question", "block_coursefeedback").' '.$questionid.': ',
             $questiontext];
@@ -216,6 +242,7 @@ class block_coursefeedback_renderer extends plugin_renderer_base {
             $cell->colspan = 2;
             $table->data[] = new html_table_row([$cell]);
         }
+        // Add table with the non empty answers.
         $answerhtml .= html_writer::table($table);
 
         return $answerhtml;
