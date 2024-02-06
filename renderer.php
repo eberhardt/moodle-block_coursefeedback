@@ -190,9 +190,9 @@ class block_coursefeedback_renderer extends plugin_renderer_base {
             'coursefeedbackid' => $feedbackid,
             'questionid' => $questionid
         ]);
-        $emptyans = $totalcount-$anscount;
+        $emptyans = $totalcount - $anscount;
         $answerhtml .= html_writer::tag('div',
-            get_string("qtype_empty_essayans","block_coursefeedback", $emptyans));
+            get_string("qtype_empty_essayans", "block_coursefeedback", $emptyans));
 
         // Add download link.
         $params = [
