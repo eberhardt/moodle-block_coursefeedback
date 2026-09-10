@@ -11,8 +11,12 @@ jobs:
 
     strategy:
       matrix:
-        php: &php_versions ['8.1', '8.2', '8.3']
-        moodle-branch: &moodle_branches ['MOODLE_405_STABLE', 'MOODLE_500_STABLE', 'MOODLE_501_STABLE']
+        php: &php_versions ['8.1', '8.2', '8.3', '8.4']
+        moodle-branch: &moodle_branches
+          - MOODLE_405_STABLE
+          - MOODLE_500_STABLE
+          - MOODLE_501_STABLE
+          - MOODLE_502_STABLE
         database: ['pgsql']
 
     steps:
