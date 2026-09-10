@@ -72,7 +72,7 @@ class block_coursefeedback_renderer extends plugin_renderer_base {
     }
 
     #[\Override]
-    protected function get_mustache(): Mustache_Engine {
+    protected function get_mustache() {
         $mustache = parent::get_mustache();
         $mustache->addHelper('register_alpine_js_module', fn($content) => $this->register_alpine_js_module(trim($content)) || "");
         return $mustache;
