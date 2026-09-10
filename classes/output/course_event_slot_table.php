@@ -125,7 +125,7 @@ class course_event_slot_table implements named_templatable, renderable {
             'rowspan' => $rowspan,
             'show_add_slot' => !$this->is_frozen,
             'first_slot' => $first_slot ? $this->export_slot($output, $first_slot, is_only_slot: !$slots) : null,
-            'more_slots' => array_map(fn($slot) => $this::export_slot($output, $slot), $slots),
+            'more_slots' => array_map(fn($slot) => $this::export_slot($output, $slot), array_values($slots)),
         ];
     }
 
@@ -147,7 +147,7 @@ class course_event_slot_table implements named_templatable, renderable {
             'id' => $type->get('id'),
             'name' => $type->get('name'),
             'selected' => $selectedid === $type->get('id'),
-        ], $this->availableeventtypes);
+        ], array_values($this->availableeventtypes));
     }
 
     /**
@@ -165,7 +165,7 @@ class course_event_slot_table implements named_templatable, renderable {
             'id' => $survey_part->get('id'),
             'name' => $survey_part->get('name'),
             'selected' => $selectedid === $survey_part->get('id'),
-        ], $this->availablesurveyparts);
+        ], array_values($this->availablesurveyparts));
     }
 
     /**
